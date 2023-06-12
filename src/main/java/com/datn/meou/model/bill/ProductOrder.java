@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBill {
+public class ProductOrder {
     private Integer id;
     private Integer billId;
     private String code;

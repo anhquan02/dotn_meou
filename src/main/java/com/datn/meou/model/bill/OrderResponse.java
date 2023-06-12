@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BillResponse {
+public class OrderResponse {
     private String code;
     private Double transportFee;
     private String paymentMethod;
@@ -22,10 +22,10 @@ public class BillResponse {
     private String fullname;
     private String addressTransfer;
     private Integer status;
-    private List<ProductBill> product;
+    private List<ProductOrder> product;
     private List<Voucher> voucher;
 
-    public BillResponse(String code, Double transportFee, String paymentMethod, Double price, Double totalPrice, String note, String phone, String email, String fullname, String addressTransfer, Integer status) {
+    public OrderResponse(String code, Double transportFee, String paymentMethod, Double price, Double totalPrice, String note, String phone, String email, String fullname, String addressTransfer, Integer status) {
         this.code = code;
         this.transportFee = transportFee;
         this.paymentMethod = paymentMethod;

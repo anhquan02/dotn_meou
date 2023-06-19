@@ -23,6 +23,10 @@ public class SizeService {
         return sizeRepository.save(size);
     }
 
+    public Size saveSize(Size size) {
+        return sizeRepository.save(size);
+    }
+
     public List<Size> findAllSizes() {
         return sizeRepository.findAll();
     }

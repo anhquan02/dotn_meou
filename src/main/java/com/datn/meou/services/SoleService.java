@@ -23,6 +23,10 @@ public class SoleService {
         return soleRepository.save(sole);
     }
 
+    public Sole saveSole(Sole sole) {
+        return soleRepository.save(sole);
+    }
+
     public List<Sole> findAllSoles() {
         return this.soleRepository.findAll();
     }

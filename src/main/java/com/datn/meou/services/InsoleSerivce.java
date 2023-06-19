@@ -23,6 +23,10 @@ public class InsoleSerivce {
         return insoleRepository.save(insole);
     }
 
+    public Insole saveInsole(Insole insole) {
+        return insoleRepository.save(insole);
+    }
+
     public List<Insole> findAllInsoles() {
         return insoleRepository.findAll();
     }

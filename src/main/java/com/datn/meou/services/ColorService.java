@@ -23,6 +23,10 @@ public class ColorService {
         return colorRepository.save(color);
     }
 
+    public Color saveColor(Color color) {
+        return colorRepository.save(color);
+    }
+
     public List<Color> findAllColors() {
         return colorRepository.findAll();
     }

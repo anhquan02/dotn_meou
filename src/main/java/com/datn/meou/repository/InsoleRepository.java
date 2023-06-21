@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InsoleRepository extends JpaRepository<Insole, Long> {
+    Insole findByName(String name);
 }

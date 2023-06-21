@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/admin}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kích cỡ giày</title>
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <div class="d-flex p-2">
+        <div class="container-fluid p-5 text-center">
+          <div>
+            <span>Số lượng kích cỡ giày: [[${len_size}]]</span>
+          </div>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Kích cỡ giày</th>
+                <!-- <th>Trang thai</th> -->
+                <th>Ngay tao</th>
+                <th>Ngay cap nhat</th>
+                <th>Thao tac</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="size, iterStat : ${sizes}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${size.name}"></td>
+                <!-- <td>
+                  <span th:if="${size.deleted == false}" class="badge badge-success"
+                    >Dang ban</span
+                  >
+                  <span th:if="${size.deleted == true}" class="badge badge-danger"
+                    >Ngung ban</span
+                  >
+                </td> -->
+                <td
+                  th:text="${#dates.format(size.createdDate, 'dd/MM/YYYY')}"
+                ></td>
+                <td
+                  th:text="${#dates.format(size.updatedDate, 'dd/MM/YYYY')}"
+                ></td>
+                <td>
+                  <!-- link to edit page -->
+                  <a
+                    th:href="@{/size/edit?id={id}(id=${size.id})}"
+                    class="btn btn-primary"
+                    ><i class="fas fa-edit"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="container w-25 p-5">
+          <form
+            class=""
+            action="#"
+            th:action="@{/size/edit?id={id}(id=${size.id})}"
+            th:object="${size}"
+            method="post"
+          >
+            <div class="form-group">
+              <label for="name">Kích cỡ giày</label>
+              <input
+                type="text"
+                class="form-control"
+                th:id="name"
+                placeholder="Kích cỡ giày"
+                th:field="*{name}"
+              />
+              <span
+                th:if="${#fields.hasErrors('name')}"
+                th:errors="*{name}"
+              ></span>
+            </div>
+            <!-- <div class="form-group">
+              <label for="name" class="d-block">Trang thai</label>
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label
+                  th:attr="class=${size.deleted ==false ? 'btn btn-primary active':'btn btn-primary'} "
+                >
+                  <input
+                    type="radio"
+                    name="deleted"
+                    th:id="option1"
+                    autocomplete="off"
+                    value="false"
+                    th:checked="${size.deleted == false}"
+                  />
+                  Dang ban
+                </label>
+                <label
+                  th:attr="class=${size.deleted ==true ? 'btn btn-primary active':'btn btn-primary'} "
+                >
+                  <input
+                    type="radio"
+                    name="deleted"
+                    th:id="option2"
+                    autocomplete="off"
+                    value="true"
+                    th:checked="${size.deleted == true}"
+                  />
+                  Ngung ban
+                </label>
+              </div>
+            </div> -->
+            <div class="d-flex flex-row-reverse">
+              <button type="submit" class="btn btn-primary">Sửa</button>
+              <button
+                type="reset"
+                class="btn btn-secondary mr-2"
+              >
+                Huy
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

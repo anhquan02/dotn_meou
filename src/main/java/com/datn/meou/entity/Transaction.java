@@ -1,13 +1,33 @@
 package com.datn.meou.entity;
 
 
+import com.datn.meou.model.TransactionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
+
+@SqlResultSetMapping(
+        name = "getTransactionByCode",
+        classes = {
+                @ConstructorResult(
+                        targetClass = TransactionDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "codeOrder", type = String.class),
+                                @ColumnResult(name = "creatDate", type = Date.class),
+                                @ColumnResult(name = "nameCustomer", type = String.class),
+                                @ColumnResult(name = "phoneCustomer", type = String.class),
+                                @ColumnResult(name = "type", type = Integer.class),
+                                @ColumnResult(name = "totalPrice", type = Double.class),
+                        }
+                )
+        }
+)
+
 
 @Entity
 @AllArgsConstructor
@@ -16,7 +36,7 @@ import javax.persistence.Table;
 @Builder
 @Table(name = "dotn_transaction")
 public class Transaction extends BaseEntity {
-    private Integer orderId;
+    private Long orderId;
     private Double totalPrice;
-    private Integer accountId;
+    private Long accountId;
 }

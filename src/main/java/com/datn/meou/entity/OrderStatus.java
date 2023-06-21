@@ -16,5 +16,5 @@ import javax.persistence.Table;
 @Builder
 @Table(name = "dotn_order_status")
 public class OrderStatus extends BaseEntity {
-    private String value;
+    private String valueStatus;
 }

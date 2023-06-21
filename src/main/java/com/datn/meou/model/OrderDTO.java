@@ -1,33 +1,29 @@
-package com.datn.meou.entity;
-
+package com.datn.meou.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @Builder
-@Table(name = "dotn_order")
-public class Orders extends BaseEntity {
-    private Long accountId;
-    private Long voucherId;
+@AllArgsConstructor
+public class OrderDTO extends BaseModel {
+
+    private Integer accountId;
+    private Integer voucherId;
     private String code;
     private Double totalPrice;
     private String paymentMethod;
     private Integer typeOrder;
     private String note;
-    private Long statusId;
+    private Integer statusId;
     private String nameCustomer;
     private String phoneCustomer;
     private String addressCustomer;
     private String emailCustomer;
-
-
+    private Double voucher;
+    private String status;
+    private String typeOrders;
 }

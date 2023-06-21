@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin hóa đơn chi tiết</title>
+    <!-- CSS Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">MEOU Sneaker</a>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/page/0}">Order-Status</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/order/page/0}">Order</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/transaction/page/0}">Transaction</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-sm mt-5">
+    <form th:object="${orders}">
+        <input type="hidden" name="id" th:field="*{id}">
+        <span class="d-flex">
+            <h2 class="mb-4">Thông tin hóa đơn chi tiết</h2>
+            <h2 style="margin-left: 8px" class="mb-4" th:utext="*{code}"></h2>
+        </span>
+
+        <div class="row mb-3">
+              <span class="d-flex justify-content-between">
+                <div class="d-flex">
+                    <p class="mb-4">Phương thức thanh toán:</p>
+                    <p style="margin-left: 8px" class="mb-4" th:utext="*{paymentMethod}"></p>
+                </div>
+                  <div class="d-flex">
+                           <p class="mb-4">Thời gian đặt: </p>
+                           <p style="margin-left: 8px" class="mb-4" th:utext="*{createdDate}"></p>
+                      </div>
+
+              </span>
+            <p>Thông tin người đặt</p>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label">Họ và tên</label>
+                <input type="text" name="nameCustomer" th:field="*{nameCustomer}" class="form-control" readonly>
+            </div>
+            <div class="col">
+                <label class="form-label">Số điện thoại</label>
+                <input type="text" class="form-control" id="phoneCustomer" th:field="*{phoneCustomer}" readonly>
+            </div>
+            <div class="col">
+                <label class="form-label">Email</label>
+                <input type="text" class="form-control" id="emailCustomer" th:field="*{emailCustomer}" readonly>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Địa chỉ chi tiết</label>
+            <input type="text" class="form-control" id="addressCustomer" th:field="*{addressCustomer}" readonly>
+        </div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Màu sản phẩm</th>
+                <th>Kích thước giày</th>
+                <th>Thương hiệu sản phẩm</th>
+                <th>Đơn giá</th>
+                <th>Số lượng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item: ${item}">
+                <td th:text="${item.nameProduct}"/>
+                <td th:text="${item.colorProduct}"/>
+                <td th:text="${item.sizeProduct}"/>
+                <td th:text="${item.brandProduct}"/>
+                <td th:text="${item.priceSell}"/>
+                <td th:text="${item.quantityOrder}"/>
+            </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-end">
+            <p class="mb-4">Tổng tiền: </p>
+            <p style="margin-left: 8px" class="mb-4" th:utext="*{totalPrice}"></p>
+        </div>
+        <div class="d-flex justify-content-end">
+            <p class="mb-4">Khuyến mãi đơn hàng: </p>
+            <p style="margin-left: 8px" class="mb-4" th:utext="*{voucher}"></p>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Trạng thái đơn hàng:</label>
+            <input type="text" class="form-control" id="status" th:field="*{status}" readonly>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Ghi chú:</label>
+            <input type="text" class="form-control" id="note" th:field="*{note}" readonly>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Loại đơn:</label>
+            <input type="text" class="form-control" id="typeOrders" th:field="*{typeOrders}" readonly>
+        </div>
+    </form>
+</div>
+
+<!-- JavaScript Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

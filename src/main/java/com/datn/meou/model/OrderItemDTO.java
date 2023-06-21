@@ -1,33 +1,25 @@
-package com.datn.meou.entity;
+package com.datn.meou.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-
-@Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@NoArgsConstructor
 @Builder
-@Table(name = "dotn_order_item")
-public class OrderItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor
+public class OrderItemDTO {
     private Long id;
-
-    private Long productDetailId;
-    private Long orderId;
+    private Integer productDetailId;
+    private Integer orderId;
     private String nameProduct;
     private String description;
-    private Long quantityOrder;
+    private Integer quantityOrder;
     private Double priceSell;
     private String colorProduct;
     private String brandProduct;
     private String sizeProduct;
     private String soleProduct;
     private String insoleProduct;
-
 }

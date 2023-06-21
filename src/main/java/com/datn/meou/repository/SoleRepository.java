@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SoleRepository extends JpaRepository<Sole, Long> {
+    Sole findByName(String name);
 }

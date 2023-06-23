@@ -1,8 +1,8 @@
-package com.datn.meou.controller;
+package com.datn.meou.controllers;
 
 
-import com.datn.meou.service.OrderItemService;
-import com.datn.meou.service.OrderSevice;
+import com.datn.meou.services.OrderItemService;
+import com.datn.meou.services.OrderSevice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

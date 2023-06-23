@@ -5,20 +5,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
 public class OrderDTO extends BaseModel {
 
-    private Integer accountId;
-    private Integer voucherId;
+    private Long accountId;
+    private Long voucherId;
     private String code;
     private Double totalPrice;
     private String paymentMethod;
     private Integer typeOrder;
     private String note;
-    private Integer statusId;
+    private Long statusId;
     private String nameCustomer;
     private String phoneCustomer;
     private String addressCustomer;
@@ -26,4 +28,7 @@ public class OrderDTO extends BaseModel {
     private Double voucher;
     private String status;
     private String typeOrders;
+    private String nameStatus;
+
+
 }

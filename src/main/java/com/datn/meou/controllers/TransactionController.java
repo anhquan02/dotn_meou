@@ -1,9 +1,8 @@
-package com.datn.meou.controller;
+package com.datn.meou.controllers;
 
 
-import com.datn.meou.model.OrderStatusDTO;
 import com.datn.meou.model.TransactionDTO;
-import com.datn.meou.service.TransactionService;
+import com.datn.meou.services.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor

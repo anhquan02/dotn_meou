@@ -1,4 +1,4 @@
-package com.datn.meou.service;
+package com.datn.meou.services;
 
 
 import com.datn.meou.entity.OrderStatus;
@@ -32,6 +32,20 @@ public class OrderSevice {
         return this.ordersRepository.findAllByDeletedAndStatusIdOrderByCreatedDateDesc(true, 1L, pageable);
     }
 
+    public Page<OrderDTO> findAllPage(Integer currentPage, Integer size) {
+        Pageable pageable = PageRequest.of(currentPage, size);
+        Page<Orders> orders = this.ordersRepository.findAllByDeletedOrderByCreatedDateDesc(true, pageable);
+        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
+        for (OrderDTO dto : dtos) {
+            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
+            if (orderStatus.isPresent()) {
+                dto.setNameStatus(orderStatus.get().getValueStatus());
+            }
+        }
+        return dtos;
+    }
+
+
     public Page<Orders> getStatus2(Integer currentPage, Integer size) {
         Pageable pageable = PageRequest.of(currentPage, size);
         return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 2L, pageable);
@@ -50,6 +64,19 @@ public class OrderSevice {
     public Page<Orders> getStatus5(Integer currentPage, Integer size) {
         Pageable pageable = PageRequest.of(currentPage, size);
         return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 5L, pageable);
+    }
+
+    public Page<OrderDTO> searchByName(String code, Integer currentPage, Integer size) {
+        Pageable pageable = PageRequest.of(currentPage, size);
+        Page<Orders> orders = this.ordersRepository.findAllByDeletedAndCodeContaining(true, code, pageable);
+        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
+        for (OrderDTO dto : dtos) {
+            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
+            if (orderStatus.isPresent()) {
+                dto.setNameStatus(orderStatus.get().getValueStatus());
+            }
+        }
+        return dtos;
     }
 
     public OrderDTO getbyId(Long orderId) {
@@ -92,7 +119,7 @@ public class OrderSevice {
             throw new BadRequestException("Không tìm thấy đơn hàng này");
         }
         Orders orders1 = orders.get();
-        orders1.setStatusId(3L);
+        orders1.setStatusId(6L);
         this.ordersRepository.save(orders1);
     }
 

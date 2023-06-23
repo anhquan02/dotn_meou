@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
-    List<Orders> findAllByDeleted(Boolean deleted);
+    Page<Orders> findAllByDeletedOrderByCreatedDateDesc(Boolean deleted, Pageable pageable);
 
     Optional<Orders> findByIdAndDeleted(Long id, Boolean deleted);
 
@@ -21,4 +21,7 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
     Page<Orders> findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(Boolean deleted, Long statusId, Pageable pageable);
 
     Page<Orders> findAllByDeletedAndStatusIdOrderByCreatedDateDesc(Boolean deleted, Long statusId, Pageable pageable);
+
+    Page<Orders> findAllByDeletedAndCodeContaining(Boolean deleted, String code, Pageable pageable);
+
 }

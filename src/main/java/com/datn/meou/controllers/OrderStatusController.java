@@ -1,13 +1,16 @@
-package com.datn.meou.controller;
+package com.datn.meou.controllers;
 
 
 import com.datn.meou.model.OrderStatusDTO;
-import com.datn.meou.service.OrderStatusService;
+import com.datn.meou.services.OrderStatusService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
@@ -40,7 +43,10 @@ public class OrderStatusController {
     }
 
     @PostMapping("/create")
-    public String save(@ModelAttribute("dto") OrderStatusDTO dto) {
+    public String save(@ModelAttribute("dto") @Valid OrderStatusDTO dto, BindingResult result) {
+        if (result.hasErrors()) {
+            return "form-order-status";
+        }
         this.orderStatusService.save(dto);
         return "redirect:/convert";
     }

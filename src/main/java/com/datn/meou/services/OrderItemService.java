@@ -1,4 +1,4 @@
-package com.datn.meou.service;
+package com.datn.meou.services;
 
 import com.datn.meou.entity.OrderItem;
 import com.datn.meou.entity.Orders;

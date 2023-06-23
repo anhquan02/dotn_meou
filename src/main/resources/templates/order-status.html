@@ -1,95 +1,73 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <title>Order Status</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Order-Status</title>
 </head>
-
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">MEOU Sneaker</a>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/page/0}">Order-Status</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/order/page/0}">Order</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/transaction/page/0}">Transaction</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="container">
-    <h2>Order Status</h2>
+<section layout:fragment="content">
+    <div class="container">
+        <h2>Order Status</h2>
 
-    <form class="mb-3">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Nhập từ khóa">
-                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        <form class="mb-3 w-100">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Nhập từ khóa">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </form>
+        </form>
 
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Trạng thái</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="status : ${orderStatus}">
-            <td th:text="${status.id}"></td>
-            <td th:text="${status.valueStatus}"></td>
-            <td>
-                <a th:href="@{/edit(id=${status.id})}" class="btn btn-primary">Sửa</a>
-                <a th:href="@{/delete/{id}(id=${status.id})}" class="btn btn-danger">Xóa</a>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Trạng thái</th>
+                <th style="width: 150px;">Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="status : ${orderStatus}">
+                <td th:text="${status.id}"></td>
+                <td th:text="${status.valueStatus}"></td>
+                <td>
+                    <a th:href="@{/edit(id=${status.id})}" class="btn btn-primary">Sửa</a>
+                    <a th:href="@{/delete/{id}(id=${status.id})}" class="btn btn-danger">Xóa</a>
 
-            </td>
+                </td>
 
-        </tr>
-        </tbody>
-    </table>
-    <nav aria-label="Page navigation example">
-        <ul class="pagination">
-            <li th:if="${currentPage > 0}" class="page-item">
-                <a class="page-link" th:href="@{'/page/'+${currentPage-1}}">Previous</a>
-                <!--<a class="page-link" th:href="@{/order-status/all(pageno=${currentPage-1})}">Previous</a>-->
-            </li>
+            </tr>
+            </tbody>
+        </table>
+        <nav class="d-flex justify-content-end" aria-label="Page navigation example">
+            <ul class="pagination">
+                <li th:if="${currentPage > 0}" class="page-item">
+                    <a class="page-link" th:href="@{'/page/'+${currentPage-1}}">Previous</a>
+                    <!--<a class="page-link" th:href="@{/order-status/all(pageno=${currentPage-1})}">Previous</a>-->
+                </li>
 
-            <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
-                th:classappend="${currentPage == page-1 ? 'active' : ''}"
-                class="page-item">
-                <a class="page-link" th:href="@{'/page/'+${page-1}}">[[${page}]]</a>
-            </li>
+                <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${currentPage == page-1 ? 'active' : ''}"
+                    class="page-item">
+                    <a class="page-link" th:href="@{'/page/'+${page-1}}">[[${page}]]</a>
+                </li>
 
-            <li th:if="${currentPage+1!=totalPages}" class="page-item">
-                <a class="page-link" th:href="@{'/page/'+${currentPage+1}}">Next</a>
-            </li>
-        </ul>
-    </nav>
+                <li th:if="${currentPage+1!=totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{'/page/'+${currentPage+1}}">Next</a>
+                </li>
+            </ul>
+        </nav>
 
-    <a th:href="@{/convert}" class="btn btn-info">Thêm mới</a>
+        <a th:href="@{/convert}" class="btn btn-info">Thêm mới</a>
 
-</div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</section>
 </body>
-
 </html>

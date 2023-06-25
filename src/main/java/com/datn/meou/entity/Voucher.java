@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -17,8 +18,8 @@ import java.util.Date;
 @Table(name = "dotn_voucher")
 public class Voucher extends BaseEntity{
     private String name;
-    private Date dayStart;
-    private Date dayEnd;
+    private LocalDate dayStart;
+    private LocalDate dayEnd;;
     private Integer quantity;
     private Double value;
 }

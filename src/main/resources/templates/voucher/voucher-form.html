@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<head>
+  <title>Voucher Form</title>
+</head>
+<body>
+<section layout:fragment="content">
+  <div class="d-flex p-2">
+    <div class="container-fluid p-5 text-center">
+<h1>Thêm mới voucher</h1>
+<form th:object="${voucher}" th:action="@{/vouchers}" method="post">
+  <input type="hidden" th:field="*{id}" />
+  <div class="row">
+  <label>Tên: </label><br/> <input type="text" class="form-control col-6" th:field="*{name}" />
+  </div>
+  <div class="row">
+  <label>Ngày bắt đầu:</label><br/> <input type="text" class="form-control col-6" th:field="*{dayStart}" />
+  </div>
+  <div class="row">
+  <label>Ngày kết thúc: </label><br/>  <input type="text" class="form-control col-6" th:field="*{dayEnd}" />
+  </div>
+  <div class="row">
+  <label>Số lượng: </label><br/><input type="number" class="form-control col-6" th:field="*{quantity}" />
+  </div>
+  <div class="row">
+  <label>Giá trị: </label><br/> <input type="number" class="form-control col-6" step="0.01" th:field="*{value}" />
+  </div>
+  <div class="row">
+    <input type="submit" class="btn btn-success" value="Save" />
+    <a href="/vouchers" type="button" class="btn btn-danger">Cancel</a>
+  </div>
+</form>
+  </div>
+</section>
+</body>
+</html>

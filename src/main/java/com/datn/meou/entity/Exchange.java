@@ -24,4 +24,6 @@ public class Exchange extends BaseEntity {
     private String addressCustomer;
     private String emailCustomer;
 
+    private Integer status;
+
 }

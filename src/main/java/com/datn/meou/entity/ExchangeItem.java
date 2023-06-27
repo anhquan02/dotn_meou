@@ -20,4 +20,6 @@ public class ExchangeItem extends BaseEntity {
     private Integer exchangeId;
     private Integer quantity;
 
+    private Integer status;
+
 }

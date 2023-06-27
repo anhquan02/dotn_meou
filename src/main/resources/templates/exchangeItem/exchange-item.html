@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giỏ Hàng</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="d-flex p-2">
+        <div class="container-fluid p-5 text-center">
+            <div>
+                <span>Thông tin trả hàng</span>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên khách hàng</th>
+                    <!-- <th>Trang thai</th> -->
+                    <th>Tên sản phẩm</th>
+                    <th>Ngày đặt</th>
+                    <th>Loại đơn hàng</th>
+                    <th>Số lượng</th>
+                    <th>Đơn giá</th>
+                    <th>Lý do</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="exchange, item: ${exchangeItem}">
+                    <td th:text="${item.count}"></td>
+                    <td th:text="${exchange.name}">Khách hàng A</td>
+                    <td th:text="${exchange.name}">Sản phẩm A</td>
+                    <td
+                            th:text="${#dates.format(exchange.createdDate, 'dd/MM/YYYY')}"
+                    ></td>
+                    <td th:text="">Online</td>
+                    <td th:text="exchange.quantity"></td>
+                    <td th:text="">Đơn giá</td>
+                    <th th:text="">Lý do</th>
+                    <td>
+                        <a th:href="@{/exchange/accept?id={id}(id=${orderItemid})}" class="btn btn-primary">Ok<i class="fas fa-edit"></i></a>
+
+                        <a th:href="@{/exchange/cancel?id={id}(id=${orderItemid})}" class="btn btn-default">Hủy<i class="fas fa-edit"></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,10 +1,11 @@
 package com.datn.meou.entity;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -16,6 +17,8 @@ import javax.persistence.Table;
 @Builder
 @Table(name = "dotn_product_item")
 public class ProductItem extends BaseEntity {
+    private String name;
+    private BigDecimal price;
     private Integer productId;
     private Integer soleId;
     private Integer colorId;

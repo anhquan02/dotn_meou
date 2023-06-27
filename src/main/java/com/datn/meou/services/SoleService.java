@@ -2,6 +2,10 @@ package com.datn.meou.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.datn.meou.entity.Sole;
@@ -29,6 +33,22 @@ public class SoleService {
 
     public List<Sole> findAllSoles() {
         return this.soleRepository.findAll();
+    }
+
+    public Page<Sole> findByNameContaining(String name, Pageable pageable) {
+        List<Sole> soles = soleRepository.findByNameContaining(name);
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<Sole> list;
+        if (soles.size() < startItem) {
+            return Page.empty();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, soles.size());
+            list = soles.subList(startItem, toIndex);
+        }
+        Page<Sole> solePage = new PageImpl<Sole>(list, PageRequest.of(currentPage, pageSize), soles.size());
+        return solePage;
     }
 
     public Sole findById(Long id) {

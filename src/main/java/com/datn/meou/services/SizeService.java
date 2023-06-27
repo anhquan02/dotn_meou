@@ -2,6 +2,10 @@ package com.datn.meou.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.datn.meou.entity.Size;
@@ -29,6 +33,22 @@ public class SizeService {
 
     public List<Size> findAllSizes() {
         return sizeRepository.findAll();
+    }
+
+    public Page<Size> findByNameContaining(String name, Pageable pageable) {
+        List<Size> sizes = sizeRepository.findByNameContaining(name);
+        int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        List<Size> list;
+        if (sizes.size() < startItem) {
+            return Page.empty();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, sizes.size());
+            list = sizes.subList(startItem, toIndex);
+        }
+        Page<Size> sizePage = new PageImpl<Size>(list, PageRequest.of(currentPage, pageSize), sizes.size());
+        return sizePage;
     }
 
     public Size findByName(String name) {

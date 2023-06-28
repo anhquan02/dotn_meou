@@ -13,8 +13,9 @@
 <section layout:fragment="content">
   <div class="container-sm mt-5">
 <form th:action="@{/vouchers/search}" method="get">
-  <div class="row">
-    <input type="text" class="form-control col-2" id="name" name="name" />
+  <h1>Danh sách voucher</h1>
+  <div class="row mb-2">
+    <input type="text" class="form-control col-2" id="name" name="name" placeholder="Nhập tên voucher"/>
     <input type="submit" class="btn btn-primary" value="Tìm kiếm" />
   </div>
 </form>
@@ -26,8 +27,6 @@
     <th>Ngày Kết Thúc</th>
     <th>Số Lượng</th>
     <th>Giá Trị</th>
-    <th>Ngày Tạo</th>
-    <th>Ngày Cập Nhật</th>
     <th>Hành Động</th>
   </tr>
   </thead>
@@ -38,16 +37,35 @@
     <td th:text="${voucher.dayEnd}"></td>
     <td th:text="${voucher.quantity}"></td>
     <td th:text="${voucher.value}"></td>
-    <td th:text="${voucher.createdDate}"></td>
-    <td th:text="${voucher.updatedDate}"></td>
     <td>
-      <a th:href="@{/vouchers/edit/{id}(id=${voucher.id})}" type="button" class="btn btn-primary">Sửa</a>
-      <a th:href="@{/vouchers/delete/{id}(id=${voucher.id})}" type="button" class="btn btn-danger">Xóa</a>
+      <a th:href="@{/vouchers/{id}(id=${voucher.id})}" type="button" class="btn btn-success"><i class="bi bi-eye"></i></a>
+      <a th:href="@{/vouchers/edit/{id}(id=${voucher.id})}" type="button" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+      <a th:href="@{/vouchers/{id}/delete(id=${voucher.id})}" type="button" class="btn btn-danger"><i class="bi bi-trash3"></i></a>
     </td>
   </tr>
   </tbody>
 </table>
-<a href="/vouchers/new" type="button" class="btn btn-success">Thêm mới </a>
+    <div>
+      <!-- Pagination links -->
+      <ul class="pagination">
+        <li class="page-item" th:classappend="${currentPage == 0} ? disabled">
+          <a class="page-link" th:href="@{/vouchers/search(name=${name}, page=0)}">First</a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == 0} ? disabled">
+          <a class="page-link" th:href="@{/vouchers/search(name=${name}, page=${currentPage - 1})}">Previous</a>
+        </li>
+        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}">
+          <a class="page-link" th:href="@{/vouchers/search(name=${name}, page=${pageNumber})}" th:text="${pageNumber + 1}"></a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? disabled">
+          <a class="page-link" th:href="@{/vouchers/search(name=${name}, page=${currentPage + 1})}">Next</a>
+        </li>
+        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? disabled">
+          <a class="page-link" th:href="@{/vouchers/search(name=${name}, page=${totalPages - 1})}">Last</a>
+        </li>
+      </ul>
+    </div>
+<a href="/vouchers/new" type="button" class="btn btn-primary">Thêm</a>
   </div>
 </section>
 </body>

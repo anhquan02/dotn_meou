@@ -16,7 +16,7 @@ public class VoucherController {
     }
     @GetMapping("/vouchers")
     public String getAllVouchers(@RequestParam(defaultValue = "0") int page, Model model) {
-        PageRequest pageable = PageRequest.of(page, 10);
+        PageRequest pageable = PageRequest.of(page, 2);
         Page<Voucher> voucherPage = voucherService.getAllVouchers(pageable);
 
         model.addAttribute("vouchers", voucherPage.getContent());
@@ -29,7 +29,7 @@ public class VoucherController {
     public String getVoucherById(@PathVariable("id") Long id, Model model) {
         Voucher voucher = voucherService.getVoucherById(id);
         model.addAttribute("voucher", voucher);
-        return "voucher-details";
+        return "voucher/voucher-details";
     }
     @GetMapping("/vouchers/new")
     public String showVoucherForm(Model model) {
@@ -40,7 +40,7 @@ public class VoucherController {
     @PostMapping("/vouchers")
     public String saveVoucher(@ModelAttribute("voucher") Voucher voucher) {
         voucherService.saveVoucher(voucher);
-        return "redirect:/vouchers";
+        return "redirect:/vouchers/search?name=&page=0";
     }
 
     @GetMapping("/vouchers/edit/{id}")
@@ -52,18 +52,18 @@ public class VoucherController {
     @PostMapping("/vouchers/update/{id}")
     public String updateVoucher(@PathVariable("id") Long id, @ModelAttribute("voucher") Voucher voucher) {
         voucherService.updateVoucher(voucher);
-        return "redirect:/vouchers";
+        return "redirect:/vouchers/search?name=&page=0";
     }
-    @GetMapping("/vouchers/delete/{id}")
-    public String deleteVoucher(@PathVariable("id") Long id) {
+    @GetMapping("/vouchers/{id}/delete")
+    public String deleteVoucher(@PathVariable Long id) {
         voucherService.deleteVoucher(id);
-        return "redirect:/vouchers";
+        return "redirect:/vouchers/search?name=&page=0";
     }
     @GetMapping("/vouchers/search")
     public String searchVouchers(@RequestParam("name") String name,
                                  @RequestParam(defaultValue = "0") int page,
                                  Model model) {
-        PageRequest pageable = PageRequest.of(page, 10);
+        PageRequest pageable = PageRequest.of(page, 2);
         Page<Voucher> voucherPage = voucherService.searchVouchersByName(name, pageable);
 
         model.addAttribute("vouchers", voucherPage.getContent());

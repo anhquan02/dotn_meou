@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<<html
+<html
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{layout/admin}"
 >
@@ -10,30 +10,60 @@
 <body>
 <section layout:fragment="content">
   <div class="d-flex p-2">
-    <div class="container-fluid p-5 text-center">
-<h1>Thêm mới voucher</h1>
+    <div class="container-fluid p-5">
+<h1>Thêm voucher</h1>
 <form th:object="${voucher}" th:action="@{/vouchers}" method="post">
   <input type="hidden" th:field="*{id}" />
-  <div class="row">
-  <label>Tên: </label><br/> <input type="text" class="form-control col-6" th:field="*{name}" />
+  <div class="row mb-2">
+    <div class="col-3">
+  <label>Tên: </label>
+    </div>
+    <div class="col-4">
+      <input type="text" class="form-control" th:field="*{name}" />
+      </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-3">
+  <label>Ngày bắt đầu:</label>
+    </div>
+    <div class="col-4">
+      <input type="text" placeholder="dd/mm/yyyy" class="form-control" th:field="*{dayStart}" />
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-3">
+  <label>Ngày kết thúc: </label>
+    </div>
+    <div class="col-4">
+      <input type="text" placeholder="dd/mm/yyyy"  class="form-control" th:field="*{dayEnd}" />
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-3">
+        <label>Số lượng: </label>
+    </div>
+    <div class="col-4">
+      <input type="number" class="form-control" th:field="*{quantity}" />
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-3">
+       <label>Giá trị: </label>
+    </div>
+    <div  class="col-4">
+       <input type="number" class="form-control"  th:field="*{value}" />
+    </div>
   </div>
   <div class="row">
-  <label>Ngày bắt đầu:</label><br/> <input type="text" class="form-control col-6" th:field="*{dayStart}" />
-  </div>
-  <div class="row">
-  <label>Ngày kết thúc: </label><br/>  <input type="text" class="form-control col-6" th:field="*{dayEnd}" />
-  </div>
-  <div class="row">
-  <label>Số lượng: </label><br/><input type="number" class="form-control col-6" th:field="*{quantity}" />
-  </div>
-  <div class="row">
-  <label>Giá trị: </label><br/> <input type="number" class="form-control col-6" step="0.01" th:field="*{value}" />
-  </div>
-  <div class="row">
-    <input type="submit" class="btn btn-success" value="Save" />
-    <a href="/vouchers" type="button" class="btn btn-danger">Cancel</a>
+    <div class="col-1">
+    <input type="submit" class="btn btn-primary" value="Save" />
+    </div>
+    <div class="col-1">
+    <a href="/vouchers/search?name=&page=0" type="button" class="btn btn-danger">Hủy</a>
+    </div>
   </div>
 </form>
+  </div>
   </div>
 </section>
 </body>

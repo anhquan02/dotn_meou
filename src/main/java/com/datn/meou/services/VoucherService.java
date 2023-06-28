@@ -30,9 +30,7 @@ public class VoucherService {
     }
 
     public void deleteVoucher(Long id) {
-        Voucher voucher = getVoucherById(id);
-        voucher.setDeleted(true);
-        voucherRepository.save(voucher);
+        voucherRepository.deleteById(id);
     }
     public Page<Voucher> searchVouchersByName(String name, Pageable pageable) {
         return voucherRepository.findByNameContainingIgnoreCase(name, pageable);

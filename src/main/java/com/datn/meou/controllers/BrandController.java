@@ -1,4 +1,9 @@
 package com.datn.meou.controllers;
+
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,10 +24,18 @@ public class BrandController {
     private final BrandService brandService;
 
     @GetMapping("")
-    public String index(Model model) {
+    public String index(Model model, @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
+        int currentPage = page.orElse(0);
+        int pageSize = size.orElse(5);
+        String _name = name.orElse("");
+        Page<Brand> brands = brandService.findByNameContaining(_name, PageRequest.of(currentPage, pageSize));
+        model.addAttribute("brands", brands);
         model.addAttribute("brand", new Brand());
-        model.addAttribute("brands", brandService.findAllBrands());
-        model.addAttribute("len_brand", brandService.findAllBrands().size());
+        model.addAttribute("name", _name);
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", brands.getTotalPages());
+        model.addAttribute("totalItem", brands.getTotalElements());
         return "brand/index";
     }
 
@@ -36,15 +49,23 @@ public class BrandController {
     }
 
     @GetMapping("/edit")
-    public String editBrand(@RequestParam(required = false) Long id, Model model) {
-        model.addAttribute("brands", brandService.findAllBrands());
-        model.addAttribute("len_brand", brandService.findAllBrands().size());
+    public String editBrand(@RequestParam(required = false) Long id, Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
+        int currentPage = page.orElse(0);
+        int pageSize = size.orElse(5);
+        String _name = name.orElse("");
+        Page<Brand> brands = brandService.findByNameContaining(_name, PageRequest.of(currentPage, pageSize));
+        model.addAttribute("brands", brands);
         model.addAttribute("brand", brandService.findById(id));
-        return "brand/index";
+        model.addAttribute("currentPage", currentPage);
+        model.addAttribute("totalPages", brands.getTotalPages());
+        model.addAttribute("totalItem", brands.getTotalElements());
+        return "brand/edit";
     }
 
     @PostMapping("/edit")
-    public String editBrand(@RequestParam Long id,Brand brand, BindingResult result, Model model) {
+    public String editBrand(@RequestParam Long id, Brand brand, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "brand/index";
         }

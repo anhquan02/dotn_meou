@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html   xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Account</title>
+</head>
+<body >
+<section layout:fragment="content" >
+    <h2 >Account</h2>
+    <!--        <form class="mb-3 w-100">-->
+    <!--            <div class="row">-->
+    <!--                <div class="col-md-4">-->
+    <!--                    <div class="input-group">-->
+    <!--                        <input type="text" class="form-control" placeholder="Nhập usename">-->
+    <!--                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>-->
+    <!--                    </div>-->
+    <!--                </div>-->
+    <!--            </div>-->
+    <!--        </form>-->
+    <div class="container">
+        <div>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Stt</th>
+                <th>Họ và Tên</th>
+                <th>Địa Chỉ</th>
+                <th>Email</th>
+                <th>Username</th>
+                <th>Chức vụ</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="ac , iterStat :${accounts}">
+                <td th:text="${iterStat.count}"></td>
+                <td th:text="${ac.fullname}"></td>
+                <td th:text="${ac.address}"></td>
+                <td th:text="${ac.email}"></td>
+                <td th:text="${ac.username}"></td>
+                <td>
+                    <span
+                            th:if="${ac.roleId == 2}"
+                    >Staff</span
+                    >
+                    <span
+                            th:if="${ac.roleId == 3}"
+                    >Admin</span
+                    >
+                </td>
+                <td >
+                    <a th:href="@{/staff/edit/{id}(id=${ac.id})}" class="btn btn-primary"><i class="fas fa-edit"></i></a>
+                    <!--                        <a th:href="@{/account/delete/{id}(id=${ac.id})}" class="btn btn-primary">Xoas</a>-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/staff/create}" class="btn btn-info">Thêm mới nhân viên </a>
+    </div>
+</section>
+</body>
+</html>

@@ -14,16 +14,34 @@ import java.util.Date;
 public class ExchangeItemDTO {
     private Long id;
 
-    private String name;
+    private String customerName;
 
-    private Integer orderItemId;
-    private Integer exchangeId;
+    private String productName;
+
+    private Integer typeOrder;
+
+    private String typeOrderName;
+
+    private Date createDateOrder;
+
+    private Long orderItemId;
+    private Long exchangeId;
     private Integer quantity;
 
     private Boolean deleted;
+
+    private Float totalPrice;
 
 
     private Date updatedDate;
 
     private Date createdDate;
+
+    private Integer status;
+
+    private String statusName;
+
+    private Long orderId;
+
+    private Long accountId;
 }

@@ -7,10 +7,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/exchange-item")
@@ -21,50 +20,52 @@ public class ExchangeItemController {
     @GetMapping("")
     public String index(Model model) {
         model.addAttribute("exchangeItem", new ExchangeItem());
-        model.addAttribute("exchangeItems", exchangeItemService.getAllExchangeItem());
-        return "exchange-item/index";
+        model.addAttribute("exchangeItems", exchangeItemService.getAllExchangeItem1());
+        return "exchangeItem/index";
+    }
+
+    @GetMapping("/exchangeItem")
+    public String indexExchange(Model model) {
+        model.addAttribute("exchangeItem", new ExchangeItem());
+        model.addAttribute("exchangeItems", exchangeItemService.getEchangeItemStatus());
+        return "exchangeItem/exchange-item";
     }
 
 
     @PostMapping("/save")
-    public String saveExchangeItem(ExchangeItemDTO dto, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
-            return "exchange/index";
-        }
+    public String saveExchangeItem(ExchangeItemDTO dto){
         exchangeItemService.InsertOrUpdateExchangeItem(dto);
-        return "redirect:/exchange";
+        return "redirect:/exchange-item";
     }
 
     @PostMapping("/update")
     public String updateExchangeItem(ExchangeItemDTO dto, BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
-            return "exchange/index";
+            return "exchangeItem/index";
         }
         exchangeItemService.InsertOrUpdateExchangeItem(dto);
-        return "redirect:/exchange";
+        return "redirect:/exchange-item";
     }
 
-    @PostMapping("/accept")
-    public String acceptExchangeItem(@RequestParam Long id, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
-            return "exchange/index";
-        }
+    @GetMapping("/accept/{id}")
+    public String acceptExchangeItem(@PathVariable Long id)
+    {
+
         exchangeItemService.acceptExchangeItem(id);
-        return "redirect:/exchange";
+        return "redirect:/exchange-item/exchangeItem";
     }
 
-    @PostMapping("/cancel")
-    public String cancelExchangeItem(@RequestParam Long id, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors()){
-            return "exchange-item/index";
-        }
+    @GetMapping("/cancel/{id}")
+    public String cancelExchangeItem(@PathVariable Long id)
+    {
+
         exchangeItemService.CancelExchangeItem(id);
-        return "redirect:/exchange";
+        return "redirect:/exchange-item/exchangeItem";
     }
 
 //    @GetMapping("/getCustomerId")
 //    public String getAllCustomerItem(@RequestParam(value = "CustomerId") Integer exchangeId, Model model){
 //        model.addAttribute("exchangeItem", this.exchangeItemService.getAllExchangeItemByCustomerId(exchangeId));
 //        return "exchange-item";
-//    }
+//
 }

@@ -1,10 +1,10 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://ec2-3-250-160-36.eu-west-1.compute.amazonaws.com:3306/meou
+    url: jdbc:mysql://54.169.131.163:3306/meou
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: dolan@123
+    password: meou@12345
 
   jpa:
     hibernate.ddl-auto: update

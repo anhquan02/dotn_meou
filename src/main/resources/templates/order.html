@@ -1,296 +1,366 @@
 <!DOCTYPE html>
-<html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
 <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Order</title>
-    <!-- CSS Stylesheet -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <style>
-        .search-box {
-            margin-bottom: 20px;
-        }
-
-        .search-input {
-            width: 200px;
-            display: inline-block;
-            margin-right: 10px;
-        }
-    </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">MEOU System</a>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/page/0}">Order-Status</a>
+<section layout:fragment="content">
+    <div class="container">
+        <h1>Order</h1>
+        <form class="mb-lg-12">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="code" placeholder="Nhập mã đơn hàng">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="mt-4">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="all-tab" data-toggle="tab" data-target="#all" type="button"
+                            role="tab" aria-controls="all" aria-selected="true">Tất cả
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="wait-tab" data-toggle="tab" data-target="#wait" type="button"
+                            role="tab" aria-controls="wait" aria-selected="true">Chờ xác nhận
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="confirm-tab" data-toggle="tab" data-target="#confirm" type="button"
+                            role="tab" aria-controls="confirm" aria-selected="false">Xác nhận
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="prepare-tab" data-toggle="tab" data-target="#prepare" type="button"
+                            role="tab" aria-controls="prepare" aria-selected="false">Giao hàng
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="exit-tab" data-toggle="tab" data-target="#exit" type="button"
+                            role="tab" aria-controls="exit" aria-selected="false">Hủy đơn
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="success-tab" data-toggle="tab" data-target="#success" type="button"
+                            role="tab" aria-controls="success" aria-selected="false">Thành công
+                    </button>
                 </li>
             </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/order/page/0}">Order</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/transaction/page/0}">Transaction</a>
-                </li>
-            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời gian</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orders: ${ordersPage}">
+                            <td>
+                                <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
+                                   th:text="${orders.code}"> </a>
+                            </td>
+                            <td th:text="${orders.nameCustomer}"/>
+                            <td th:text="${orders.phoneCustomer}"/>
+                            <td th:text="${orders.createdDate}"/>
+                            <td th:text="${orders.totalPrice}"/>
+                            <td th:text="${orders.nameStatus}"/>
+                            <td>
+                                <div th:if="${orders.statusId == 1}">
+                                    <a th:href="@{/order/confirm/{id}(id=${orders.id})}"
+                                       class="btn btn-info">Confirm</a>
+                                    <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Exit</a>
+                                </div>
+                                <div th:if="${orders.statusId == 2}">
+                                    <a th:href="@{/order/confirm/{id}(id=${orders.id})}" class="btn btn-info">Ship</a>
+                                    <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Exit</a>
+                                </div>
+                                <div th:if="${orders.statusId == 3}">
+                                    <a th:href="@{/order/prepare/{id}(id=${orders.id})}" class="btn btn-info">Return</a>
+                                    <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Exit</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li th:if="${currentPage > 0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
+                            </li>
+
+                            <li th:block th:each="page : ${#numbers.sequence(1, totalPages0)}"
+                                th:classappend="${(currentPage == page-1 ? 'active' : '')+ (page-1 < 0 ? 'hidden' : 'page-item')}">
+
+                                <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
+                            </li>
+
+                            <li th:if="${currentPage+1!=totalPages0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="tab-pane fade " id="wait" role="tabpanel" aria-labelledby="wait-tab">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời gian</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orders: ${ordersList}">
+                            <td>
+                                <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
+                                   th:text="${orders.code}"> </a>
+                            </td>
+                            <td th:text="${orders.nameCustomer}"/>
+                            <td th:text="${orders.phoneCustomer}"/>
+                            <td th:text="${orders.createdDate}"/>
+                            <td th:text="${orders.totalPrice}"/>
+                            <td th:text="${orders.statusId}"/>
+                            <td>
+                                <a th:href="@{/order/confirm/{id}(id=${orders.id})}" class="btn btn-info">Confirm</a>
+                                <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Exit</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li th:if="${currentPage > 0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
+                            </li>
+
+                            <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
+                                th:classappend="${(currentPage == page-1 ? 'active' : '')+ (page-1 < 0 ? 'hidden' : 'page-item')}">
+
+                                <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
+                            </li>
+
+                            <li th:if="${currentPage+1!=totalPages}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="tab-pane fade" id="confirm" role="tabpanel" aria-labelledby="confirm-tab">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời gian</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orders: ${ordersList2}">
+                            <td>
+                                <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
+                                   th:text="${orders.code}"> </a>
+                            </td>
+                            <td th:text="${orders.nameCustomer}"/>
+                            <td th:text="${orders.phoneCustomer}"/>
+                            <td th:text="${orders.createdDate}"/>
+                            <td th:text="${orders.totalPrice}"/>
+                            <td th:text="${orders.statusId}"/>
+                            <td>
+
+                                <a th:href="@{/order/prepare/{id}(id=${orders.id})}" class="btn btn-info">Ship</a>
+                                <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Exit</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li th:if="${currentPage > 0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
+                            </li>
+
+                            <li th:block th:each="page : ${#numbers.sequence(1, totalPages2)}"
+                                th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
+                            </li>
+
+                            <li th:if="${currentPage+1!=totalPages2}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+                <div class="tab-pane fade" id="prepare" role="tabpanel" aria-labelledby="prepare-tab">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời gian</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orders: ${ordersList3}">
+                            <td>
+                                <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
+                                   th:text="${orders.code}"> </a>
+                            </td>
+                            <td th:text="${orders.nameCustomer}"/>
+                            <td th:text="${orders.phoneCustomer}"/>
+                            <td th:text="${orders.createdDate}"/>
+                            <td th:text="${orders.totalPrice}"/>
+                            <td th:text="${orders.statusId}"/>
+                            <td>
+                                <a th:href="@{/order/prepare/{id}(id=${orders.id})}" class="btn btn-info">Return</a>
+                                <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Exit</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li th:if="${currentPage > 0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
+                            </li>
+
+                            <li th:block th:each="page : ${#numbers.sequence(1, totalPages3)}"
+                                th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
+                            </li>
+
+                            <li th:if="${currentPage+1!=totalPages3}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                </div>
+                <div class="tab-pane fade" id="exit" role="tabpanel" aria-labelledby="exit-tab">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Thời gian</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orders: ${ordersList4}">
+                            <td>
+                                <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
+                                   th:text="${orders.code}"> </a>
+                            </td>
+                            <td th:text="${orders.nameCustomer}"/>
+                            <td th:text="${orders.phoneCustomer}"/>
+                            <td th:text="${orders.createdDate}"/>
+                            <td th:text="${orders.totalPrice}"/>
+                            <td th:text="${orders.statusId}"/>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li th:if="${currentPage > 0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
+                            </li>
+
+                            <li th:block th:each="page : ${#numbers.sequence(1, totalPages4)}"
+                                th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
+                            </li>
+
+                            <li th:if="${currentPage+1!=totalPages4}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="tab-pane fade" id="success" role="tabpanel" aria-labelledby="exit-tab">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Mã đơn hàng</th>
+                            <th>Khách hàng</th>
+                            <th>Số điện thoại khách hàng</th>
+                            <th>Thời gian</th>
+                            <th>Tổng tiền đơn hàng</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="orders: ${ordersList5}">
+                            <td>
+                                <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
+                                   th:text="${orders.code}"> </a>
+                            </td>
+                            <td th:text="${orders.nameCustomer}"/>
+                            <td th:text="${orders.phoneCustomer}"/>
+                            <td th:text="${orders.createdDate}"/>
+                            <td th:text="${orders.totalPrice}"/>
+                            <td th:text="${orders.statusId}"/>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li th:if="${currentPage > 0}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
+                            </li>
+
+                            <li th:block th:each="page : ${#numbers.sequence(1, totalPages5)}"
+                                th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
+                            </li>
+
+                            <li th:if="${currentPage+1!=totalPages5}" class="page-item">
+                                <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
-</nav>
-<div class="container">
-    <h1>Order</h1>
-
-    <div class="search-box">
-        <input type="text" id="searchInput" class="form-control search-input" placeholder="Search...">
-        <button id="searchButton" class="btn btn-primary">Search</button>
-    </div>
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <button class="nav-link active" id="nav-wait-tab" data-bs-toggle="tab" data-bs-target="#nav-wait"
-                    type="button" role="tab" aria-controls="nav-wait" aria-selected="true">Chờ xác nhận
-            </button>
-            <button class="nav-link" id="nav-confirm-tab" data-bs-toggle="tab" data-bs-target="#nav-confirm"
-                    type="button" role="tab" aria-controls="nav-confirm" aria-selected="false">Xác nhận
-            </button>
-            <button class="nav-link" id="nav-prepare-tab" data-bs-toggle="tab" data-bs-target="#nav-prepare"
-                    type="button" role="tab" aria-controls="nav-prepare" aria-selected="false">Đang chuẩn bị
-            </button>
-            <button class="nav-link" id="nav-exit-tab" data-bs-toggle="tab" data-bs-target="#nav-exit"
-                    type="button" role="tab" aria-controls="nav-exit" aria-selected="false">Đã hủy
-            </button>
-            <button class="nav-link" id="nav-success-tab" data-bs-toggle="tab" data-bs-target="#nav-success"
-                    type="button" role="tab" aria-controls="nav-success" aria-selected="false">Thành công
-            </button>
-        </div>
-    </nav>
-    <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-wait" role="tabpanel" aria-labelledby="nav-wait-tab">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Khách hàng</th>
-                    <th>Số điện thoại khách hàng</th>
-                    <th>Thời gian</th>
-                    <th>Tổng tiền đơn hàng</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="orders: ${ordersList}">
-                    <td>
-                        <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
-                           th:text="${orders.code}"> </a>
-                    </td>
-                    <td th:text="${orders.nameCustomer}"/>
-                    <td th:text="${orders.phoneCustomer}"/>
-                    <td th:text="${orders.createdDate}"/>
-                    <td th:text="${orders.totalPrice}"/>
-                    <td th:text="${orders.statusId}"/>
-                    <td>
-                        <a th:href="@{/order/confirm/{id}(id=${orders.id})}" class="btn btn-info">Xác nhận</a>
-                        <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Hủy đơn</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li th:if="${currentPage > 0}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
-                    </li>
-
-                    <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
-                        th:classappend="${(currentPage == page-1 ? 'active' : '')+ (page-1 < 0 ? 'hidden' : 'page-item')}">
-
-                        <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
-                    </li>
-
-                    <li th:if="${currentPage+1!=totalPages}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="tab-pane fade" id="nav-confirm" role="tabpanel" aria-labelledby="nav-confirm-tab">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Khách hàng</th>
-                    <th>Số điện thoại khách hàng</th>
-                    <th>Thời gian</th>
-                    <th>Tổng tiền đơn hàng</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="orders: ${ordersList2}">
-                    <td>
-                        <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
-                           th:text="${orders.code}"> </a>
-                    </td>
-                    <td th:text="${orders.nameCustomer}"/>
-                    <td th:text="${orders.phoneCustomer}"/>
-                    <td th:text="${orders.createdDate}"/>
-                    <td th:text="${orders.totalPrice}"/>
-                    <td th:text="${orders.statusId}"/>
-                    <td>
-                        <a th:href="@{/order/prepare/{id}(id=${orders.id})}" class="btn btn-info">Đang chuẩn bị</a>
-                        <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Hủy đơn</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li th:if="${currentPage > 0}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
-                    </li>
-
-                    <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
-                        th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
-                    </li>
-
-                    <li th:if="${currentPage+1!=totalPages}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="tab-pane fade" id="nav-prepare" role="tabpanel" aria-labelledby="nav-prepare-tab">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Khách hàng</th>
-                    <th>Số điện thoại khách hàng</th>
-                    <th>Thời gian</th>
-                    <th>Tổng tiền đơn hàng</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="orders: ${ordersList3}">
-                    <td>
-                        <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
-                           th:text="${orders.code}"> </a>
-                    </td>
-                    <td th:text="${orders.nameCustomer}"/>
-                    <td th:text="${orders.phoneCustomer}"/>
-                    <td th:text="${orders.createdDate}"/>
-                    <td th:text="${orders.totalPrice}"/>
-                    <td th:text="${orders.statusId}"/>
-                    <td>
-                        <a th:href="@{/order/prepare/{id}(id=${orders.id})}" class="btn btn-info">Đang giao</a>
-                        <a th:href="@{/order/exit/{id}(id=${orders.id})}" class="btn btn-danger">Hủy đơn</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="tab-pane fade" id="nav-exit" role="tabpanel" aria-labelledby="nav-exit-tab">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Khách hàng</th>
-                    <th>Số điện thoại khách hàng</th>
-                    <th>Thời gian</th>
-                    <th>Tổng tiền đơn hàng</th>
-                    <th>Trạng thái</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="orders: ${ordersList4}">
-                    <td>
-                        <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
-                           th:text="${orders.code}"> </a>
-                    </td>
-                    <td th:text="${orders.nameCustomer}"/>
-                    <td th:text="${orders.phoneCustomer}"/>
-                    <td th:text="${orders.createdDate}"/>
-                    <td th:text="${orders.totalPrice}"/>
-                    <td th:text="${orders.statusId}"/>
-                </tr>
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li th:if="${currentPage > 0}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
-                    </li>
-
-                    <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
-                        th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
-                    </li>
-
-                    <li th:if="${currentPage+1!=totalPages}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <div class="tab-pane fade" id="nav-success" role="tabpanel" aria-labelledby="nav-success-tab">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Mã đơn hàng</th>
-                    <th>Khách hàng</th>
-                    <th>Số điện thoại khách hàng</th>
-                    <th>Thời gian</th>
-                    <th>Tổng tiền đơn hàng</th>
-                    <th>Trạng thái</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="orders: ${ordersList5}">
-                    <td>
-                        <a style="text-decoration: none;color: black" th:href="@{/getId(id=${orders.id})}"
-                           th:text="${orders.code}"> </a>
-                    </td>
-                    <td th:text="${orders.nameCustomer}"/>
-                    <td th:text="${orders.phoneCustomer}"/>
-                    <td th:text="${orders.createdDate}"/>
-                    <td th:text="${orders.totalPrice}"/>
-                    <td th:text="${orders.statusId}"/>
-                </tr>
-                </tbody>
-            </table>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    <li th:if="${currentPage > 0}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage-1}}">Previous</a>
-                    </li>
-
-                    <li th:block th:each="page : ${#numbers.sequence(1, totalPages)}"
-                        th:classappend="${currentPage == page-1 ? 'active' : ''}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${page-1}}">[[${page}]]</a>
-                    </li>
-
-                    <li th:if="${currentPage+1!=totalPages}" class="page-item">
-                        <a class="page-link" th:href="@{'/order/page/'+${currentPage+1}}">Next</a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-    </div>
-    <!-- Table -->
-
-</div>
-
-<!-- JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
-        integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</section>
+<script th:src="@{/webjars/jquery/3.0.0/jquery.min.js}"></script>
+<script
+        th:src="@{/webjars/popper.js/1.12.9-1/umd/popper.min.js}"
+></script>
+<script
+        th:src="@{/webjars/bootstrap/4.0.0-2/js/bootstrap.min.js}"
+></script>
 </body>
 </html>

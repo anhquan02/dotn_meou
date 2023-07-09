@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<head>
+  <meta charset="UTF-8">
+  <title>Voucher Details</title>
+</head>
+<body>
+<section layout:fragment="content">
+  <div class="d-flex p-2">
+    <div class="container-fluid p-5">
+<h1>Chi tiết voucher </h1>
+        <form th:object="${voucher}">
+    <div class="row mb-2">
+       <div class="col-2"><label>ID:</label></div>
+        <a th:text="*{id}"></a>
+    </div>
+   <div class="row mb-2">
+       <div class="col-2"><label>Tên:</label></div>
+       <a th:text="*{name}"></a>
+   </div>
+        <div class="row mb-2">
+            <div class="col-2"><label>Ngày bắt đầu:</label></div>
+            <a th:text="*{dayStart}"></a>
+        </div>
+        <div class="row mb-2">
+            <div class="col-2"><label>Ngày kết thúc:</label></div>
+            <a th:text="*{dayEnd}"></a>
+        </div>
+        <div class="row mb-2">
+            <div class="col-2"><label>Số lượng:</label></div>
+            <a th:text="*{quantity}"></a>
+        </div>
+        <div class="row mb-2">
+            <div class="col-2"><label>Giá trị:</label></div>
+            <a th:text="*{value}"></a> </div>
+        <div class="row mb-2">
+            <div class="col-2"><label>Ngày tạo:</label></div>
+            <a th:text="*{createdDate}"></a>
+        </div>
+        <div class="row mb-2">
+            <div class="col-2"><label>Ngày cập nhật:</label></div>
+            <a th:text="*{updatedDate}"></a>
+        </div>
+  </form>
+
+<div>
+  <a href="/vouchers/search?name=&page=0" type="button" class="btn btn-primary"><i class="bi bi-arrow-bar-left"></i></a>
+</div>
+    </div>
+  </div>
+</section>
+</body>
+</html>

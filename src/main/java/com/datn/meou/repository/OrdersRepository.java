@@ -24,4 +24,6 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 
     Page<Orders> findAllByDeletedAndCodeContaining(Boolean deleted, String code, Pageable pageable);
 
+    List<Orders> findAllByAccountId(Long accountId);
+
 }

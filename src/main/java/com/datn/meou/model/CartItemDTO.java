@@ -1,20 +1,15 @@
-package com.datn.meou.entity;
+package com.datn.meou.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Builder
-@Table(name = "dotn_cart_item")
-public class CartItem extends BaseEntity {
+public class CartItemDTO {
     private Long productDetailId;
     private Long quantity;
     private Long cartId;

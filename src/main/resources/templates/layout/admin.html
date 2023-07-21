@@ -79,7 +79,54 @@
                         </div>
                     </div>
                 </li>
+                <!-- Nav Item - Trạng thái đơn hàng -->
 
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOrder" aria-expanded="true" aria-controls="collapseOrder">
+                        <i class="fa fa-shopping-cart"></i>
+                        <span>Quản lý đơn hàng</span>
+                    </a>
+                    <div id="collapseOrder" class="collapse" aria-labelledby="headingOrder" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="/exchange-item">Trả hàng</a>
+                            <a class="collapse-item" href="/exchange-item/exchangeItem">Đơn hàng</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                            class="nav-link collapsed"
+                            href="#"
+                            data-toggle="collapse"
+                            data-target="#collapseThree"
+                            aria-expanded="true"
+                            aria-controls="collapseThree"
+                    >
+                        <i class="fa fa-user-o" aria-hidden="true"></i>
+                        <span>Người dùng</span>
+                    </a>
+                    <div
+                            id="collapseThree"
+                            class="collapse"
+                            aria-labelledby="headingThree"
+                            data-parent="#accordionSidebar"
+                    >
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" th:href="@{/staff}">Nhân viên</a>
+                            <a class="collapse-item" th:href="@{/customer}">Khách hàng</a>
+                        </div>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                            class="nav-link collapsed"
+                            href="/vouchers/search?name=&page=0">
+                        <i class="bi bi-gift"></i>
+                        <span>Voucher</span>
+                    </a>
+                </li>
                 <!-- Nav Item - Utilities Collapse Menu -->
                 <li class="nav-item">
                     <a

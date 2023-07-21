@@ -10,11 +10,32 @@
   </head>
   <body>
     <section layout:fragment="content">
+      <h1 class="px-5">Lót giày</h1>
       <div class="d-flex p-2">
         <div class="container-fluid p-5 text-center">
-          <div>
-            <span>Số lượng lót giày: [[${len_insole}]]</span>
-          </div>
+          <form
+            class="mb-3 w-100"
+            action="#"
+            th:action="@{/insole}"
+            method="get"
+          >
+            <div class="row">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Nhập từ khóa"
+                    th:name="name"
+                    th:value="${name}"
+                  />
+                  <button type="submit" class="btn btn-primary">
+                    Tìm kiếm
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
           <table class="table table-striped">
             <thead>
               <tr>
@@ -55,6 +76,39 @@
               </tr>
             </tbody>
           </table>
+          <nav
+            class="d-flex justify-content-end"
+            aria-label="Page navigation example"
+          >
+            <ul class="pagination">
+              <li th:if="${currentPage > 0}" class="page-item">
+                <a
+                  class="page-link"
+                  th:href="@{'/insole?page='+${currentPage-1}}"
+                  >Previous</a
+                >
+              </li>
+
+              <li
+                th:block
+                th:each="page : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${currentPage == page-1 ? 'active' : ''}"
+                class="page-item"
+              >
+                <a class="page-link" th:href="@{'/insole?page='+${page-1}}"
+                  >[[${page}]]</a
+                >
+              </li>
+
+              <li th:if="${currentPage+1!=totalPages}" class="page-item">
+                <a
+                  class="page-link"
+                  th:href="@{'/insole?page='+${currentPage+1}}"
+                  >Next</a
+                >
+              </li>
+            </ul>
+          </nav>
         </div>
         <div class="container w-25 p-5">
           <form

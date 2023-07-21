@@ -16,8 +16,12 @@ import javax.persistence.Table;
 @Builder
 @Table(name = "dotn_exchange_item")
 public class ExchangeItem extends BaseEntity {
-    private Integer orderItemId;
-    private Integer exchangeId;
+    private Long orderItemId;
+
+
+    private Long exchangeId;
     private Integer quantity;
+
+    private Integer status;
 
 }

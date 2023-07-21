@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin}">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<section layout:fragment="content" >
+    <div >
+        <form th:action="@{/staff/store} " method="post" th:object="${account}">
+            <div class="mb-3">
+                <label class="form-label">Họ và tên </label>
+                <input type="text" th:id="fullname" th:field="*{fullname}" class="form-control"
+                       placeholder="Nhập Họ và Tên">
+                <p style="font-size: small;color: darkred" th:if="${#fields.hasErrors('fullname')}" th:errorclass="error" th:errors="*{fullname}"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Địa Chỉ </label>
+                <input type="text" th:id="address" th:field="*{address}" class="form-control"
+                       placeholder="Nhập Địa chỉ">
+                <p style="font-size: small;color: darkred" th:if="${#fields.hasErrors('address')}" th:errorclass="error" th:errors="*{address}"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email </label>
+                <input type="text" th:id="email" th:field="*{email}" class="form-control"
+                       placeholder="Nhập Email">
+                <p style="font-size: small;color: darkred" th:if="${#fields.hasErrors('email')}" th:errorclass="email" th:errors="*{fullname}"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" th:id="username" th:field="*{username}" class="form-control"
+                       placeholder="Nhập username">
+                <p style="font-size: small;color: darkred" th:if="${#fields.hasErrors('email')}" th:errorclass="username" th:errors="*{fullname}"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="text" th:id="password" th:field="*{password}" class="form-control"
+                       placeholder="Nhập password">
+                <p style="font-size: small;color: darkred" th:if="${#fields.hasErrors('password')}" th:errorclass="password" th:errors="*{fullname}"/>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Thêm mới nhân viên
+            </button>
+        </form>
+    </div>
+</section>
+</body>
+</html>

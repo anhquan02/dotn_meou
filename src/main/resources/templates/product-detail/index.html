@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/admin}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sản phẩm chi tiết</title>
+  </head>
+  <body>
+    <section layout:fragment="content">
+      <h1 class="px-5">Sản phẩm chi tiết</h1>
+      <div class="d-flex p-2">
+        <div class="container-fluid p-5 text-center">
+          <form
+            class="mb-3 w-100"
+            action="#"
+            th:action="@{/product-detail}"
+            method="get"
+          >
+            <div class="row">
+              <div class="col">
+                <!-- <div class="input-group"> -->
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Nhập từ khóa"
+                  th:name="name"
+                  th:value="${name}"
+                />
+                <!-- select sole -->
+              </div>
+              <div class="col">
+                <select
+                  class="form-control"
+                  th:name="product"
+                  th:value="${product}"
+                >
+                  <option value="">Sản phẩm</option>
+                  <option
+                    th:each="product : ${products}"
+                    th:value="${product.id}"
+                    th:text="${product.name}"
+                  >
+                    Sản phẩm
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <select class="form-control" th:name="sole" th:value="${sole}">
+                  <option value="">Đế giày</option>
+                  <option
+                    th:each="sole : ${soles}"
+                    th:value="${sole.id}"
+                    th:text="${sole.name}"
+                  >
+                    Đế giày
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <select
+                  class="form-control"
+                  th:name="color"
+                  th:value="${color}"
+                >
+                  <option value="">Màu sắc</option>
+                  <option
+                    th:each="color : ${colors}"
+                    th:value="${color.id}"
+                    th:text="${color.name}"
+                  >
+                    Màu sắc
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <select
+                  class="form-control"
+                  th:name="insole"
+                  th:value="${insole}"
+                >
+                  <option value="">Lót giày</option>
+                  <option
+                    th:each="insole : ${insoles}"
+                    th:value="${insole.id}"
+                    th:text="${insole.name}"
+                  >
+                    Lót giày
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <select
+                  class="form-control"
+                  th:name="brand"
+                  th:value="${brand}"
+                >
+                  <option value="">Nhãn hàng</option>
+                  <option
+                    th:each="brand : ${brands}"
+                    th:value="${brand.id}"
+                    th:text="${brand.name}"
+                  >
+                    Nhãn hàng
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <select class="form-control" th:name="size" th:value="${size}">
+                  <option value="">Kích cỡ giày</option>
+                  <option
+                    th:each="size : ${sizes}"
+                    th:value="${size.id}"
+                    th:text="${size.name}"
+                  >
+                    Kích cỡ giày
+                  </option>
+                </select>
+              </div>
+              <div class="col">
+                <select
+                  class="form-control"
+                  th:name="status"
+                  th:value="${status}"
+                >
+                  <option value="">Trạng thái</option>
+                  <option value="0">Đang bán</option>
+                  <option value="1">Ngừng bán</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+          </form>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Ảnh</th>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Ngày tạo</th>
+                <!-- <th>Lót giày</th>
+                <th>Đế giày</th> -->
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="productItem, iterStat : ${productItems}">
+                <td th:text="${iterStat.count}"></td>
+                <td>
+                  <!-- <img
+                    th:src="@{'/images/'+${productItem.image}}"
+                    alt=""
+                    width="100"
+                    height="100"
+                  /> -->
+                </td>
+                <td th:text="${productItem.name}"></td>
+                <td th:text="${productItem.price}"></td>
+                <td th:text="${productItem.quantity}"></td>
+                <td th:text="${#dates.format(productItem.createdDate, 'dd/MM/YYYY')}"></td>
+                <!-- <td th:text="${productItem.createdDate}"></td>
+                <td th:text="${productItem.createdDate}"></td> -->
+                <td>
+                  <span
+                    th:if="${productItem.status == 0}"
+                    class="badge badge-success"
+                    >Đang bán</span
+                  >
+                  <span
+                    th:if="${productItem.status == 1}"
+                    class="badge badge-danger"
+                    >Ngừng bán</span
+                  >
+                </td>
+                <td>
+                  <a
+                    th:href="@{'/product-detail/edit?id='+${productItem.id}}"
+                    class="btn btn-primary"
+                    >Sửa</a
+                  >
+                  <!-- <a
+                    th:href="@{'/product-detail/delete/'+${productItem.id}}"
+                    class="btn btn-danger"
+                    >Xóa</a
+                  > -->
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <nav
+            class="d-flex justify-content-end"
+            aria-label="Page navigation example"
+          >
+            <ul class="pagination">
+              <li th:if="${currentPage > 0}" class="page-item">
+                <a
+                  class="page-link"
+                  th:href="@{'/product-detail?page='+${currentPage-1}}+'&name='+${name}"
+                  >Previous</a
+                >
+              </li>
+
+              <li
+                th:block
+                th:each="page : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${currentPage == page-1 ? 'active' : ''}"
+                class="page-item"
+              >
+                <a
+                  class="page-link"
+                  th:href="@{'/product-detail?page='+${page-1}}+'&name='+${name}"
+                  >[[${page}]]</a
+                >
+              </li>
+
+              <li th:if="${currentPage+1!=totalPages}" class="page-item">
+                <a
+                  class="page-link"
+                  th:href="@{'/product-detail?page='+${currentPage+1}}+'&name='+${name}"
+                  >Next</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

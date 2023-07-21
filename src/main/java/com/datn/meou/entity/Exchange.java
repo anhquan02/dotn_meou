@@ -16,12 +16,15 @@ import javax.persistence.Table;
 @Table(name = "dotn_exchange")
 public class Exchange extends BaseEntity {
 
-    private Integer orderId;
+    private Long orderId;
     private Double totalPrice;
-    private Integer accountId;
+    private Long accountId;
     private String nameCustomer;
     private String phoneCustomer;
     private String addressCustomer;
     private String emailCustomer;
+    private Integer typeOrder;
+
+
 
 }

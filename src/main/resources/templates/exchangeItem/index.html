@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        layout:decorate="~{layout/admin}"
+>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trả Hàng</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div class="d-flex p-2">
+        <div class="container-fluid p-5 text-center">
+            <div>
+                <span>Thông tin trả hàng</span>
+            </div>
+            <table class="table table-bordered table-striped table-hover fixed table-custom">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên khách hàng</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Ngày đặt</th>
+                    <th>Loại đơn hàng</th>
+                    <th>Số lượng</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="exchange, item: ${exchangeItems}">
+                    <td th:text="${item.count}"></td>
+                    <td th:text="${exchange.customerName}"></td>
+                    <td th:text="${exchange.productName}"></td>
+                    <td
+                            th:text="${#dates.format(exchange.createDateOrder, 'dd/MM/YYYY')}"
+                    ></td>
+                    <td th:text="${exchange.typeOrderName}"></td>
+                    <td th:text="${exchange.quantity}"></td>
+                    <td>
+                        <a th:href="@{/exchange-item/accept/{id}(id=${exchange.id})}" class="btn btn-info">Chấp nhận</a>
+
+                        <a th:href="@{/exchange-item/cancel/{id}(id=${exchange.id})}" class="btn btn-default">Hủy<i></i></a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+</section>
+</body>
+</html>

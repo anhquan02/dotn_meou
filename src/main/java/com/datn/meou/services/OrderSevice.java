@@ -66,9 +66,22 @@ public class OrderSevice {
         return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 5L, pageable);
     }
 
-    public Page<OrderDTO> searchByName(String code, Integer currentPage, Integer size) {
+    public Page<OrderDTO> searchByName(String request, Integer currentPage, Integer size) {
         Pageable pageable = PageRequest.of(currentPage, size);
-        Page<Orders> orders = this.ordersRepository.findAllByDeletedAndCodeContaining(true, code, pageable);
+        Page<Orders> orders = this.ordersRepository.searchByCodePhoneName(request, pageable);
+        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
+        for (OrderDTO dto : dtos) {
+            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
+            if (orderStatus.isPresent()) {
+                dto.setNameStatus(orderStatus.get().getValueStatus());
+            }
+        }
+        return dtos;
+    }
+
+    public Page<OrderDTO> searchByStatus(Long idStatus, Integer currentPage, Integer size) {
+        Pageable pageable = PageRequest.of(currentPage, size);
+        Page<Orders> orders = this.ordersRepository.findAllByStatusIdAndDeleted(idStatus, true, pageable);
         Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
         for (OrderDTO dto : dtos) {
             Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);

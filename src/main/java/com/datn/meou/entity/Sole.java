@@ -17,5 +17,6 @@ import javax.persistence.Table;
 @Table(name = "dotn_sole")
 public class Sole extends BaseEntity {
     private String name;
+    private Boolean status;
 
 }

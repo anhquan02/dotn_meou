@@ -63,7 +63,7 @@ public class ColorService {
     public void deleteColor(Long id) {
         Color color = this.findById(id);
         if (color != null) {
-            color.setDeleted(!color.getDeleted());
+            color.setStatus(!color.getStatus());
             colorRepository.save(color);
         }
     }

@@ -33,5 +33,4 @@ public abstract class BaseEntity implements Serializable {
     @LastModifiedDate
     private Date updatedDate;
 
-    private Boolean deleted;
 }

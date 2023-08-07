@@ -18,14 +18,13 @@ import javax.persistence.Table;
 @Table(name = "dotn_product_item")
 public class ProductItem extends BaseEntity {
     private String name;
-    private BigDecimal price;
     private Integer productId;
-    private Integer soleId;
-    private Integer colorId;
-    private Integer insoleId;
-    private Integer brandId;
-    private Integer sizeId;
-    private Integer imgId;
+    private Long soleId;
+    private Long colorId;
+    private Long insoleId;
+    private Long brandId;
+    private Long sizeId;
+    private Long imgId;
     private Integer status;
     private Integer quantity;
 }

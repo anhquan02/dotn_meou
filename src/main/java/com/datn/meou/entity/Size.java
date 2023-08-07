@@ -16,4 +16,5 @@ import javax.persistence.Table;
 @Table(name = "dotn_size")
 public class Size extends BaseEntity {
     private String name;
+    private Boolean status;
 }

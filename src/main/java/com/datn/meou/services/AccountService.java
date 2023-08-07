@@ -1,40 +1,78 @@
 package com.datn.meou.services;
 
 import com.datn.meou.entity.Account;
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.AccountDTO;
+import com.datn.meou.model.LoginDTO;
 import com.datn.meou.repository.AccountRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import com.datn.meou.security.CustomUserDetails;
+import com.datn.meou.security.JwtTokenProvider;
+import com.datn.meou.util.MapperUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
-@AllArgsConstructor
-public class AccountService {
+@Transactional
+@RequiredArgsConstructor
+public class AccountService implements UserDetailsService {
     private final AccountRepository accountRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public Page<Account> getListCustomer(Integer page, Integer size){
-        Pageable pageable= PageRequest.of(page,size);
-        return accountRepository.getListCustomer(pageable);
-    }
-    public Page<Account> getListStaff(Integer page, Integer size){
-        Pageable pageable= PageRequest.of(page,size);
-        return accountRepository.getListStaff(pageable);
+    private final PasswordEncoder passwordEncoder;
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<Account> account = this.accountRepository.findByUsernameAndStatus(username, true);
+        return account.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    public Account saveAccount(Account account){
+
+    public UserDetails loadUserById(Integer id) {
+        Optional<Account> account = this.accountRepository.findByIdAndStatus(id, true);
+        return account.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException(id.toString()));
+    }
+
+
+    public LoginDTO login(AccountDTO accountDTO) {
+        Optional<Account> account = this.accountRepository.findByUsernameAndStatus(accountDTO.getUsername(), true);
+        if (account.isPresent()) {
+            boolean checkPassword = passwordEncoder.matches(accountDTO.getPassword(), account.get().getPassword());
+            if (checkPassword) {
+                return generateToken(account);
+            }
+        }
+        throw new BadRequestException("Login thất bại");
+    }
+
+    public LoginDTO generateToken(Optional<Account> account) {
+        String token = jwtTokenProvider.generateToken(new CustomUserDetails(account.get()));
+        return LoginDTO.builder()
+                .id(account.get().getId())
+                .username(account.get().getUsername())
+                .token(token)
+                .build();
+    }
+
+    public Account createAccount(AccountDTO dto) {
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+        Account account = MapperUtil.map(dto, Account.class);
         return this.accountRepository.save(account);
     }
 
-    public Account findById(Long id){
-        return accountRepository.findById(id).orElse(null);
+    public Object getInfoUser() {
+        return SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public void deleteAccount(Long id){
-        Account account = this.findById(id);
-        if (account !=null){
-            account.setDeleted(!account.getDeleted());
-            this.accountRepository.save(account);
-        }
+
+    public Account getCurrentUser() {
+        CustomUserDetails customUserDetails = (CustomUserDetails) this.getInfoUser();
+        return customUserDetails.getAccount();
     }
 }

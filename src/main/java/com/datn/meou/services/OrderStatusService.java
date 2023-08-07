@@ -32,7 +32,7 @@ public class OrderStatusService {
                 .builder()
                 .valueStatus(dto.getValueStatus())
                 .build();
-        orderStatus.setDeleted(true);
+//        orderStatus.setDeleted(true);
         this.orderStatusRepository.save(orderStatus);
         return orderStatus;
     }
@@ -43,7 +43,7 @@ public class OrderStatusService {
             throw new BadRequestException("Không tìm thấy id");
         }
         OrderStatus status = MapperUtil.map(dto, OrderStatus.class);
-        status.setDeleted(true);
+//        status.setDeleted(true);
         return this.orderStatusRepository.save(status);
     }
 
@@ -57,7 +57,7 @@ public class OrderStatusService {
             throw new BadRequestException("Đã có trạng thái cho đơn hàng ");
         }
         OrderStatus status = orderStatus.get();
-        status.setDeleted(false);
+//        status.setDeleted(false);
         this.orderStatusRepository.save(status);
     }
 

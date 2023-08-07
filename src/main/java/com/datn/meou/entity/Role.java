@@ -16,5 +16,6 @@ import javax.persistence.Table;
 @Table(name = "dotn_role")
 public class Role extends BaseEntity {
     private String name;
+    private Boolean status;
 
 }

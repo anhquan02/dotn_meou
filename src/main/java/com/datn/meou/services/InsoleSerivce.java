@@ -62,7 +62,7 @@ public class InsoleSerivce {
     public void deleteInsole(Long id) {
         Insole insole = this.findById(id);
         if (insole != null) {
-            insole.setDeleted(!insole.getDeleted());
+//            insole.setDeleted(!insole.getDeleted());
             insoleRepository.save(insole);
         }
     }

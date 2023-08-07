@@ -62,7 +62,7 @@ public class SizeService {
     public void deleteSize(Long id) {
         Size size = this.findById(id);
         if (size != null) {
-            size.setDeleted(!size.getDeleted());
+//            size.setDeleted(!size.getDeleted());
             sizeRepository.save(size);
         }
     }

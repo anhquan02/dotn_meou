@@ -31,66 +31,66 @@ public class ProductItemController {
         return ResponseUtil.ok(this.productItemRepository.searchProductForCounterSale(dto));
     }
 
-    @GetMapping("")
-    public String index(Model model, @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name,
-                        @RequestParam("brandId") Optional<String> brandId, @RequestParam("soleId") Optional<String> soleId,
-                        @RequestParam("insoleId") Optional<String> insoleId, @RequestParam("colorId") Optional<String> colorId,
-                        @RequestParam("status") Optional<String> status, @RequestParam("sizeId") Optional<String> sizeId) {
-        int currentPage = page.orElse(0);
-        int pageSize = size.orElse(5);
-        String _name = name.orElse("");
-        String _brandId = brandId.orElse("");
-        String _soleId = soleId.orElse("");
-        String _insoleId = insoleId.orElse("");
-        String _colorId = colorId.orElse("");
-        String _status = status.orElse("");
-        String _sizeId = sizeId.orElse("");
+//    @GetMapping("")
+//    public String index(Model model, @RequestParam("page") Optional<Integer> page,
+//                        @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name,
+//                        @RequestParam("brandId") Optional<String> brandId, @RequestParam("soleId") Optional<String> soleId,
+//                        @RequestParam("insoleId") Optional<String> insoleId, @RequestParam("colorId") Optional<String> colorId,
+//                        @RequestParam("status") Optional<String> status, @RequestParam("sizeId") Optional<String> sizeId) {
+//        int currentPage = page.orElse(0);
+//        int pageSize = size.orElse(5);
+//        String _name = name.orElse("");
+//        String _brandId = brandId.orElse("");
+//        String _soleId = soleId.orElse("");
+//        String _insoleId = insoleId.orElse("");
+//        String _colorId = colorId.orElse("");
+//        String _status = status.orElse("");
+//        String _sizeId = sizeId.orElse("");
+//
+//        List<Size> sizes = productItemSerivce.findAllSizes();
+//        List<Product> products = productItemSerivce.findAllProducts();
+//        List<Color> colors = productItemSerivce.findAllColors();
+//        List<Insole> insoles = productItemSerivce.findAllInsoles();
+//        List<Sole> soles = productItemSerivce.findAllSoles();
+//        List<Brand> brands = productItemSerivce.findAllBrands();
+//
+//        Page<ProductItem> productItems = productItemSerivce.findByNameContaining(_name,
+//                PageRequest.of(currentPage, pageSize));
+//        // Page<ProductItem> productItems = productItemSerivce.findFilter(_name, _brandId, _soleId, _insoleId, _colorId,
+//        //         _sizeId, _status, PageRequest.of(currentPage, pageSize));
+//        model.addAttribute("sizes", sizes);
+//        model.addAttribute("products", products);
+//        model.addAttribute("colors", colors);
+//        model.addAttribute("insoles", insoles);
+//        model.addAttribute("soles", soles);
+//        model.addAttribute("brands", brands);
+//        model.addAttribute("currentPage", currentPage);
+//        model.addAttribute("productItems", productItems);
+//        model.addAttribute("totalPages", productItems.getTotalPages());
+//        model.addAttribute("totalItem", productItems.getTotalElements());
+//        model.addAttribute("name", _name);
+//        return "product-detail/index";
+//    }
 
-        List<Size> sizes = productItemSerivce.findAllSizes();
-        List<Product> products = productItemSerivce.findAllProducts();
-        List<Color> colors = productItemSerivce.findAllColors();
-        List<Insole> insoles = productItemSerivce.findAllInsoles();
-        List<Sole> soles = productItemSerivce.findAllSoles();
-        List<Brand> brands = productItemSerivce.findAllBrands();
-
-        Page<ProductItem> productItems = productItemSerivce.findByNameContaining(_name,
-                PageRequest.of(currentPage, pageSize));
-        // Page<ProductItem> productItems = productItemSerivce.findFilter(_name, _brandId, _soleId, _insoleId, _colorId,
-        //         _sizeId, _status, PageRequest.of(currentPage, pageSize));
-        model.addAttribute("sizes", sizes);
-        model.addAttribute("products", products);
-        model.addAttribute("colors", colors);
-        model.addAttribute("insoles", insoles);
-        model.addAttribute("soles", soles);
-        model.addAttribute("brands", brands);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("productItems", productItems);
-        model.addAttribute("totalPages", productItems.getTotalPages());
-        model.addAttribute("totalItem", productItems.getTotalElements());
-        model.addAttribute("name", _name);
-        return "product-detail/index";
-    }
-
-    @GetMapping("/add")
-    public String addProductItem(Model model) {
-        List<Size> sizes = productItemSerivce.findAllSizes();
-        List<Color> colors = productItemSerivce.findAllColors();
-        List<Insole> insoles = productItemSerivce.findAllInsoles();
-        List<Sole> soles = productItemSerivce.findAllSoles();
-        List<Brand> brands = productItemSerivce.findAllBrands();
-        List<Product> products = productItemSerivce.findAllProducts();
-
-        model.addAttribute("productDetail", new ProductItem());
-        model.addAttribute("sizes", sizes);
-        model.addAttribute("products", products);
-        model.addAttribute("colors", colors);
-        model.addAttribute("insoles", insoles);
-        model.addAttribute("soles", soles);
-        model.addAttribute("brands", brands);
-
-        return "product-detail/form";
-    }
+//    @GetMapping("/add")
+//    public String addProductItem(Model model) {
+//        List<Size> sizes = productItemSerivce.findAllSizes();
+//        List<Color> colors = productItemSerivce.findAllColors();
+//        List<Insole> insoles = productItemSerivce.findAllInsoles();
+//        List<Sole> soles = productItemSerivce.findAllSoles();
+//        List<Brand> brands = productItemSerivce.findAllBrands();
+//        List<Product> products = productItemSerivce.findAllProducts();
+//
+//        model.addAttribute("productDetail", new ProductItem());
+//        model.addAttribute("sizes", sizes);
+//        model.addAttribute("products", products);
+//        model.addAttribute("colors", colors);
+//        model.addAttribute("insoles", insoles);
+//        model.addAttribute("soles", soles);
+//        model.addAttribute("brands", brands);
+//
+//        return "product-detail/form";
+//    }
 
     @PostMapping("/save")
     public String saveProductItem(ProductItem productItem, BindingResult result, Model model) {
@@ -101,25 +101,25 @@ public class ProductItemController {
         return "redirect:/product-detail";
     }
 
-    @GetMapping("/edit")
-    public String editProductItem(@RequestParam("id") Long id, Model model) {
-        List<Size> sizes = productItemSerivce.findAllSizes();
-        List<Color> colors = productItemSerivce.findAllColors();
-        List<Insole> insoles = productItemSerivce.findAllInsoles();
-        List<Sole> soles = productItemSerivce.findAllSoles();
-        List<Brand> brands = productItemSerivce.findAllBrands();
-        List<Product> products = productItemSerivce.findAllProducts();
-
-        model.addAttribute("productDetail", productItemSerivce.findById(id));
-        model.addAttribute("sizes", sizes);
-        model.addAttribute("products", products);
-        model.addAttribute("colors", colors);
-        model.addAttribute("insoles", insoles);
-        model.addAttribute("soles", soles);
-        model.addAttribute("brands", brands);
-
-        return "product-detail/edit";
-    }
+//    @GetMapping("/edit")
+//    public String editProductItem(@RequestParam("id") Long id, Model model) {
+//        List<Size> sizes = productItemSerivce.findAllSizes();
+//        List<Color> colors = productItemSerivce.findAllColors();
+//        List<Insole> insoles = productItemSerivce.findAllInsoles();
+//        List<Sole> soles = productItemSerivce.findAllSoles();
+//        List<Brand> brands = productItemSerivce.findAllBrands();
+//        List<Product> products = productItemSerivce.findAllProducts();
+//
+//        model.addAttribute("productDetail", productItemSerivce.findById(id));
+//        model.addAttribute("sizes", sizes);
+//        model.addAttribute("products", products);
+//        model.addAttribute("colors", colors);
+//        model.addAttribute("insoles", insoles);
+//        model.addAttribute("soles", soles);
+//        model.addAttribute("brands", brands);
+//
+//        return "product-detail/edit";
+//    }
 
     @PostMapping("/edit")
     public String editProductItem(@RequestParam("id") Long id, ProductItem productItem, BindingResult result,

@@ -17,4 +17,6 @@ import javax.persistence.Table;
 @Table(name = "dotn_color")
 public class Color extends BaseEntity {
     private String name;
+    private Boolean status;
+
 }

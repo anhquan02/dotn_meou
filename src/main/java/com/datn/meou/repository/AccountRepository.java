@@ -8,13 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long > {
-    @Query("select a from Account a where a.roleId=1")
-    Page<Account> getListCustomer(Pageable pageable);
+public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    @Query("select a from Account a where a.roleId=2 or a.roleId=3")
-    Page<Account> getListStaff(Pageable pageable);
+    Optional<Account> findByUsernameAndStatus(String username, Boolean status);
+
+    Optional<Account> findByIdAndStatus(Long id, Boolean status);
 
 }

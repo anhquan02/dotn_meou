@@ -17,4 +17,5 @@ import javax.persistence.Table;
 @Table(name = "dotn_cart")
 public class Cart extends BaseEntity {
     private Integer accountId;
+    private Boolean status;
 }

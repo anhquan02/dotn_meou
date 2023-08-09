@@ -17,4 +17,5 @@ import javax.persistence.Table;
 @Table(name = "dotn_brand")
 public class Brand extends BaseEntity {
     private String name;
+    private Boolean status;
 }

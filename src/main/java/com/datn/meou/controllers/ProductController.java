@@ -1,7 +1,10 @@
 package com.datn.meou.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.datn.meou.model.ProductDTO;
+import com.datn.meou.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -25,9 +28,11 @@ public class ProductController {
 
     private final ProductService productService;
 
+    private final ProductRepository productRepository;
+
     @GetMapping("")
     public String index(Model model, @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
+                        @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
         int currentPage = page.orElse(0);
         int pageSize = size.orElse(5);
         String _name = name.orElse("");
@@ -41,9 +46,17 @@ public class ProductController {
         return "product/index";
     }
 
+//    @GetMapping("search")
+//    public String searchName(Model model, @RequestParam("name") String name) {
+//        List<ProductDTO> productDTOList = this.productRepository.searchProductForCounterSale(name);
+//        model.addAttribute("productDTO", productDTOList);
+//        return "counter-sales";
+//    }
+
+
     @PostMapping("/save")
     public String saveProduct(Product product, BindingResult result, Model model,
-            @RequestParam(required = false) Long id) {
+                              @RequestParam(required = false) Long id) {
         if (result.hasErrors()) {
             return "product/index";
         }
@@ -57,7 +70,7 @@ public class ProductController {
 
     @GetMapping("/edit")
     public String editProduct(@RequestParam("id") Long id, Model model, @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
+                              @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
         int currentPage = page.orElse(0);
         int pageSize = size.orElse(5);
         String _name = name.orElse("");
@@ -79,4 +92,6 @@ public class ProductController {
         productService.saveProduct(product);
         return "redirect:/product";
     }
+
+
 }

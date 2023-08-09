@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface OrderStatusRepository extends JpaRepository<OrderStatus, Long> {
 
-    Page<OrderStatus> findAllByDeleted(Boolean deleted, Pageable pageable);
-
-    Optional<OrderStatus> findByIdAndDeleted(Long id, Boolean deleted);
+//    Page<OrderStatus> findAllByDeleted(Boolean deleted, Pageable pageable);
+//
+//    Optional<OrderStatus> findByIdAndDeleted(Long id, Boolean deleted);
 }

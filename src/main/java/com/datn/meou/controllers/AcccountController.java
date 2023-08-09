@@ -1,71 +1,35 @@
 package com.datn.meou.controllers;
 
-import com.datn.meou.entity.Account;
+import com.datn.meou.model.AccountDTO;
+import com.datn.meou.model.LoginDTO;
 import com.datn.meou.services.AccountService;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.datn.meou.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@AllArgsConstructor
-@RequestMapping("/staff")
+@RestController
+@CrossOrigin
+@RequestMapping("/api/v1/account")
+@RequiredArgsConstructor
 public class AcccountController {
 
-    @Autowired
-    AccountService accountService;
+    private final AccountService accountService;
 
-    @GetMapping("")
-    public String Index(Model model, @RequestParam(value = "page", defaultValue = "0")Integer pageNum){
-        Integer size=10;
-        model.addAttribute("accounts",accountService.getListStaff(pageNum,size).getContent());
-        return "staff/index";
+    @PostMapping
+    private ResponseEntity<?> save(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.createAccount(dto));
     }
 
-    @GetMapping("/create")
-    public String viewAccount(Model model){
-        model.addAttribute("account", new Account());
-        return "staff/create";
-    }
-    @PostMapping("/store")
-    public String storeAccount(Account account, BindingResult result, Model model, @RequestParam(required = false) Long id) {
-        if (result.hasErrors()) {
-            return "staff/create";
-        }
-        account.setRoleId(2);
-//        System.out.println(account);
-        accountService.saveAccount(account);
-        return "redirect:/staff";
-    }
-    @GetMapping("/edit/{id}")
-    public String getById(@PathVariable("id")Long id, Model model){
-        model.addAttribute("account",accountService.findById(id));
-        return  "staff/edit";
+    @PostMapping("/login")
+    public ResponseEntity<LoginDTO> login(@RequestBody AccountDTO dto) {
+        LoginDTO result = accountService.login(dto);
+        if (result == null)
+            return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping("/update")
-    public String updateAccount(@ModelAttribute("account") Account account, BindingResult result, Model model){
-        if(result.hasErrors()){
-            return "staff/edit";
-        }
-//        System.out.println("x");
-//        System.out.println(account.getId());
-        accountService.saveAccount(account);
-        return "redirect:/staff";
-    }
-
-    @GetMapping("/delete/{id}")
-    public String deleteAccount(@PathVariable("id")Long id ){
-        accountService.deleteAccount(id);
-        return "redirect:/staff";
-    }
 }
 
 

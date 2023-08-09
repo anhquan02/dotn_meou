@@ -39,4 +39,5 @@ public class Transaction extends BaseEntity {
     private Long orderId;
     private Double totalPrice;
     private Long accountId;
+    private Boolean deleted;
 }

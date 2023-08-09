@@ -66,7 +66,7 @@ public class BrandService {
     public void deleteBrand(Long id) {
         Brand brand = this.findById(id);
         if (brand != null) {
-            brand.setDeleted(!brand.getDeleted());
+            brand.setStatus(!brand.getStatus());
             brandRepository.save(brand);
         }
     }

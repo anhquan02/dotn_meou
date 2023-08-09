@@ -31,7 +31,7 @@ public class ProductItemSerivce {
     private final SizeService sizeService;
 
     public ProductItem saveProductItem(ProductItem productItem) {
-        productItem.setDeleted(false);
+//        productItem.setDeleted(false);
         productItem.setStatus(0);
         return productItemRepository.save(productItem);
     }

@@ -62,7 +62,7 @@ public class SoleService {
     public void deleteSole(Long id) {
         Sole sole = this.findById(id);
         if (sole != null) {
-            sole.setDeleted(!sole.getDeleted());
+//            sole.setDeleted(!sole.getDeleted());
             this.soleRepository.save(sole);
         }
     }

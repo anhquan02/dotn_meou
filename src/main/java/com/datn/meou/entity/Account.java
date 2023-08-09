@@ -20,6 +20,7 @@ public class Account extends BaseEntity {
     private String fullname;
     private String email;
     private String address;
-    private Integer roleId;
+    private Long roleId;
+    private Boolean status;
 
 }

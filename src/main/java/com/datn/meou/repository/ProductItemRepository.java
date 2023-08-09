@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductItemRepository extends JpaRepository<ProductItem, Long> {
+public interface ProductItemRepository extends JpaRepository<ProductItem, Long>, ProductItemRepositoryCustom {
     List<ProductItem> findByNameContaining(String name);
 
     @Query(value = "SELECT * FROM dotn_product_item WHERE name LIKE %?1% AND brand_id LIKE %?2% AND sole_id LIKE %?3% AND insole_id LIKE %?4% AND size_id LIKE %?5% AND color_id LIKE %?6% AND status LIKE %?7%", nativeQuery = true)

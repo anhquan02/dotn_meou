@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long>, TransactionRepositoryCustom {
-    Page<Transaction> findAllByDeleted(Boolean deleted, Pageable pageable);
+//    Page<Transaction> findAllByDeleted(Boolean deleted, Pageable pageable);
 }

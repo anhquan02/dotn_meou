@@ -27,121 +27,134 @@ public class OrderSevice {
 
     private final OrderStatusRepository orderStatusRepository;
 
-    public Page<Orders> findAll(Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByCreatedDateDesc(true, 1L, pageable);
-    }
-
-    public Page<OrderDTO> findAllPage(Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        Page<Orders> orders = this.ordersRepository.findAllByDeletedOrderByCreatedDateDesc(true, pageable);
-        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
-        for (OrderDTO dto : dtos) {
-            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
-            if (orderStatus.isPresent()) {
-                dto.setNameStatus(orderStatus.get().getValueStatus());
-            }
-        }
-        return dtos;
-    }
-
-
-    public Page<Orders> getStatus2(Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 2L, pageable);
-    }
-
-    public Page<Orders> getStatus3(Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 3L, pageable);
-    }
-
-    public Page<Orders> getStatus4(Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 4L, pageable);
-    }
-
-    public Page<Orders> getStatus5(Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 5L, pageable);
-    }
-
-    public Page<OrderDTO> searchByName(String code, Integer currentPage, Integer size) {
-        Pageable pageable = PageRequest.of(currentPage, size);
-        Page<Orders> orders = this.ordersRepository.findAllByDeletedAndCodeContaining(true, code, pageable);
-        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
-        for (OrderDTO dto : dtos) {
-            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
-            if (orderStatus.isPresent()) {
-                dto.setNameStatus(orderStatus.get().getValueStatus());
-            }
-        }
-        return dtos;
-    }
-
-    public OrderDTO getbyId(Long orderId) {
-        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
-        if (orders.isEmpty()) {
-            throw new BadRequestException("Không tìm thấy đơn hàng này");
-        }
-        OrderDTO dto = MapperUtil.map(orders.get(), OrderDTO.class);
-        if (dto.getVoucherId() == null) {
-            dto.setVoucher(0d);
-        }
-        if (orders.get().getStatusId() != null) {
-            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(orders.get().getStatusId(), true);
-            if (orderStatus.isPresent()) {
-                dto.setStatus(orderStatus.get().getValueStatus());
-            }
-        }
-        if (orders.get().getTypeOrder() == 1) {
-            dto.setTypeOrders("Đặt online");
-        } else if (orders.get().getTypeOrder() == 2) {
-            dto.setTypeOrders("Đặt tại shop");
-        }
-
-        return dto;
-    }
-
-    public void changeStatus2(Long orderId) {
-        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
-        if (orders.isEmpty()) {
-            throw new BadRequestException("Không tìm thấy đơn hàng này");
-        }
-        Orders orders1 = orders.get();
-        orders1.setStatusId(2L);
-        this.ordersRepository.save(orders1);
-    }
-
-    public void changeStatus3(Long orderId) {
-        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
-        if (orders.isEmpty()) {
-            throw new BadRequestException("Không tìm thấy đơn hàng này");
-        }
-        Orders orders1 = orders.get();
-        orders1.setStatusId(6L);
-        this.ordersRepository.save(orders1);
-    }
-
-    public void changeStatus5(Long orderId) {
-        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
-        if (orders.isEmpty()) {
-            throw new BadRequestException("Không tìm thấy đơn hàng này");
-        }
-        Orders orders1 = orders.get();
-        orders1.setStatusId(5L);
-        this.ordersRepository.save(orders1);
-    }
-
-
-    public void changeStatus4(Long orderId) {
-        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
-        if (orders.isEmpty()) {
-            throw new BadRequestException("Không tìm thấy đơn hàng này");
-        }
-        Orders orders1 = orders.get();
-        orders1.setStatusId(4L);
-        this.ordersRepository.save(orders1);
-    }
+//    public Page<Orders> findAll(Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByCreatedDateDesc(true, 1L, pageable);
+//    }
+//
+//    public Page<OrderDTO> findAllPage(Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        Page<Orders> orders = this.ordersRepository.findAllByDeletedOrderByCreatedDateDesc(true, pageable);
+//        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
+//        for (OrderDTO dto : dtos) {
+//            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
+//            if (orderStatus.isPresent()) {
+//                dto.setNameStatus(orderStatus.get().getValueStatus());
+//            }
+//        }
+//        return dtos;
+//    }
+//
+//
+//    public Page<Orders> getStatus2(Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 2L, pageable);
+//    }
+//
+//    public Page<Orders> getStatus3(Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 3L, pageable);
+//    }
+//
+//    public Page<Orders> getStatus4(Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 4L, pageable);
+//    }
+//
+//    public Page<Orders> getStatus5(Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        return this.ordersRepository.findAllByDeletedAndStatusIdOrderByUpdatedDateDesc(true, 5L, pageable);
+//    }
+//
+//    public Page<OrderDTO> searchByName(String request, Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        Page<Orders> orders = this.ordersRepository.searchByCodePhoneName(request, pageable);
+//        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
+//        for (OrderDTO dto : dtos) {
+//            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
+//            if (orderStatus.isPresent()) {
+//                dto.setNameStatus(orderStatus.get().getValueStatus());
+//            }
+//        }
+//        return dtos;
+//    }
+//
+//    public Page<OrderDTO> searchByStatus(Long idStatus, Integer currentPage, Integer size) {
+//        Pageable pageable = PageRequest.of(currentPage, size);
+//        Page<Orders> orders = this.ordersRepository.findAllByStatusIdAndDeleted(idStatus, true, pageable);
+//        Page<OrderDTO> dtos = MapperUtil.mapEntityPageIntoDtoPage(orders, OrderDTO.class);
+//        for (OrderDTO dto : dtos) {
+//            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(dto.getStatusId(), true);
+//            if (orderStatus.isPresent()) {
+//                dto.setNameStatus(orderStatus.get().getValueStatus());
+//            }
+//        }
+//        return dtos;
+//    }
+//
+//    public OrderDTO getbyId(Long orderId) {
+//        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
+//        if (orders.isEmpty()) {
+//            throw new BadRequestException("Không tìm thấy đơn hàng này");
+//        }
+//        OrderDTO dto = MapperUtil.map(orders.get(), OrderDTO.class);
+//        if (dto.getVoucherId() == null) {
+//            dto.setVoucher(0d);
+//        }
+//        if (orders.get().getStatusId() != null) {
+//            Optional<OrderStatus> orderStatus = this.orderStatusRepository.findByIdAndDeleted(orders.get().getStatusId(), true);
+//            if (orderStatus.isPresent()) {
+//                dto.setStatus(orderStatus.get().getValueStatus());
+//            }
+//        }
+//        if (orders.get().getTypeOrder() == 1) {
+//            dto.setTypeOrders("Đặt online");
+//        } else if (orders.get().getTypeOrder() == 2) {
+//            dto.setTypeOrders("Đặt tại shop");
+//        }
+//
+//        return dto;
+//    }
+//
+//    public void changeStatus2(Long orderId) {
+//        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
+//        if (orders.isEmpty()) {
+//            throw new BadRequestException("Không tìm thấy đơn hàng này");
+//        }
+//        Orders orders1 = orders.get();
+//        orders1.setStatusId(2L);
+//        this.ordersRepository.save(orders1);
+//    }
+//
+//    public void changeStatus3(Long orderId) {
+//        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
+//        if (orders.isEmpty()) {
+//            throw new BadRequestException("Không tìm thấy đơn hàng này");
+//        }
+//        Orders orders1 = orders.get();
+//        orders1.setStatusId(6L);
+//        this.ordersRepository.save(orders1);
+//    }
+//
+//    public void changeStatus5(Long orderId) {
+//        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
+//        if (orders.isEmpty()) {
+//            throw new BadRequestException("Không tìm thấy đơn hàng này");
+//        }
+//        Orders orders1 = orders.get();
+//        orders1.setStatusId(5L);
+//        this.ordersRepository.save(orders1);
+//    }
+//
+//
+//    public void changeStatus4(Long orderId) {
+//        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(orderId, true);
+//        if (orders.isEmpty()) {
+//            throw new BadRequestException("Không tìm thấy đơn hàng này");
+//        }
+//        Orders orders1 = orders.get();
+//        orders1.setStatusId(4L);
+//        this.ordersRepository.save(orders1);
+//    }
 
 }

@@ -62,7 +62,7 @@ public class ProductService {
     public void deleteProduct(Long id) {
         Product product = this.findById(id);
         if (product != null) {
-            product.setDeleted(!product.getDeleted());
+//            product.setDeleted(!product.getDeleted());
             this.productRepository.save(product);
         }
     }

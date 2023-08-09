@@ -24,7 +24,7 @@ public class JwtTokenProvider {
     // Tạo ra jwt từ thông tin user
     public String generateToken(CustomUserDetails userDetails) {
         Date now = new Date();
-        int roleId = userDetails.getAccount().getRoleId();
+//        Long roleId = userDetails.getAccount().getRoleId();
         long expriTimeMillis = now.getTime() + (600 * 60 * 1000);
         Date expiryDate = new Date(expriTimeMillis);
         Map<String, Object> claim = new HashMap<>();
@@ -39,12 +39,12 @@ public class JwtTokenProvider {
     }
 
     // Lấy thông tin user từ jwt
-    public Integer getUserIdFromJWT(String token) {
+    public Long getUserIdFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(JWT_SECRET)
                 .parseClaimsJws(token)
                 .getBody();
-        return Integer.parseInt(claims.getSubject());
+        return Long.parseLong(claims.getSubject());
     }
 
     public boolean validateToken(String authToken) {

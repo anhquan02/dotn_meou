@@ -17,6 +17,7 @@ public class LoginDTO {
     private String fullname;
     private String username;
     private String nameRole;
+    private Long roleId;
 
 }
 

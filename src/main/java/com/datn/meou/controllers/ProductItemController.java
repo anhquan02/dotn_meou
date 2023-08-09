@@ -1,40 +1,42 @@
 package com.datn.meou.controllers;
 
-import lombok.AllArgsConstructor;
+import com.datn.meou.entity.*;
+import com.datn.meou.model.AccountDTO;
+import com.datn.meou.model.ProductItemDTO;
+import com.datn.meou.repository.ProductItemRepository;
+import com.datn.meou.services.ProductItemSerivce;
+import com.datn.meou.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import com.datn.meou.entity.ProductItem;
-import com.datn.meou.entity.Brand;
-import com.datn.meou.entity.Product;
-import com.datn.meou.entity.Color;
-import com.datn.meou.entity.Sole;
-import com.datn.meou.entity.Insole;
-import com.datn.meou.entity.Size;
-import com.datn.meou.services.ProductItemSerivce;
-
-@Controller
-@AllArgsConstructor
-@RequestMapping("/product-detail")
+@RestController
+@CrossOrigin
+@RequestMapping("/api/v1/product-item")
+@RequiredArgsConstructor
 public class ProductItemController {
     private final ProductItemSerivce productItemSerivce;
 
+    private final ProductItemRepository productItemRepository;
+
+    @PostMapping("search-countersale")
+    private ResponseEntity<?> searchProductForCounterSale(@RequestBody ProductItemDTO dto) {
+        return ResponseUtil.ok(this.productItemRepository.searchProductForCounterSale(dto));
+    }
+
     @GetMapping("")
     public String index(Model model, @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name,
-            @RequestParam("brandId") Optional<String> brandId, @RequestParam("soleId") Optional<String> soleId,
-            @RequestParam("insoleId") Optional<String> insoleId, @RequestParam("colorId") Optional<String> colorId,
-            @RequestParam("status") Optional<String> status, @RequestParam("sizeId") Optional<String> sizeId) {
+                        @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name,
+                        @RequestParam("brandId") Optional<String> brandId, @RequestParam("soleId") Optional<String> soleId,
+                        @RequestParam("insoleId") Optional<String> insoleId, @RequestParam("colorId") Optional<String> colorId,
+                        @RequestParam("status") Optional<String> status, @RequestParam("sizeId") Optional<String> sizeId) {
         int currentPage = page.orElse(0);
         int pageSize = size.orElse(5);
         String _name = name.orElse("");
@@ -121,7 +123,7 @@ public class ProductItemController {
 
     @PostMapping("/edit")
     public String editProductItem(@RequestParam("id") Long id, ProductItem productItem, BindingResult result,
-            Model model) {
+                                  Model model) {
         if (result.hasErrors()) {
             return "product-detail/form";
         }

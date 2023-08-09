@@ -22,13 +22,13 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
 
-    public List<OrderItemDTO> getByIdOrder(Long idOrder) {
-        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(idOrder, true);
-        if (orders.isEmpty()) {
-            throw new BadRequestException("Không tìm thấy đơn hàng này");
-        }
-        List<OrderItem> orderItems = this.orderItemRepository.findByOrderId(idOrder);
-        List<OrderItemDTO> orderItemDTOS = MapperUtil.mapList(orderItems, OrderItemDTO.class);
-        return orderItemDTOS;
-    }
+//    public List<OrderItemDTO> getByIdOrder(Long idOrder) {
+//        Optional<Orders> orders = this.ordersRepository.findByIdAndDeleted(idOrder, true);
+//        if (orders.isEmpty()) {
+//            throw new BadRequestException("Không tìm thấy đơn hàng này");
+//        }
+//        List<OrderItem> orderItems = this.orderItemRepository.findByOrderId(idOrder);
+//        List<OrderItemDTO> orderItemDTOS = MapperUtil.mapList(orderItems, OrderItemDTO.class);
+//        return orderItemDTOS;
+//    }
 }

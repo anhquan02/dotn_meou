@@ -19,20 +19,20 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    @GetMapping("/page/{pageno}")
-    public String getAll(@PathVariable Integer pageno, Model model, @RequestParam(required = false) String code) {
-        Page<TransactionDTO> page;
-        if (code != null && !code.isEmpty()) {
-            page = this.transactionService.findAllByOrderName(code, pageno, 2);
-        } else {
-            page = this.transactionService.findAll(pageno, 2);
-        }
-        model.addAttribute("transaction", page);
-        model.addAttribute("currentPage", pageno);
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItem", page.getTotalElements());
-        return "transaction";
-    }
+//    @GetMapping("/page/{pageno}")
+//    public String getAll(@PathVariable Integer pageno, Model model, @RequestParam(required = false) String code) {
+//        Page<TransactionDTO> page;
+//        if (code != null && !code.isEmpty()) {
+//            page = this.transactionService.findAllByOrderName(code, pageno, 2);
+//        } else {
+//            page = this.transactionService.findAll(pageno, 2);
+//        }
+//        model.addAttribute("transaction", page);
+//        model.addAttribute("currentPage", pageno);
+//        model.addAttribute("totalPages", page.getTotalPages());
+//        model.addAttribute("totalItem", page.getTotalElements());
+//        return "transaction";
+//    }
 
 
 }

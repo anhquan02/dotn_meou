@@ -46,12 +46,12 @@ public class ProductController {
         return "product/index";
     }
 
-    @GetMapping("search")
-    public String searchName(Model model, @RequestParam("name") String name) {
-        List<ProductDTO> productDTOList = this.productRepository.searchProductForCounterSale(name);
-        model.addAttribute("productDTO", productDTOList);
-        return "counter-sales";
-    }
+//    @GetMapping("search")
+//    public String searchName(Model model, @RequestParam("name") String name) {
+//        List<ProductDTO> productDTOList = this.productRepository.searchProductForCounterSale(name);
+//        model.addAttribute("productDTO", productDTOList);
+//        return "counter-sales";
+//    }
 
 
     @PostMapping("/save")

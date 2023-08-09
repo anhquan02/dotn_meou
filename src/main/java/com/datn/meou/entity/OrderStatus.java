@@ -17,5 +17,5 @@ import javax.persistence.Table;
 @Table(name = "dotn_order_status")
 public class OrderStatus extends BaseEntity {
     private String valueStatus;
-    private Boolean deleted;
+    private Boolean status;
 }

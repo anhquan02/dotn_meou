@@ -1,10 +1,12 @@
 package com.datn.meou.services;
 
 import com.datn.meou.entity.Account;
+import com.datn.meou.entity.Role;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.AccountDTO;
 import com.datn.meou.model.LoginDTO;
 import com.datn.meou.repository.AccountRepository;
+import com.datn.meou.repository.RoleRepository;
 import com.datn.meou.security.CustomUserDetails;
 import com.datn.meou.security.JwtTokenProvider;
 import com.datn.meou.util.MapperUtil;
@@ -28,13 +30,15 @@ public class AccountService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
+    private final RoleRepository roleRepository;
+
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Account> account = this.accountRepository.findByUsernameAndStatus(username, true);
         return account.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
 
-    public UserDetails loadUserById(Integer id) {
+    public UserDetails loadUserById(Long id) {
         Optional<Account> account = this.accountRepository.findByIdAndStatus(id, true);
         return account.map(CustomUserDetails::new).orElseThrow(() -> new UsernameNotFoundException(id.toString()));
     }
@@ -52,17 +56,25 @@ public class AccountService implements UserDetailsService {
     }
 
     public LoginDTO generateToken(Optional<Account> account) {
-        String token = jwtTokenProvider.generateToken(new CustomUserDetails(account.get()));
-        return LoginDTO.builder()
-                .id(account.get().getId())
-                .username(account.get().getUsername())
-                .token(token)
-                .build();
+        if (account.isPresent()) {
+            Account accountMain = account.get();
+            String token = jwtTokenProvider.generateToken(new CustomUserDetails(accountMain));
+            Optional<Role> role = this.roleRepository.findByIdAndStatus(accountMain.getRoleId(), true);
+            return LoginDTO.builder()
+                    .id(accountMain.getId())
+                    .username(accountMain.getUsername())
+                    .token(token)
+                    .roleId(accountMain.getId())
+                    .nameRole(role.get().getName())
+                    .build();
+        }
+        throw new BadRequestException("Không tìm thấy account");
     }
 
     public Account createAccount(AccountDTO dto) {
         dto.setPassword(passwordEncoder.encode(dto.getPassword()));
         Account account = MapperUtil.map(dto, Account.class);
+        account.setStatus(true);
         return this.accountRepository.save(account);
     }
 

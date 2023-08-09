@@ -16,10 +16,10 @@ public class OrderItemController {
     private final OrderSevice orderSevice;
     private final OrderItemService orderItemService;
 
-    @GetMapping("/getId")
-    public String getById(@RequestParam(value = "id") Long id, Model model) {
-        model.addAttribute("orders", this.orderSevice.getbyId(id));
-        model.addAttribute("item", this.orderItemService.getByIdOrder(id));
-        return "order-item";
-    }
+//    @GetMapping("/getId")
+//    public String getById(@RequestParam(value = "id") Long id, Model model) {
+//        model.addAttribute("orders", this.orderSevice.getbyId(id));
+//        model.addAttribute("item", this.orderItemService.getByIdOrder(id));
+//        return "order-item";
+//    }
 }

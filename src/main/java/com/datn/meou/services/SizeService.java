@@ -1,7 +1,13 @@
 package com.datn.meou.services;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.SizeDTO;
+import com.datn.meou.util.MapperUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -15,24 +21,38 @@ import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
-public class SizeService {
-    private final SizeRepository sizeRepository;
-    
-    public Size saveSize(String name) {
-        Size findSizeByName = this.findByName(name);
-        if (findSizeByName != null) {
-            return findSizeByName;
+public class SizeService {private final SizeRepository sizeRepository;
+
+    @Autowired
+    MapperUtil mapperUtil;
+
+    public Size addOrUpdate(SizeDTO dto){
+        Date date = new Date();
+        validate(dto);
+        Optional<Size> size = sizeRepository.findById(dto.getId());
+
+        if(size.isEmpty()){
+            Size size1 = new Size();
+            size1 = mapperUtil.map(dto, Size.class);
+            size1.setCreatedDate(date);
+            size1.setUpdatedDate(date);
+            size1.setStatus(false);
+            return sizeRepository.save(size1);
+        }else{
+            size.get().setName(dto.getName());
+            size.get().setUpdatedDate(date);
+            return sizeRepository.save(size.get());
         }
-        Size size = Size.builder().name(name).build();
-        return sizeRepository.save(size);
     }
 
-    public Size saveSize(Size size) {
+    public Size deteleSize(Long id){
+        Date date = new Date();
+        if(id == null){
+            throw new BadRequestException("Xóa thất bại");
+        }
+        Size size = sizeRepository.findById(id).orElse(null);
+        size.setStatus(true);
         return sizeRepository.save(size);
-    }
-
-    public List<Size> findAllSizes() {
-        return sizeRepository.findAll();
     }
 
     public Page<Size> findByNameContaining(String name, Pageable pageable) {
@@ -55,15 +75,18 @@ public class SizeService {
         return sizeRepository.findByName(name);
     }
 
-    public Size findById(Long id) {
-        return sizeRepository.findById(id).orElse(null);
-    }
+    public void validate(SizeDTO dto){
+        if(dto.getId() == null){
+            throw new BadRequestException("Bad Request");
+        }
 
-    public void deleteSize(Long id) {
-        Size size = this.findById(id);
-        if (size != null) {
-//            size.setDeleted(!size.getDeleted());
-            sizeRepository.save(size);
+        if(dto.getName() == null){
+            throw new BadRequestException("Name không được để trống");
+        }
+
+        if(dto.getName().length() != 2){
+            throw new BadRequestException("Name sai định dạng");
         }
     }
+
 }

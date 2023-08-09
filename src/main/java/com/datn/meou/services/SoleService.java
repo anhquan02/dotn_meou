@@ -1,7 +1,15 @@
 package com.datn.meou.services;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.datn.meou.entity.Size;
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.SizeDTO;
+import com.datn.meou.model.SoleDTO;
+import com.datn.meou.util.MapperUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -13,27 +21,49 @@ import com.datn.meou.repository.SoleRepository;
 
 import lombok.AllArgsConstructor;
 
+import javax.validation.constraints.Null;
+
 @Service
 @AllArgsConstructor
 public class SoleService {
     private final SoleRepository soleRepository;
 
-    public Sole saveSole(String name) {
-        Sole findSoleByName = this.findByName(name);
-        if (findSoleByName != null) {
-            return findSoleByName;
+
+    @Autowired
+    MapperUtil mapperUtil;
+
+    public Sole addOrUpdate(SoleDTO dto){
+        Date date = new Date();
+        if(dto.getId() == null){
+            return null;
         }
-        Sole sole = Sole.builder().name(name).build();
+        Sole sole = soleRepository.findById(dto.getId()).orElse(null);
+
+        if(sole == null){
+            Sole sole1 = new Sole();
+            sole1.setName(dto.getName());
+            sole1.setStatus(false);
+            sole1.setCreatedDate(date);
+            sole1.setUpdatedDate(date);
+            return soleRepository.save(sole1);
+        }else{
+            sole.setName(dto.getName());
+            sole.setUpdatedDate(date);
+            return soleRepository.save(sole);
+        }
+    }
+
+    public Sole deteleSole(Long id){
+        Date date = new Date();
+        if(id == null){
+            throw new BadRequestException("Xóa thất bại");
+        }
+        Sole sole = soleRepository.findById(id).orElse(null);
+        sole.setStatus(true);
+        sole.setUpdatedDate(date);
         return soleRepository.save(sole);
     }
 
-    public Sole saveSole(Sole sole) {
-        return soleRepository.save(sole);
-    }
-
-    public List<Sole> findAllSoles() {
-        return this.soleRepository.findAll();
-    }
 
     public Page<Sole> findByNameContaining(String name, Pageable pageable) {
         List<Sole> soles = soleRepository.findByNameContaining(name);
@@ -57,13 +87,5 @@ public class SoleService {
 
     public Sole findByName(String name) {
         return this.soleRepository.findByName(name);
-    }
-
-    public void deleteSole(Long id) {
-        Sole sole = this.findById(id);
-        if (sole != null) {
-//            sole.setDeleted(!sole.getDeleted());
-            this.soleRepository.save(sole);
-        }
     }
 }

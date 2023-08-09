@@ -1,7 +1,15 @@
 package com.datn.meou.services;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.datn.meou.entity.Size;
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.InsoleDTO;
+import com.datn.meou.model.SizeDTO;
+import com.datn.meou.util.MapperUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,21 +26,36 @@ import lombok.AllArgsConstructor;
 public class InsoleSerivce {
     private final InsoleRepository insoleRepository;
 
-    public Insole saveInsole(String name) {
-        Insole findInsoleByName = this.findByName(name);
-        if (findInsoleByName != null) {
-            return findInsoleByName;
+    @Autowired
+    MapperUtil mapperUtil;
+
+    public Insole addOrUpdate(InsoleDTO dto){
+        Date date = new Date();
+        validate(dto);
+        Optional<Insole> insole = insoleRepository.findById(dto.getId());
+
+        if(insole.isEmpty()){
+            Insole insole1 = new Insole();
+            insole1.setName(dto.getName());
+            insole1.setStatus(false);
+            insole1.setCreatedDate(date);
+            insole1.setUpdatedDate(date);
+            return insoleRepository.save(insole1);
+        }else{
+            insole.get().setName(dto.getName());
+            insole.get().setUpdatedDate(date);
+            return insoleRepository.save(insole.get());
         }
-        Insole insole = Insole.builder().name(name).build();
-        return insoleRepository.save(insole);
     }
 
-    public Insole saveInsole(Insole insole) {
-        return insoleRepository.save(insole);
-    }
-
-    public List<Insole> findAllInsoles() {
-        return insoleRepository.findAll();
+    public Insole deteleInsole(Long id){
+        Date date = new Date();
+        if(id == null){
+            throw new BadRequestException("Xóa thất bại");
+        }
+        Insole size = insoleRepository.findById(id).orElse(null);
+        size.setStatus(true);
+        return insoleRepository.save(size);
     }
 
     public Page<Insole> findByNameContaining(String name, Pageable pageable) {
@@ -47,23 +70,25 @@ public class InsoleSerivce {
             int toIndex = Math.min(startItem + pageSize, insoles.size());
             list = insoles.subList(startItem, toIndex);
         }
-        Page<Insole> insolePage = new PageImpl<Insole>(list, PageRequest.of(currentPage, pageSize), insoles.size());
-        return insolePage;
+        Page<Insole> sizePage = new PageImpl<Insole>(list, PageRequest.of(currentPage, pageSize), insoles.size());
+        return sizePage;
     }
 
     public Insole findByName(String name) {
         return insoleRepository.findByName(name);
     }
 
-    public Insole findById(Long id) {
-        return insoleRepository.findById(id).orElse(null);
-    }
+    public void validate(InsoleDTO dto){
+        if(dto.getId() == null){
+            throw new BadRequestException("Bad Request");
+        }
 
-    public void deleteInsole(Long id) {
-        Insole insole = this.findById(id);
-        if (insole != null) {
-//            insole.setDeleted(!insole.getDeleted());
-            insoleRepository.save(insole);
+        if(dto.getName() == null){
+            throw new BadRequestException("Name không được để trống");
+        }
+
+        if(dto.getName().length() != 2){
+            throw new BadRequestException("Name sai định dạng");
         }
     }
 }

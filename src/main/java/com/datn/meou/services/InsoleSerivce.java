@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.datn.meou.entity.Size;
+import com.datn.meou.entity.Sole;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.InsoleDTO;
 import com.datn.meou.model.SizeDTO;
+import com.datn.meou.model.SoleDTO;
+import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,66 +32,57 @@ public class InsoleSerivce {
     @Autowired
     MapperUtil mapperUtil;
 
-    public Insole addOrUpdate(InsoleDTO dto){
-        Date date = new Date();
-        validate(dto);
-        Optional<Insole> insole = insoleRepository.findById(dto.getId());
-
-        if(insole.isEmpty()){
-            Insole insole1 = new Insole();
-            insole1.setName(dto.getName());
-            insole1.setStatus(false);
-            insole1.setCreatedDate(date);
-            insole1.setUpdatedDate(date);
-            return insoleRepository.save(insole1);
-        }else{
-            insole.get().setName(dto.getName());
-            insole.get().setUpdatedDate(date);
-            return insoleRepository.save(insole.get());
-        }
+    public Insole saveInsole(InsoleDTO dto) {
+        Insole insole = Insole
+                .builder()
+                .name(dto.getName())
+                .build();
+        insole.setStatus(true);
+        return insoleRepository.save(insole);
     }
 
-    public Insole deteleInsole(Long id){
-        Date date = new Date();
-        if(id == null){
-            throw new BadRequestException("Xóa thất bại");
+    public Insole updateInsole(InsoleDTO dto) {
+        Optional<Insole> insoleOptional = this.insoleRepository.findByIdAndStatus(dto.getId(), true);
+        if (insoleOptional.isPresent()) {
+            Insole insole = MapperUtil.map(dto, Insole.class);
+            insole.setStatus(true);
+            this.insoleRepository.save(insole);
+            return insole;
         }
-        Insole size = insoleRepository.findById(id).orElse(null);
-        size.setStatus(true);
-        return insoleRepository.save(size);
+        throw new BadRequestException("Không có size này");
     }
+
+    public List<Insole> findAllInsoleList() {
+        return insoleRepository.findAllByStatus(true);
+    }
+
+    public Page<Insole> findAllInsolePage(Pageable pageable) {
+        return insoleRepository.findAllByStatus(true, pageable);
+    }
+
 
     public Page<Insole> findByNameContaining(String name, Pageable pageable) {
-        List<Insole> insoles = insoleRepository.findByNameContaining(name);
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Insole> list;
-        if (insoles.size() < startItem) {
-            return Page.empty();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, insoles.size());
-            list = insoles.subList(startItem, toIndex);
+        if (!DataUtil.isNullObject(name)) {
+            return this.insoleRepository.findByStatusAndNameContaining(true, name, pageable);
         }
-        Page<Insole> sizePage = new PageImpl<Insole>(list, PageRequest.of(currentPage, pageSize), insoles.size());
-        return sizePage;
+        return this.insoleRepository.findAllByStatus(true, pageable);
     }
 
-    public Insole findByName(String name) {
-        return insoleRepository.findByName(name);
+    public Insole findById(Long id) {
+        Optional<Insole> insole = this.insoleRepository.findByIdAndStatus(id, true);
+        if (insole.isPresent()) {
+            return insole.get();
+        }
+        throw new BadRequestException("Không tìm thấy size này");
     }
 
-    public void validate(InsoleDTO dto){
-        if(dto.getId() == null){
-            throw new BadRequestException("Bad Request");
-        }
-
-        if(dto.getName() == null){
-            throw new BadRequestException("Name không được để trống");
-        }
-
-        if(dto.getName().length() != 2){
-            throw new BadRequestException("Name sai định dạng");
+    public void deleteInsole(List<Long> ids) {
+        if (ids.size() > 0) {
+            for (Long id : ids) {
+                Insole insole = findById(id);
+                insole.setStatus(false);
+                this.insoleRepository.save(insole);
+            }
         }
     }
 }

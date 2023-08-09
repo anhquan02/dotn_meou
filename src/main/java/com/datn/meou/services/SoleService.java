@@ -8,6 +8,7 @@ import com.datn.meou.entity.Size;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.SizeDTO;
 import com.datn.meou.model.SoleDTO;
+import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,60 +33,57 @@ public class SoleService {
     @Autowired
     MapperUtil mapperUtil;
 
-    public Sole addOrUpdate(SoleDTO dto){
-        Date date = new Date();
-        if(dto.getId() == null){
-            return null;
-        }
-        Sole sole = soleRepository.findById(dto.getId()).orElse(null);
-
-        if(sole == null){
-            Sole sole1 = new Sole();
-            sole1.setName(dto.getName());
-            sole1.setStatus(false);
-            sole1.setCreatedDate(date);
-            sole1.setUpdatedDate(date);
-            return soleRepository.save(sole1);
-        }else{
-            sole.setName(dto.getName());
-            sole.setUpdatedDate(date);
-            return soleRepository.save(sole);
-        }
+    public Sole saveSole(SoleDTO dto) {
+        Sole sole = Sole
+                .builder()
+                .name(dto.getName())
+                .build();
+        sole.setStatus(true);
+        return soleRepository.save(sole);
     }
 
-    public Sole deteleSole(Long id){
-        Date date = new Date();
-        if(id == null){
-            throw new BadRequestException("Xóa thất bại");
+    public Sole updateSole(SoleDTO dto) {
+        Optional<Sole> soleOptional = this.soleRepository.findByIdAndStatus(dto.getId(), true);
+        if (soleOptional.isPresent()) {
+            Sole sole = MapperUtil.map(dto, Sole.class);
+            sole.setStatus(true);
+            this.soleRepository.save(sole);
+            return sole;
         }
-        Sole sole = soleRepository.findById(id).orElse(null);
-        sole.setStatus(true);
-        sole.setUpdatedDate(date);
-        return soleRepository.save(sole);
+        throw new BadRequestException("Không có size này");
+    }
+
+    public List<Sole> findAllSoleList() {
+        return soleRepository.findAllByStatus(true);
+    }
+
+    public Page<Sole> findAllSolePage(Pageable pageable) {
+        return soleRepository.findAllByStatus(true, pageable);
     }
 
 
     public Page<Sole> findByNameContaining(String name, Pageable pageable) {
-        List<Sole> soles = soleRepository.findByNameContaining(name);
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Sole> list;
-        if (soles.size() < startItem) {
-            return Page.empty();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, soles.size());
-            list = soles.subList(startItem, toIndex);
+        if (!DataUtil.isNullObject(name)) {
+            return this.soleRepository.findByStatusAndNameContaining(true, name, pageable);
         }
-        Page<Sole> solePage = new PageImpl<Sole>(list, PageRequest.of(currentPage, pageSize), soles.size());
-        return solePage;
+        return this.soleRepository.findAllByStatus(true, pageable);
     }
 
     public Sole findById(Long id) {
-        return this.soleRepository.findById(id).orElse(null);
+        Optional<Sole> sole = this.soleRepository.findByIdAndStatus(id, true);
+        if (sole.isPresent()) {
+            return sole.get();
+        }
+        throw new BadRequestException("Không tìm thấy size này");
     }
 
-    public Sole findByName(String name) {
-        return this.soleRepository.findByName(name);
+    public void deleteSole(List<Long> ids) {
+        if (ids.size() > 0) {
+            for (Long id : ids) {
+                Sole sole = findById(id);
+                sole.setStatus(false);
+                this.soleRepository.save(sole);
+            }
+        }
     }
 }

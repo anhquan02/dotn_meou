@@ -36,9 +36,9 @@ public class ProductItemSerivce {
         return productItemRepository.save(productItem);
     }
 
-    public List<Brand> findAllBrands() {
-        return brandService.findAllBrands();
-    }
+//    public List<Brand> findAllBrands() {
+//        return brandService.findAllBrands();
+//    }
 
     public List<Product> findAllProducts() {
         return productService.findAllProducts();

@@ -1,7 +1,13 @@
 package com.datn.meou.services;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.BrandDTO;
+import com.datn.meou.util.DataUtil;
+import com.datn.meou.util.MapperUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,56 +24,57 @@ import lombok.AllArgsConstructor;
 public class BrandService {
     private final BrandRepository brandRepository;
 
-    public Brand saveBrand(String name) {
-        Brand findBrandByName = this.findBrandByName(name);
-        if (findBrandByName != null) {
-            return findBrandByName;
+    public Brand saveBrand(BrandDTO dto) {
+        Brand brand = Brand
+                .builder()
+                .name(dto.getName())
+                .build();
+        brand.setStatus(true);
+        return brandRepository.save(brand);
+    }
+
+    public Brand updateBrand(BrandDTO dto) {
+        Optional<Brand> brandOptional = this.brandRepository.findByIdAndStatus(dto.getId(), true);
+        if (brandOptional.isPresent()) {
+            Brand brand = MapperUtil.map(dto, Brand.class);
+            brand.setStatus(true);
+            this.brandRepository.save(brand);
+            return brand;
         }
-        Brand brand = Brand.builder().name(name).build();
-        return brandRepository.save(brand);
+        throw new BadRequestException("Không có thương hiệu này");
     }
 
-    public Brand saveBrand(Brand brand) {
-        return brandRepository.save(brand);
+    public List<Brand> findAllBrandList() {
+        return brandRepository.findAllByStatus(true);
     }
 
-    public List<Brand> findAllBrands() {
-        return brandRepository.findAll();
+    public Page<Brand> findAllBrandPage(Pageable pageable) {
+        return brandRepository.findAllByStatus(true, pageable);
     }
 
-    public Page<Brand> findAllBrands(Pageable pageable) {
-        return brandRepository.findAll(pageable);
-    }
-
-    public Brand findBrandByName(String name) {
-        return brandRepository.findByName(name);
-    }
 
     public Page<Brand> findByNameContaining(String name, Pageable pageable) {
-        List<Brand> brands = brandRepository.findByNameContaining(name);
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Brand> list;
-        if (brands.size() < startItem) {
-            return Page.empty();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, brands.size());
-            list = brands.subList(startItem, toIndex);
+        if (!DataUtil.isNullObject(name)) {
+            return this.brandRepository.findByStatusAndNameContaining(true, name, pageable);
         }
-        Page<Brand> brandPage = new PageImpl<Brand>(list, PageRequest.of(currentPage, pageSize), brands.size());
-        return brandPage;
+        return this.brandRepository.findAllByStatus(true, pageable);
     }
 
     public Brand findById(Long id) {
-        return brandRepository.findById(id).orElse(null);
+        Optional<Brand> brand = this.brandRepository.findByIdAndStatus(id, true);
+        if (brand.isPresent()) {
+            return brand.get();
+        }
+        throw new BadRequestException("Không tìm thấy thương hiệu này");
     }
 
-    public void deleteBrand(Long id) {
-        Brand brand = this.findById(id);
-        if (brand != null) {
-            brand.setStatus(!brand.getStatus());
-            brandRepository.save(brand);
+    public void deleteBrand(List<Long> ids) {
+        if (ids.size() > 0) {
+            for (Long id : ids) {
+                Brand brand = findById(id);
+                brand.setStatus(false);
+                this.brandRepository.save(brand);
+            }
         }
     }
 }

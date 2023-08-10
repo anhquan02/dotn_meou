@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class ProductItemDTO extends BaseModel {
     private String name;
-    private Integer productId;
+    private Long productId;
     private Long soleId;
     private Long colorId;
     private Long insoleId;

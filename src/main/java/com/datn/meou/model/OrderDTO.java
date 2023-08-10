@@ -29,6 +29,27 @@ public class OrderDTO extends BaseModel {
     private String status;
     private String typeOrders;
     private String nameStatus;
+    private String valueStatus;
+    private String username;
+
+    public OrderDTO(Long id, String code, Date createdDate, String addressCustomer,
+                    String emailCustomer, String nameCustomer, String note, Double totalPrice,
+                    Integer typeOrder, String phoneCustomer, String paymentMethod, String valueStatus,
+                    String username) {
+        this.id = id;
+        this.code = code;
+        this.createdDate = createdDate;
+        this.addressCustomer = addressCustomer;
+        this.emailCustomer = emailCustomer;
+        this.nameCustomer = nameCustomer;
+        this.note = note;
+        this.totalPrice = totalPrice;
+        this.typeOrder = typeOrder;
+        this.phoneCustomer = phoneCustomer;
+        this.paymentMethod = paymentMethod;
+        this.valueStatus = valueStatus;
+        this.username = username;
+    }
 
 
 }

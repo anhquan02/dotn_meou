@@ -38,22 +38,13 @@ public class ProductService {
                 .description(dto.getDescription())
                 .price(dto.getPrice())
                 .brandId(dto.getBrandId())
+                .image(dto.getNameImage())
                 .build();
         product.setStatus(true);
         this.productRepository.save(product);
 
         return product;
     }
-
-    public Product saveImage(ProductDTO dto){
-        Optional<Product> product = productRepository.findById(dto.getId());
-        if(product != null){
-            product.get().setImage(dto.getNameImage());
-            return this.productRepository.save(product.get());
-        }
-        throw new BadRequestException("không tìm thấy sản phẩm");
-    }
-
     public Product updateProduct(ProductDTO dto) {
         Optional<Product> productOptional = this.productRepository.findByIdAndStatus(dto.getId(), true);
         if (productOptional.isPresent()) {

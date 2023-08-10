@@ -54,6 +54,7 @@ public class ProductItemSerivce {
                             .soleId(item.getSoleId())
                             .insoleId(item.getInsoleId())
                             .quantity(item.getQuantity())
+                            .image(item.getNameImage())
                             .build();
                     productItem.setStatus(true);
                     ProductItem productItem1 = productItemRepository.save(productItem);
@@ -81,6 +82,7 @@ public class ProductItemSerivce {
                 productItem.get().setInsoleId(item.getInsoleId());
                 productItem.get().setSizeId(item.getSizeId());
                 productItem.get().setSoleId(item.getSoleId());
+                productItem.get().setImage(item.getNameImage());
                 ProductItem productItem1 = productItemRepository.save(productItem.get());
                 productItemList.add(productItem1);
             }

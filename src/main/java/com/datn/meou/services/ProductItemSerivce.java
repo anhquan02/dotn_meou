@@ -73,8 +73,8 @@ public class ProductItemSerivce {
 
     public List<ProductItem> updateProductItem(ProductItemDTOS dtos) {
         if(dtos.getDto() != null){
+            List<ProductItem> productItemList = new ArrayList<>();
             for(ProductItemDTO item : dtos.getDto()){
-                List<ProductItem> productItemList = new ArrayList<>();
                 Optional<ProductItem> productItem = productItemRepository.findById(item.getId());
                 productItem.get().setQuantity(item.getQuantity());
                 productItem.get().setColorId(item.getColorId());
@@ -84,6 +84,7 @@ public class ProductItemSerivce {
                 ProductItem productItem1 = productItemRepository.save(productItem.get());
                 productItemList.add(productItem1);
             }
+            return productItemList;
         }
 
         throw new BadRequestException("Cập nhật sản phẩm thất bại");

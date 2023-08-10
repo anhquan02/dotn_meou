@@ -1,16 +1,22 @@
 package com.datn.meou.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.datn.meou.model.SizeDTO;
+import com.datn.meou.model.SoleDTO;
+import com.datn.meou.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import com.datn.meou.entity.Brand;
 import com.datn.meou.entity.Sole;
@@ -18,60 +24,59 @@ import com.datn.meou.services.SoleService;
 
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-@Controller
-@RequestMapping("/sole")
+import javax.validation.Valid;
+
+@RestController
+@CrossOrigin
+@RequestMapping("/api/v1/sole")
+@RequiredArgsConstructor
 public class SoleController {
     private final SoleService soleService;
 
-    @GetMapping("")
-    public String index(Model model, @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
-        int currentPage = page.orElse(0);
-        int pageSize = size.orElse(5);
-        String _name = name.orElse("");
-        Page<Sole> soles = soleService.findByNameContaining(_name, PageRequest.of(currentPage, pageSize));
-        model.addAttribute("sole", new Sole());
-        model.addAttribute("soles", soleService.findAllSoles());
-        model.addAttribute("name", _name);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", soles.getTotalPages());
-        model.addAttribute("totalItem", soles.getTotalElements());
-        return "sole/index";
+    @PostMapping()
+    private ResponseEntity<?> save(@Valid @RequestBody SoleDTO dto) {
+        return ResponseUtil.ok(this.soleService.saveSole(dto));
     }
 
-    @PostMapping("/save")
-    public String saveSole(Sole sole, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "sole/index";
-        }
-        soleService.saveSole(sole.getName());
-        return "redirect:/sole";
+    @PutMapping()
+    private ResponseEntity<?> update(@Valid @RequestBody SoleDTO dto) {
+        return ResponseUtil.ok(this.soleService.updateSole(dto));
     }
 
-    @GetMapping("/edit")
-    public String editSole(@RequestParam(required = false) Long id, Model model,
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
-        int currentPage = page.orElse(0);
-        int pageSize = size.orElse(5);
-        String _name = name.orElse("");
-        Page<Sole> soles = soleService.findByNameContaining(_name, PageRequest.of(currentPage, pageSize));
-        model.addAttribute("soles", soleService.findAllSoles());
-        model.addAttribute("sole", soleService.findById(id));
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", soles.getTotalPages());
-        model.addAttribute("totalItem", soles.getTotalElements());
-        return "sole/edit";
+    @DeleteMapping()
+    private ResponseEntity<?> delete(@RequestParam List<Long> ids) {
+        this.soleService.deleteSole(ids);
+        return ResponseUtil.ok("Xóa thành công");
     }
 
-    @PostMapping("/edit")
-    public String editSole(@RequestParam Long id, Sole sole, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "sole/index";
-        }
-        sole.setId(id);
-        soleService.saveSole(sole);
-        return "redirect:/sole";
+    @GetMapping("all-list")
+    private ResponseEntity<?> findAllList() {
+        return ResponseUtil.ok(this.soleService.findAllSoleList());
+    }
+
+    @GetMapping("all-page")
+    private ResponseEntity<?> findAllPage(Pageable pageable) {
+        return ResponseUtil.ok(this.soleService.findAllSolePage(pageable));
+    }
+
+    @GetMapping("id")
+    private ResponseEntity<?> findById(@RequestParam Long id) {
+        return ResponseUtil.ok(this.soleService.findById(id));
+    }
+
+    @GetMapping("search-name")
+    private ResponseEntity<?> findById(@RequestParam String name, Pageable pageable) {
+        return ResponseUtil.ok(this.soleService.findByNameContaining(name, pageable));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errors.append(error.getDefaultMessage()).append(",");
+        });
+        return ResponseUtil.badRequest(errors.toString());
     }
 }

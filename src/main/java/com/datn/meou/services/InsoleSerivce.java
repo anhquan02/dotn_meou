@@ -1,7 +1,18 @@
 package com.datn.meou.services;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import com.datn.meou.entity.Size;
+import com.datn.meou.entity.Sole;
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.InsoleDTO;
+import com.datn.meou.model.SizeDTO;
+import com.datn.meou.model.SoleDTO;
+import com.datn.meou.util.DataUtil;
+import com.datn.meou.util.MapperUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,52 +29,60 @@ import lombok.AllArgsConstructor;
 public class InsoleSerivce {
     private final InsoleRepository insoleRepository;
 
-    public Insole saveInsole(String name) {
-        Insole findInsoleByName = this.findByName(name);
-        if (findInsoleByName != null) {
-            return findInsoleByName;
+    @Autowired
+    MapperUtil mapperUtil;
+
+    public Insole saveInsole(InsoleDTO dto) {
+        Insole insole = Insole
+                .builder()
+                .name(dto.getName())
+                .build();
+        insole.setStatus(true);
+        return insoleRepository.save(insole);
+    }
+
+    public Insole updateInsole(InsoleDTO dto) {
+        Optional<Insole> insoleOptional = this.insoleRepository.findByIdAndStatus(dto.getId(), true);
+        if (insoleOptional.isPresent()) {
+            Insole insole = MapperUtil.map(dto, Insole.class);
+            insole.setStatus(true);
+            this.insoleRepository.save(insole);
+            return insole;
         }
-        Insole insole = Insole.builder().name(name).build();
-        return insoleRepository.save(insole);
+        throw new BadRequestException("Không có size này");
     }
 
-    public Insole saveInsole(Insole insole) {
-        return insoleRepository.save(insole);
+    public List<Insole> findAllInsoleList() {
+        return insoleRepository.findAllByStatus(true);
     }
 
-    public List<Insole> findAllInsoles() {
-        return insoleRepository.findAll();
+    public Page<Insole> findAllInsolePage(Pageable pageable) {
+        return insoleRepository.findAllByStatus(true, pageable);
     }
+
 
     public Page<Insole> findByNameContaining(String name, Pageable pageable) {
-        List<Insole> insoles = insoleRepository.findByNameContaining(name);
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Insole> list;
-        if (insoles.size() < startItem) {
-            return Page.empty();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, insoles.size());
-            list = insoles.subList(startItem, toIndex);
+        if (!DataUtil.isNullObject(name)) {
+            return this.insoleRepository.findByStatusAndNameContaining(true, name, pageable);
         }
-        Page<Insole> insolePage = new PageImpl<Insole>(list, PageRequest.of(currentPage, pageSize), insoles.size());
-        return insolePage;
-    }
-
-    public Insole findByName(String name) {
-        return insoleRepository.findByName(name);
+        return this.insoleRepository.findAllByStatus(true, pageable);
     }
 
     public Insole findById(Long id) {
-        return insoleRepository.findById(id).orElse(null);
+        Optional<Insole> insole = this.insoleRepository.findByIdAndStatus(id, true);
+        if (insole.isPresent()) {
+            return insole.get();
+        }
+        throw new BadRequestException("Không tìm thấy size này");
     }
 
-    public void deleteInsole(Long id) {
-        Insole insole = this.findById(id);
-        if (insole != null) {
-//            insole.setDeleted(!insole.getDeleted());
-            insoleRepository.save(insole);
+    public void deleteInsole(List<Long> ids) {
+        if (ids.size() > 0) {
+            for (Long id : ids) {
+                Insole insole = findById(id);
+                insole.setStatus(false);
+                this.insoleRepository.save(insole);
+            }
         }
     }
 }

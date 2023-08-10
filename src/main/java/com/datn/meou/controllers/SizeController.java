@@ -1,16 +1,22 @@
 package com.datn.meou.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
+import com.datn.meou.model.BrandDTO;
+import com.datn.meou.model.SizeDTO;
+import com.datn.meou.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import com.datn.meou.entity.Brand;
 import com.datn.meou.entity.Size;
@@ -18,60 +24,61 @@ import com.datn.meou.services.SizeService;
 
 import lombok.AllArgsConstructor;
 
-@Controller
-@RequestMapping("/size")
-@AllArgsConstructor
+import javax.validation.Valid;
+
+
+@RestController
+@CrossOrigin
+@RequestMapping("/api/v1/size")
+@RequiredArgsConstructor
 public class SizeController {
     private final SizeService sizeService;
 
-    @GetMapping("")
-    public String index(Model model, @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
-        int currentPage = page.orElse(0);
-        int pageSize = size.orElse(5);
-        String _name = name.orElse("");
-        Page<Size> sizes = sizeService.findByNameContaining(_name, PageRequest.of(currentPage, pageSize));
-        model.addAttribute("size", new Size());
-        model.addAttribute("sizes", sizes);
-        model.addAttribute("name", _name);
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", sizes.getTotalPages());
-        model.addAttribute("totalItem", sizes.getTotalElements());
-        return "size/index";
+    @PostMapping()
+    private ResponseEntity<?> save(@Valid @RequestBody SizeDTO dto) {
+        return ResponseUtil.ok(this.sizeService.saveSize(dto));
     }
 
-    @PostMapping("/save")
-    public String saveSize(Size size, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "size/index";
-        }
-        sizeService.saveSize(size.getName());
-        return "redirect:/size";
+    @PutMapping()
+    private ResponseEntity<?> update(@Valid @RequestBody SizeDTO dto) {
+        return ResponseUtil.ok(this.sizeService.updateSize(dto));
     }
 
-    @GetMapping("/edit")
-    public String editSize(@RequestParam Long id, Model model,
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size, @RequestParam("name") Optional<String> name) {
-        int currentPage = page.orElse(0);
-        int pageSize = size.orElse(5);
-        String _name = name.orElse("");
-        Page<Size> sizes = sizeService.findByNameContaining(_name, PageRequest.of(currentPage, pageSize));
-        model.addAttribute("sizes", sizeService.findAllSizes());
-        model.addAttribute("size", sizeService.findById(id));
-        model.addAttribute("currentPage", currentPage);
-        model.addAttribute("totalPages", sizes.getTotalPages());
-        model.addAttribute("totalItem", sizes.getTotalElements());
-        return "size/edit";
+    @DeleteMapping()
+    private ResponseEntity<?> delete(@RequestParam List<Long> ids) {
+        this.sizeService.deleteSize(ids);
+        return ResponseUtil.ok("Xóa thành công");
     }
 
-    @PostMapping("/edit")
-    public String editSize(@RequestParam Long id, Size size, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            return "size/index";
-        }
-        size.setId(id);
-        sizeService.saveSize(size);
-        return "redirect:/size";
+    @GetMapping("all-list")
+    private ResponseEntity<?> findAllList() {
+        return ResponseUtil.ok(this.sizeService.findAllBrandList());
     }
+
+    @GetMapping("all-page")
+    private ResponseEntity<?> findAllPage(Pageable pageable) {
+        return ResponseUtil.ok(this.sizeService.findAllBrandPage(pageable));
+    }
+
+    @GetMapping("id")
+    private ResponseEntity<?> findById(@RequestParam Long id) {
+        return ResponseUtil.ok(this.sizeService.findById(id));
+    }
+
+    @GetMapping("search-name")
+    private ResponseEntity<?> findById(@RequestParam String name, Pageable pageable) {
+        return ResponseUtil.ok(this.sizeService.findByNameContaining(name, pageable));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errors.append(error.getDefaultMessage()).append(",");
+        });
+        return ResponseUtil.badRequest(errors.toString());
+    }
+
 }

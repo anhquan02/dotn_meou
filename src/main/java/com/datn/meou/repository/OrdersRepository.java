@@ -28,4 +28,6 @@ public interface OrdersRepository extends JpaRepository<Orders, Long> {
 //    Page<Orders> searchByCodePhoneName(@Param("request") String request, Pageable pageable);
 //
 //    Page<Orders> findAllByStatusIdAndDeleted(Long idStatus, Boolean deleted, Pageable pageable);
+    List<Orders> findAllByAccountId(Long accountId);
+
 }

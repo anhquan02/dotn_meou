@@ -17,4 +17,6 @@ import javax.persistence.Table;
 @Table(name = "dotn_insole")
 public class Insole extends BaseEntity {
     private String name;
+
+    private Boolean status;
 }

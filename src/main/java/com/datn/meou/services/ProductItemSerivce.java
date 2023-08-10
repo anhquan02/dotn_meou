@@ -44,22 +44,6 @@ public class ProductItemSerivce {
         return productService.findAllProducts();
     }
 
-    public List<Sole> findAllSoles() {
-        return soleService.findAllSoles();
-    }
-
-    public List<Insole> findAllInsoles() {
-        return insoleSerivce.findAllInsoles();
-    }
-
-    public List<Color> findAllColors() {
-        return colorService.findAllColors();
-    }
-
-    public List<Size> findAllSizes() {
-        return sizeService.findAllSizes();
-    }
-
     public Page<ProductItem> findAll(Pageable pageable) {
         return productItemRepository.findAll(pageable);
     }

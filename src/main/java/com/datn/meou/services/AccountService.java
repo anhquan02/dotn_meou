@@ -64,7 +64,7 @@ public class AccountService implements UserDetailsService {
                     .id(accountMain.getId())
                     .username(accountMain.getUsername())
                     .token(token)
-                    .roleId(accountMain.getId())
+                    .roleId(accountMain.getRoleId())
                     .nameRole(role.get().getName())
                     .build();
         }

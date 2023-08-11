@@ -49,6 +49,7 @@ public class ProductItemSerivce {
                     ProductItem productItem = ProductItem
                             .builder()
                             .productId(item.getProductId())
+                            .name(item.getName())
                             .colorId(item.getColorId())
                             .sizeId(item.getSizeId())
                             .soleId(item.getSoleId())
@@ -78,6 +79,7 @@ public class ProductItemSerivce {
             for(ProductItemDTO item : dtos.getDto()){
                 Optional<ProductItem> productItem = productItemRepository.findById(item.getId());
                 productItem.get().setQuantity(item.getQuantity());
+                productItem.get().setName(item.getName());
                 productItem.get().setColorId(item.getColorId());
                 productItem.get().setInsoleId(item.getInsoleId());
                 productItem.get().setSizeId(item.getSizeId());
@@ -124,6 +126,10 @@ public class ProductItemSerivce {
                 this.productItemRepository.save(size);
             }
         }
+    }
+
+    public List<ProductItem> findProductItemByProjectId(Long projectId){
+        return productItemRepository.findAllByProductIdAndStatus(projectId, true);
     }
 
 }

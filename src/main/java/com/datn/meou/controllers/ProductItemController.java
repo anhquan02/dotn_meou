@@ -53,6 +53,11 @@ public class ProductItemController {
         return ResponseUtil.ok("Xóa thành công");
     }
 
+    @GetMapping("product-id")
+    private ResponseEntity<?> findProductItemByProductId(@RequestParam Long productId){
+        return ResponseUtil.ok(this.productItemSerivce.findProductItemByProjectId(productId));
+    }
+
 //    @GetMapping("all-list")
 //    private ResponseEntity<?> findAllList() {
 //        return ResponseUtil.ok(this.productItemSerivce.findAllProductItemList());

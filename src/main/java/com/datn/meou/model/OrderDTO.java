@@ -31,6 +31,7 @@ public class OrderDTO extends BaseModel {
     private String nameStatus;
     private String valueStatus;
     private String username;
+    private Long customerId;
 
     public OrderDTO(Long id, String code, Date createdDate, String addressCustomer,
                     String emailCustomer, String nameCustomer, String note, Double totalPrice,

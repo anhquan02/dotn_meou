@@ -31,5 +31,10 @@ public class OrderController {
         return ResponseUtil.ok(this.orderSevice.changeStatusByOrder(idOrder, idStatus, note));
     }
 
+    @PostMapping("create-order")
+    private ResponseEntity<?> createOrderByCounterSale(@RequestBody OrderDTO dto) {
+        return this.orderSevice.createOrderByCounterSale(dto);
+    }
+
 
 }

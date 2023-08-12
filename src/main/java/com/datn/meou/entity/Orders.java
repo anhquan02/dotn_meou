@@ -54,6 +54,7 @@ public class Orders extends BaseEntity {
     private String phoneCustomer;
     private String addressCustomer;
     private String emailCustomer;
+    private Long customerId;
 
 
 }

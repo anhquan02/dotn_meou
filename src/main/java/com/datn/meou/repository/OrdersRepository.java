@@ -16,5 +16,6 @@ public interface OrdersRepository extends JpaRepository<Orders, Long>, OrderRepo
 
     List<Orders> findAllByAccountId(Long accountId);
 
+    List<Orders> findByCodeContainingOrderByIdDesc(String code);
 
 }

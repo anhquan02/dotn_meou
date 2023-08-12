@@ -9,4 +9,5 @@ public interface OrderRepositoryCustom {
     Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable);
 
     OrderDTO findByOrderId(Long idOrder);
+
 }

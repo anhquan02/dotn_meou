@@ -1,7 +1,17 @@
 package com.datn.meou.services;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.datn.meou.entity.Insole;
+import com.datn.meou.entity.ProductItem;
+import com.datn.meou.entity.Sole;
+import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.ProductDTO;
+import com.datn.meou.model.SoleDTO;
+import com.datn.meou.repository.ProductItemRepository;
+import com.datn.meou.util.DataUtil;
+import com.datn.meou.util.MapperUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -18,53 +28,69 @@ import lombok.AllArgsConstructor;
 public class ProductService {
     private final ProductRepository productRepository;
 
-    public Product saveProduct(Product product) {
-        return this.productRepository.save(product);
+    private final ProductItemRepository productItemRepository;
+
+    public Product saveProduct(ProductDTO dto) {
+
+        Product product = Product
+                .builder()
+                .name(dto.getName())
+                .description(dto.getDescription())
+                .brandId(dto.getBrandId())
+                .image(dto.getNameImage())
+                .build();
+        product.setStatus(true);
+        this.productRepository.save(product);
+
+        return product;
+    }
+    public Product updateProduct(ProductDTO dto) {
+        Optional<Product> productOptional = this.productRepository.findByIdAndStatus(dto.getId(), true);
+        if (productOptional.isPresent()) {
+            Product product = MapperUtil.map(dto, Product.class);
+            product.setName(dto.getName());
+            product.setStatus(dto.getStatus());
+            product.setBrandId(dto.getBrandId());
+            this.productRepository.save(product);
+
+            return product;
+        }
+        throw new BadRequestException("Không có sản phẩm này");
+    }
+    public List<Product> findAllProductList() {
+        return productRepository.findAllByStatus(true);
     }
 
-    public List<Product> findAllProducts() {
-        return this.productRepository.findAll();
+    public Page<Product> findAllProductPage(Pageable pageable) {
+        return productRepository.findAllByStatus(true, pageable);
     }
 
     public Page<Product> findByNameContaining(String name, Pageable pageable) {
-        List<Product> products = productRepository.findByNameContaining(name);
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        List<Product> list;
-        if (products.size() < startItem) {
-            return Page.empty();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, products.size());
-            list = products.subList(startItem, toIndex);
+        if (!DataUtil.isNullObject(name)) {
+            return this.productRepository.findByStatusAndNameContaining(true, name, pageable);
         }
-        Page<Product> productPage = new PageImpl<Product>(list, PageRequest.of(currentPage, pageSize), products.size());
-        return productPage;
+        return this.productRepository.findAllByStatus(true, pageable);
     }
 
     public Product findById(Long id) {
-        return this.productRepository.findById(id).orElse(null);
-    }
-
-    public Product findByName(String name) {
-        return this.productRepository.findByName(name);
-    }
-
-    public Product updateStatus(Long id, Integer status) {
-        Product product = this.findById(id);
-        if (product != null) {
-            product.setStatus(status);
-            return this.productRepository.save(product);
+        Optional<Product> product = this.productRepository.findByIdAndStatus(id, true);
+        if (product.isPresent()) {
+            return product.get();
         }
-        return null;
+        throw new BadRequestException("Không tìm thấy size này");
     }
-
-    public void deleteProduct(Long id) {
-        Product product = this.findById(id);
-        if (product != null) {
-//            product.setDeleted(!product.getDeleted());
-            this.productRepository.save(product);
+    public void deleteProduct(List<Long> ids) {
+        if (ids.size() > 0) {
+            for (Long id : ids) {
+                Product product = findById(id);
+                List<ProductItem> productItems = productItemRepository.findAllByProductIdAndStatus(id, true);
+                if(!productItems.isEmpty()){
+                    throw new BadRequestException("Không thể xóa sản phẩm");
+                }
+                product.setStatus(false);
+                this.productRepository.save(product);
+            }
         }
     }
-    
+
 }

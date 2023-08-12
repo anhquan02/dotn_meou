@@ -23,6 +23,10 @@ public class Product extends BaseEntity {
 
     private String name;
     private String description;
-    private Integer status;
+    private Boolean status;
+    private String image;
+
+    private Long brandId;
+//    private BigDecimal price;
 
 }

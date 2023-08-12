@@ -38,13 +38,13 @@ import javax.persistence.*;
 @Table(name = "dotn_product_item")
 public class ProductItem extends BaseEntity {
     private String name;
-    private Integer productId;
+    private Long productId;
     private Long soleId;
     private Long colorId;
     private Long insoleId;
-    private Long brandId;
     private Long sizeId;
-    private Long imgId;
-    private Integer status;
+    private String image;
+    private Boolean status;
     private Integer quantity;
+    private BigDecimal price;
 }

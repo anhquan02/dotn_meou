@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class SizeDTO extends BaseModel {
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class ColorDTO extends BaseModel {
+
     @NotEmpty(message = "Tên không được rỗng")
-    @Size(min = 1, max = 4, message = "Size không qua 2 ký tự")
+    @Size(min = 2, max = 500, message = "Tên phải từ 2 đến 500 ký tự")
     private String name;
 }

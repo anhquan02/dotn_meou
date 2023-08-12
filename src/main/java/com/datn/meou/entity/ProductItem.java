@@ -46,4 +46,5 @@ public class ProductItem extends BaseEntity {
     private String image;
     private Boolean status;
     private Integer quantity;
+    private BigDecimal price;
 }

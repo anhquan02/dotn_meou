@@ -36,7 +36,6 @@ public class ProductService {
                 .builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .price(dto.getPrice())
                 .brandId(dto.getBrandId())
                 .image(dto.getNameImage())
                 .build();
@@ -50,7 +49,6 @@ public class ProductService {
         if (productOptional.isPresent()) {
             Product product = MapperUtil.map(dto, Product.class);
             product.setName(dto.getName());
-            product.setPrice(dto.getPrice());
             product.setStatus(dto.getStatus());
             product.setBrandId(dto.getBrandId());
             this.productRepository.save(product);

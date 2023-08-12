@@ -27,6 +27,6 @@ public class Product extends BaseEntity {
     private String image;
 
     private Long brandId;
-    private BigDecimal price;
+//    private BigDecimal price;
 
 }

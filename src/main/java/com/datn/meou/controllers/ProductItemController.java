@@ -58,25 +58,26 @@ public class ProductItemController {
         return ResponseUtil.ok(this.productItemSerivce.findProductItemByProjectId(productId));
     }
 
-//    @GetMapping("all-list")
-//    private ResponseEntity<?> findAllList() {
-//        return ResponseUtil.ok(this.productItemSerivce.findAllProductItemList());
-//    }
-//
-//    @GetMapping("all-page")
-//    private ResponseEntity<?> findAllPage(Pageable pageable) {
-//        return ResponseUtil.ok(this.productItemSerivce.findAllProductItemPage(pageable));
-//    }
-//
-//    @GetMapping("id")
-//    private ResponseEntity<?> findById(@RequestParam Long id) {
-//        return ResponseUtil.ok(this.productItemSerivce.findById(id));
-//    }
-//
-//    @GetMapping("search-name")
-//    private ResponseEntity<?> findById(@RequestParam String name, Pageable pageable) {
-//        return ResponseUtil.ok(this.productItemSerivce.findByNameContaining(name, pageable));
-//    }
+    @GetMapping("all-list")
+    private ResponseEntity<?> findAllList() {
+        return ResponseUtil.ok(this.productItemSerivce.findAllProductItemList());
+    }
+
+    @GetMapping("all-page")
+    private ResponseEntity<?> findAllPage(Pageable pageable) {
+        return ResponseUtil.ok(this.productItemSerivce.findAllProductItemPage(pageable));
+    }
+
+    @GetMapping("id")
+    private ResponseEntity<?> findById(@RequestParam Long id) {
+        return ResponseUtil.ok(this.productItemSerivce.findById(id));
+    }
+
+    @GetMapping("search-name")
+    private ResponseEntity<?> findById(@RequestParam String name, Pageable pageable) {
+        return ResponseUtil.ok(this.productItemSerivce.findByNameContaining(name, pageable));
+    }
+
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -88,4 +89,5 @@ public class ProductItemController {
         });
         return ResponseUtil.badRequest(errors.toString());
     }
+
 }

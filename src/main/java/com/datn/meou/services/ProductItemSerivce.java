@@ -56,6 +56,7 @@ public class ProductItemSerivce {
                             .insoleId(item.getInsoleId())
                             .quantity(item.getQuantity())
                             .image(item.getNameImage())
+                            .price(item.getPrice())
                             .build();
                     productItem.setStatus(true);
                     ProductItem productItem1 = productItemRepository.save(productItem);
@@ -73,7 +74,7 @@ public class ProductItemSerivce {
         throw new BadRequestException("Lưu sản phẩm thất bại");
     }
 
-    public List<ProductItem> updateProductItem(ProductItemDTOS dtos) {
+    public List<ProductItem>  updateProductItem(ProductItemDTOS dtos) {
         if(dtos.getDto() != null){
             List<ProductItem> productItemList = new ArrayList<>();
             for(ProductItemDTO item : dtos.getDto()){
@@ -85,6 +86,7 @@ public class ProductItemSerivce {
                 productItem.get().setSizeId(item.getSizeId());
                 productItem.get().setSoleId(item.getSoleId());
                 productItem.get().setImage(item.getNameImage());
+                productItem.get().setPrice(item.getPrice());
                 ProductItem productItem1 = productItemRepository.save(productItem.get());
                 productItemList.add(productItem1);
             }
@@ -131,5 +133,8 @@ public class ProductItemSerivce {
     public List<ProductItem> findProductItemByProjectId(Long projectId){
         return productItemRepository.findAllByProductIdAndStatus(projectId, true);
     }
+
+
+
 
 }

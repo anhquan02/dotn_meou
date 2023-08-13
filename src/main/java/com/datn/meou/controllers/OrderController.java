@@ -22,7 +22,7 @@ public class OrderController {
 
     private final OrderSevice orderSevice;
 
-    @GetMapping("all-page")
+    @PostMapping("all-page")
     private ResponseEntity<?> findAllPage(@RequestBody OrderDTO dto, Pageable pageable) {
         return ResponseUtil.ok(this.orderSevice.findAll(dto, pageable));
     }

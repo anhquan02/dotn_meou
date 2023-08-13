@@ -2,6 +2,7 @@ package com.datn.meou.controllers;
 
 
 import com.datn.meou.model.BrandDTO;
+import com.datn.meou.model.CounterSaleDTO;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.services.OrderSevice;
 import com.datn.meou.util.ResponseUtil;
@@ -32,8 +33,8 @@ public class OrderController {
     }
 
     @PostMapping("create-order")
-    private ResponseEntity<?> createOrderByCounterSale(@RequestBody OrderDTO dto) {
-        return this.orderSevice.createOrderByCounterSale(dto);
+    private ResponseEntity<?> createOrderByCounterSale(@RequestBody CounterSaleDTO dto) {
+        return this.orderSevice.createOrderByCounterSale(dto.getOrderDTO(), dto.getProductItemDTOS());
     }
 
 

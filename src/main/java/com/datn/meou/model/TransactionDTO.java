@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -15,7 +16,8 @@ import java.util.Date;
 public class TransactionDTO extends BaseModel {
 
     private Long orderId;
-    private Double totalPrice;
+    private BigDecimal totalPrice;
+
     private Long accountId;
     private String codeOrder;
     private String nameCustomer;
@@ -23,7 +25,7 @@ public class TransactionDTO extends BaseModel {
     private String typeOrders;
     private Integer type;
 
-    public TransactionDTO(Long id, String codeOrder, Date createdDate, String nameCustomer, String phoneCustomer, Integer type, Double totalPrice) {
+    public TransactionDTO(Long id, String codeOrder, Date createdDate, String nameCustomer, String phoneCustomer, Integer type, BigDecimal totalPrice) {
         this.id = id;
         this.codeOrder = codeOrder;
         this.createdDate = createdDate;

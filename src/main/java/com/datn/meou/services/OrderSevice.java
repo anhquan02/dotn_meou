@@ -1,15 +1,11 @@
 package com.datn.meou.services;
 
 
-import com.datn.meou.entity.Account;
-import com.datn.meou.entity.Orders;
-import com.datn.meou.entity.Transaction;
+import com.datn.meou.entity.*;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.model.ProductItemDTO;
-import com.datn.meou.repository.OrderStatusRepository;
-import com.datn.meou.repository.OrdersRepository;
-import com.datn.meou.repository.TransactionRepository;
+import com.datn.meou.repository.*;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +32,17 @@ public class OrderSevice {
     private final AccountService accountService;
 
     private final TransactionRepository transactionRepository;
+
+    private final ProductItemRepository productItemRepository;
+
+    private final OrderItemRepository orderItemRepository;
+
+    private final SizeRepository sizeRepository;
+    private final SoleRepository soleRepository;
+    private final InsoleRepository insoleRepository;
+    private final ColorRepository colorRepository;
+    private final BrandRepository brandRepository;
+    private final ProductRepository productRepository;
 
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
@@ -70,7 +79,7 @@ public class OrderSevice {
     }
 
 
-    public ResponseEntity<?> createOrderByCounterSale(OrderDTO orderDTO) {
+    public ResponseEntity<?> createOrderByCounterSale(OrderDTO orderDTO, List<ProductItemDTO> productItemDTOS) {
         Account account = this.accountService.getCurrentUser();
         String codeOrder = getCodeForOrder("MEOU1_");
 
@@ -107,8 +116,70 @@ public class OrderSevice {
                 .nameCustomer(orderDTO.getNameCustomer())
                 .phoneCustomer(orderDTO.getPhoneCustomer())
                 .build();
-        this.ordersRepository.save(orders);
+        Orders ordersNew = this.ordersRepository.save(orders);
+        BigDecimal totalPrice = new BigDecimal(0);
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (ProductItemDTO dto : productItemDTOS) {
+            Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatus(dto.getId(), true);
+            if (productItem.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của sản phẩm chi tiết này");
+            }
+            ProductItem item = productItem.get();
+            Optional<Size> size = this.sizeRepository.findByIdAndStatus(item.getSizeId(), true);
+            if (size.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của size sản phẩm này");
+            }
 
+            Optional<Color> color = this.colorRepository.findByIdAndStatus(item.getColorId(), true);
+            if (color.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của màu sản phẩm này");
+            }
+            Optional<Sole> sole = this.soleRepository.findByIdAndStatus(item.getSoleId(), true);
+            if (sole.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của đế sản phẩm này");
+            }
+            Optional<Insole> insole = this.insoleRepository.findByIdAndStatus(item.getInsoleId(), true);
+            if (insole.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của dây giày sản phẩm này");
+            }
+            Optional<Product> product = this.productRepository.findByIdAndStatus(item.getProductId(), true);
+            if (product.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của sản phẩm này");
+            }
+            Optional<Brand> brand = this.brandRepository.findByIdAndStatus(product.get().getBrandId(), true);
+            if (brand.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy id của thương hiệu sản phẩm này");
+            }
+
+            if (DataUtil.isNullObject(dto.getQuantity())) {
+                throw new BadRequestException("Đề nghị nhập số lượng cần mua");
+            }
+            if (dto.getQuantity() <= 0) {
+                throw new BadRequestException("Số lượng đã hết");
+            }
+            if (dto.getQuantity() > productItem.get().getQuantity()) {
+                throw new BadRequestException("Vượt số lượng trong kho");
+            }
+            BigDecimal sumProductItem = item.getPrice().multiply(BigDecimal.valueOf(dto.getQuantity()));
+            totalPrice = totalPrice.add(sumProductItem);
+            OrderItem orderItem = OrderItem
+                    .builder()
+                    .orderId(ordersNew.getId())
+                    .quantityOrder(dto.getQuantity())
+                    .productItemId(dto.getId())
+                    .priceSell(item.getPrice())
+                    .sizeProduct(size.get().getName())
+                    .brandProduct(brand.get().getName())
+                    .colorProduct(color.get().getName())
+                    .insoleProduct(insole.get().getName())
+                    .soleProduct(sole.get().getName())
+                    .build();
+            orderItems.add(orderItem);
+
+        }
+        this.orderItemRepository.saveAll(orderItems);
+        ordersNew.setTotalPrice(totalPrice);
+        this.ordersRepository.save(ordersNew);
 
         return ResponseUtil.ok("Thêm mới thành công");
     }

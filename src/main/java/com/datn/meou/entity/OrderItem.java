@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @AllArgsConstructor
@@ -18,12 +19,12 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long productDetailId;
+    private Long productItemId;
     private Long orderId;
     private String nameProduct;
     private String description;
-    private Long quantityOrder;
-    private Double priceSell;
+    private Integer quantityOrder;
+    private BigDecimal priceSell;
     private String colorProduct;
     private String brandProduct;
     private String sizeProduct;

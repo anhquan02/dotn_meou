@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @SqlResultSetMapping(
@@ -22,7 +23,7 @@ import java.util.Date;
                                 @ColumnResult(name = "nameCustomer", type = String.class),
                                 @ColumnResult(name = "phoneCustomer", type = String.class),
                                 @ColumnResult(name = "type", type = Integer.class),
-                                @ColumnResult(name = "totalPrice", type = Double.class),
+                                @ColumnResult(name = "totalPrice", type = BigDecimal.class),
                         }
                 )
         }
@@ -37,7 +38,7 @@ import java.util.Date;
 @Table(name = "dotn_transaction")
 public class Transaction extends BaseEntity {
     private Long orderId;
-    private Double totalPrice;
+    private BigDecimal totalPrice;
     private Long accountId;
     private String note;
 }

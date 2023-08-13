@@ -25,7 +25,7 @@ import java.util.Date;
                                 @ColumnResult(name = "emailCustomer", type = String.class),
                                 @ColumnResult(name = "nameCustomer", type = String.class),
                                 @ColumnResult(name = "note", type = String.class),
-                                @ColumnResult(name = "totalPrice", type = Double.class),
+                                @ColumnResult(name = "totalPrice", type = BigDecimal.class),
                                 @ColumnResult(name = "typeOrder", type = Integer.class),
                                 @ColumnResult(name = "phoneCustomer", type = String.class),
                                 @ColumnResult(name = "paymentMethod", type = String.class),
@@ -45,7 +45,7 @@ public class Orders extends BaseEntity {
     private Long accountId;
     private Long voucherId;
     private String code;
-    private Double totalPrice;
+    private BigDecimal totalPrice;
     private String paymentMethod;
     private Integer typeOrder;
     private String note;

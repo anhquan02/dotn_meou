@@ -36,8 +36,8 @@ public class OrderItemService {
             }
             List<OrderItem> orderItems = this.orderItemRepository.findAllByOrderId(idOrder);
             Map<String, Object> map = new HashMap<>();
-            map.put("Information of order", orderDTO);
-            map.put("Information of order item", orderItems);
+            map.put("order", orderDTO);
+            map.put("orders", orderItems);
             return ResponseUtil.ok(map);
         }
         throw new BadRequestException("Không tìm thấy id của đơn hàng này");

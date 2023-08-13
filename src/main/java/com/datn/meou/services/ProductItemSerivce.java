@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.datn.meou.entity.*;
 import com.datn.meou.exception.BadRequestException;
-import com.datn.meou.model.ProductDTO;
-import com.datn.meou.model.ProductItemDTO;
-import com.datn.meou.model.ProductItemDTOS;
-import com.datn.meou.model.SizeDTO;
+import com.datn.meou.model.*;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
 import org.springframework.data.domain.Page;
@@ -16,13 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.datn.meou.entity.Brand;
-import com.datn.meou.entity.Color;
-import com.datn.meou.entity.Sole;
-import com.datn.meou.entity.Insole;
-import com.datn.meou.entity.Product;
-import com.datn.meou.entity.Size;
-import com.datn.meou.entity.ProductItem;
 import com.datn.meou.repository.ProductItemRepository;
 
 import lombok.AllArgsConstructor;
@@ -60,6 +51,7 @@ public class ProductItemSerivce {
                             .build();
                     productItem.setStatus(true);
                     ProductItem productItem1 = productItemRepository.save(productItem);
+                    imageService.saveListImage(item.getImageList());
                     productItemList.add(productItem1);
 
                 }else{
@@ -88,6 +80,7 @@ public class ProductItemSerivce {
                 productItem.get().setImage(item.getNameImage());
                 productItem.get().setPrice(item.getPrice());
                 ProductItem productItem1 = productItemRepository.save(productItem.get());
+                imageService.saveListImage(item.getImageList());
                 productItemList.add(productItem1);
             }
             return productItemList;

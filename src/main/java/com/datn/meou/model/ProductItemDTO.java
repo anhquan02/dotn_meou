@@ -1,11 +1,13 @@
 package com.datn.meou.model;
 
+import com.datn.meou.entity.Image;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -27,6 +29,8 @@ public class ProductItemDTO extends BaseModel {
     private String nameSole;
     private String nameColor;
     private String nameInsole;
+    private List<ImageDTO> imageList;
+
     private BigDecimal price;
 
     public ProductItemDTO(Long id, Integer quantity, BigDecimal price, String name, String nameSole, String nameInsole, String nameSize, String nameColor) {

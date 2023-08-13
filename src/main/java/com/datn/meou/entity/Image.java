@@ -16,4 +16,6 @@ import javax.persistence.Table;
 @Table(name = "dotn_image")
 public class Image extends BaseEntity{
     private String name;
+
+    private Long productId;
 }

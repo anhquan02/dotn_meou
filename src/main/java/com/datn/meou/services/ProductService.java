@@ -37,6 +37,7 @@ public class ProductService {
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .brandId(dto.getBrandId())
+                .price(dto.getPrice())
                 .image(dto.getNameImage())
                 .build();
         product.setStatus(true);
@@ -51,6 +52,7 @@ public class ProductService {
             product.setName(dto.getName());
             product.setStatus(dto.getStatus());
             product.setBrandId(dto.getBrandId());
+            product.setPrice(dto.getPrice());
             this.productRepository.save(product);
 
             return product;

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.datn.meou.model.ColorDTO;
 import com.datn.meou.model.ProductDTO;
+import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.repository.ProductRepository;
 import com.datn.meou.util.ResponseUtil;
 import org.springframework.data.domain.Page;
@@ -32,6 +33,13 @@ import javax.validation.Valid;
 public class ProductController {
 
     private final ProductService productService;
+
+    private final ProductRepository productRepository;
+
+    @PostMapping("advanced-search")
+    private ResponseEntity<?> advancedSearchProduct(@RequestBody ProductDTO dto) {
+        return ResponseUtil.ok(this.productRepository.advancedSearch(dto));
+    }
 
     @PostMapping()
     private ResponseEntity<?> save(@Valid @RequestBody ProductDTO dto) {

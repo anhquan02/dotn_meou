@@ -31,9 +31,18 @@ public class ProductDTO extends BaseModel {
     private Long brandId;
     private Long sizeId;
     private Long imgId;
+
+    private String image;
     private String nameSize;
     private String nameImage;
     private String nameSole;
     private String nameColor;
     private String nameInsole;
+
+    public ProductDTO(Long id, String name,BigDecimal price,String image) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.image = image;
+    }
 }

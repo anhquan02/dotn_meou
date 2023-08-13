@@ -111,7 +111,7 @@ public class OrderSevice {
                 .paymentMethod(orderDTO.getPaymentMethod())
                 .typeOrder(1)
                 .code(codeOrder)
-                .statusId(1L)
+                .statusId(5L)
                 .voucherId(orderDTO.getVoucherId())
                 .addressCustomer(orderDTO.getAddressCustomer())
                 .emailCustomer(orderDTO.getEmailCustomer())

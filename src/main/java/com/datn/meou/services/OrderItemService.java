@@ -1,10 +1,12 @@
 package com.datn.meou.services;
 
 import com.datn.meou.entity.OrderItem;
+import com.datn.meou.entity.Transaction;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.repository.OrderItemRepository;
 import com.datn.meou.repository.OrdersRepository;
+import com.datn.meou.repository.TransactionRepository;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
 
+    private final TransactionRepository transactionRepository;
+
     public ResponseEntity<?> getByIdOrder(Long idOrder) {
         if (!DataUtil.isNullObject(idOrder)) {
             OrderDTO orderDTO = this.ordersRepository.findByOrderId(idOrder);
@@ -35,9 +39,11 @@ public class OrderItemService {
                 }
             }
             List<OrderItem> orderItems = this.orderItemRepository.findAllByOrderId(idOrder);
+            List<Transaction> transactions = this.transactionRepository.findByOrderId(idOrder);
             Map<String, Object> map = new HashMap<>();
             map.put("order", orderDTO);
             map.put("orders", orderItems);
+            map.put("transactions", transactions);
             return ResponseUtil.ok(map);
         }
         throw new BadRequestException("Không tìm thấy id của đơn hàng này");

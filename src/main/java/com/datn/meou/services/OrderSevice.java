@@ -170,6 +170,7 @@ public class OrderSevice {
                     .quantityOrder(dto.getQuantity())
                     .productItemId(dto.getId())
                     .priceSell(item.getPrice())
+                    .nameProduct(item.getName())
                     .sizeProduct(size.get().getName())
                     .brandProduct(brand.get().getName())
                     .colorProduct(color.get().getName())

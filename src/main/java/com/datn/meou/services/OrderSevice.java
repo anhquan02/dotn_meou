@@ -165,6 +165,7 @@ public class OrderSevice {
             if (dto.getQuantity() > productItem.get().getQuantity()) {
                 throw new BadRequestException("Vượt số lượng trong kho");
             }
+
             BigDecimal sumProductItem = item.getPrice().multiply(BigDecimal.valueOf(dto.getQuantity()));
             totalPrice = totalPrice.add(sumProductItem);
             OrderItem orderItem = OrderItem
@@ -181,7 +182,8 @@ public class OrderSevice {
                     .soleProduct(sole.get().getName())
                     .build();
             orderItems.add(orderItem);
-
+            item.setQuantity(item.getQuantity() - dto.getQuantity());
+            this.productItemRepository.save(item);
         }
         this.orderItemRepository.saveAll(orderItems);
         ordersNew.setTotalPrice(totalPrice);
@@ -193,6 +195,17 @@ public class OrderSevice {
                         .accountId(account.getId())
                         .totalPrice(ordersNew.getTotalPrice())
                         .build());
+        List<TransactionStatus> transactionStatuses = new ArrayList<>();
+        for (Long i = 1L; i < 5L; i++) {
+            TransactionStatus transactionStatus = TransactionStatus
+                    .builder()
+                    .accountId(account.getId())
+                    .orderId(ordersNew.getId())
+                    .statusId(i)
+                    .build();
+            transactionStatuses.add(transactionStatus);
+        }
+        this.transactionStatusRepository.saveAll(transactionStatuses);
 
         return ResponseUtil.ok("Thêm mới thành công");
     }

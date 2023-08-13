@@ -2,11 +2,13 @@ package com.datn.meou.services;
 
 import com.datn.meou.entity.OrderItem;
 import com.datn.meou.entity.Transaction;
+import com.datn.meou.entity.TransactionStatus;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.repository.OrderItemRepository;
 import com.datn.meou.repository.OrdersRepository;
 import com.datn.meou.repository.TransactionRepository;
+import com.datn.meou.repository.TransactionStatusRepository;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
 
-    private final TransactionRepository transactionRepository;
+    private final TransactionStatusRepository transactionStatusRepository;
 
     public ResponseEntity<?> getByIdOrder(Long idOrder) {
         if (!DataUtil.isNullObject(idOrder)) {
@@ -39,7 +41,7 @@ public class OrderItemService {
                 }
             }
             List<OrderItem> orderItems = this.orderItemRepository.findAllByOrderId(idOrder);
-            List<Transaction> transactions = this.transactionRepository.findByOrderId(idOrder);
+            List<TransactionStatus> transactions = this.transactionStatusRepository.findByOrderId(idOrder);
             Map<String, Object> map = new HashMap<>();
             map.put("order", orderDTO);
             map.put("orders", orderItems);

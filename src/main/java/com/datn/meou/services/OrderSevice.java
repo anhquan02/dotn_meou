@@ -44,6 +44,8 @@ public class OrderSevice {
     private final BrandRepository brandRepository;
     private final ProductRepository productRepository;
 
+    private final TransactionStatusRepository transactionStatusRepository;
+
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
@@ -60,22 +62,22 @@ public class OrderSevice {
         return pages;
     }
 
-    public Transaction changeStatusByOrder(Long idOrder, Long idStatus, String note) {
+    public TransactionStatus changeStatusByOrder(Long idOrder, Long idStatus, String note) {
         Account account = this.accountService.getCurrentUser();
         Optional<Orders> orders = this.ordersRepository.findById(idOrder);
         if (orders.isPresent()) {
             Orders orders1 = orders.get();
             orders1.setStatusId(idStatus);
             this.ordersRepository.save(orders1);
-            Transaction transaction = Transaction
+            TransactionStatus transactionStatus = TransactionStatus
                     .builder()
                     .orderId(idOrder)
                     .accountId(account.getId())
                     .note(note)
-                    .totalPrice(orders1.getTotalPrice())
+                    .statusId(idStatus)
                     .build();
-            this.transactionRepository.save(transaction);
-            return transaction;
+            this.transactionStatusRepository.save(transactionStatus);
+            return transactionStatus;
         }
         throw new BadRequestException("Không tìm thấy id của đơn hàng này");
     }
@@ -183,6 +185,13 @@ public class OrderSevice {
         this.orderItemRepository.saveAll(orderItems);
         ordersNew.setTotalPrice(totalPrice);
         this.ordersRepository.save(ordersNew);
+        this.transactionRepository
+                .save(Transaction
+                        .builder()
+                        .orderId(ordersNew.getId())
+                        .accountId(account.getId())
+                        .totalPrice(ordersNew.getTotalPrice())
+                        .build());
 
         return ResponseUtil.ok("Thêm mới thành công");
     }

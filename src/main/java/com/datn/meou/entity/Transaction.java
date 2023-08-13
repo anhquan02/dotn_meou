@@ -40,5 +40,5 @@ public class Transaction extends BaseEntity {
     private Long orderId;
     private BigDecimal totalPrice;
     private Long accountId;
-    private String note;
+
 }

@@ -2,6 +2,7 @@ package com.datn.meou.controllers;
 
 
 import com.datn.meou.model.BrandDTO;
+import com.datn.meou.model.ChangeStatus;
 import com.datn.meou.model.CounterSaleDTO;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.services.OrderSevice;
@@ -27,9 +28,9 @@ public class OrderController {
         return ResponseUtil.ok(this.orderSevice.findAll(dto, pageable));
     }
 
-    @GetMapping("change-status")
-    private ResponseEntity<?> changeStatusByOrder(@RequestParam Long idOrder, @RequestParam Long idStatus, @RequestParam(required = false) String note) {
-        return ResponseUtil.ok(this.orderSevice.changeStatusByOrder(idOrder, idStatus, note));
+    @PutMapping("change-status")
+    private ResponseEntity<?> changeStatusByOrder(@RequestBody ChangeStatus dto) {
+        return ResponseUtil.ok(this.orderSevice.changeStatusByOrder(dto));
     }
 
     @PostMapping("create-order")

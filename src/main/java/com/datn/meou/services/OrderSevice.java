@@ -3,6 +3,7 @@ package com.datn.meou.services;
 
 import com.datn.meou.entity.*;
 import com.datn.meou.exception.BadRequestException;
+import com.datn.meou.model.ChangeStatus;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.repository.*;
@@ -62,19 +63,19 @@ public class OrderSevice {
         return pages;
     }
 
-    public TransactionStatus changeStatusByOrder(Long idOrder, Long idStatus, String note) {
+    public TransactionStatus changeStatusByOrder(ChangeStatus changeStatus) {
         Account account = this.accountService.getCurrentUser();
-        Optional<Orders> orders = this.ordersRepository.findById(idOrder);
+        Optional<Orders> orders = this.ordersRepository.findById(changeStatus.getIdOrder());
         if (orders.isPresent()) {
             Orders orders1 = orders.get();
-            orders1.setStatusId(idStatus);
+            orders1.setStatusId(changeStatus.getIdStatus());
             this.ordersRepository.save(orders1);
             TransactionStatus transactionStatus = TransactionStatus
                     .builder()
-                    .orderId(idOrder)
+                    .orderId(changeStatus.getIdOrder())
                     .accountId(account.getId())
-                    .note(note)
-                    .statusId(idStatus)
+                    .note(changeStatus.getNote())
+                    .statusId(changeStatus.getIdStatus())
                     .build();
             this.transactionStatusRepository.save(transactionStatus);
             return transactionStatus;

@@ -27,7 +27,7 @@ public class OrderController {
         return ResponseUtil.ok(this.orderSevice.findAll(dto, pageable));
     }
 
-    @PostMapping("change-status")
+    @GetMapping("change-status")
     private ResponseEntity<?> changeStatusByOrder(@RequestParam Long idOrder, @RequestParam Long idStatus, @RequestParam(required = false) String note) {
         return ResponseUtil.ok(this.orderSevice.changeStatusByOrder(idOrder, idStatus, note));
     }

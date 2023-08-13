@@ -47,6 +47,8 @@ public class OrderSevice {
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
+            BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
+            orderDTO.setTotalPrice(a1);
             if (!DataUtil.isNullObject(orderDTO.getTypeOrder())) {
                 if (orderDTO.getTypeOrder() == 1) {
                     orderDTO.setTypeOrders("Đặt tại Quầy");

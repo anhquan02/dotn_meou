@@ -27,6 +27,7 @@ import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
 @RequestMapping("/api/v1/color")
 public class ColorController {
     private final ColorService colorService;

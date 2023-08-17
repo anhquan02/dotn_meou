@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 @SqlResultSetMapping(
@@ -19,8 +20,8 @@ import java.util.Date;
                         columns = {
                                 @ColumnResult(name = "id", type = Long.class),
                                 @ColumnResult(name = "name", type = String.class),
-                                @ColumnResult(name = "price", type = BigDecimal.class),
                                 @ColumnResult(name = "image", type = String.class),
+                                @ColumnResult(name = "quantity", type = BigDecimal.class)
 
                         }
                 )
@@ -38,8 +39,6 @@ public class Product extends BaseEntity {
     private String description;
     private Boolean status;
     private String image;
-
-    private Long brandId;
     private BigDecimal price;
 
 }

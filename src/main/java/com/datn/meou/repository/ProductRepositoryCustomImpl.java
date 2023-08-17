@@ -19,14 +19,14 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductDTO> advancedSearch(ProductDTO dto) {
-        StringBuilder sql = new StringBuilder(" SELECT p.id, p.name,p.price, p.image" +
+        StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, (SELECT SUM(dpi.quantity) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS quantity" +
                 " FROM dotn_product p   " +
                 " JOIN dotn_product_item dpi ON p.id = dpi.product_id " +
                 " JOIN dotn_sole s ON s.id = dpi.sole_id  " +
                 " JOIN dotn_insole ins ON ins.id = dpi.insole_id" +
                 " JOIN dotn_size sz ON sz.id = dpi.size_id" +
                 " JOIN dotn_color c ON c.id = dpi.color_id" +
-                " JOIN dotn_brand b ON b.id = p.brand_id " +
+                " JOIN dotn_brand b ON b.id = dpi.brand_id " +
                 " WHERE 1 = 1");
         Map<String, Object> params = new HashMap<>();
         if (!DataUtil.isNullObject(dto.getName())) {
@@ -35,7 +35,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         }
 
         if (!DataUtil.isNullObject(dto.getBrandId())) {
-            sql.append(" and p.brand_id = :brand");
+            sql.append(" and dpi.brand_id = :brand");
             params.put("brand", dto.getBrandId());
         }
         if (!DataUtil.isNullObject(dto.getColorId())) {

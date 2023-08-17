@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class ProductDTO extends BaseModel {
     private String description;
     private Boolean status;
     private BigDecimal price;
-    private Integer quantity;
+    private BigDecimal quantity;
     private Long productId;
     private Long soleId;
     private Long colorId;
@@ -39,10 +40,10 @@ public class ProductDTO extends BaseModel {
     private String nameColor;
     private String nameInsole;
 
-    public ProductDTO(Long id, String name,BigDecimal price,String image) {
+    public ProductDTO(Long id, String name, String image, BigDecimal quantity) {
         this.id = id;
         this.name = name;
-        this.price = price;
         this.image = image;
+        this.quantity = quantity;
     }
 }

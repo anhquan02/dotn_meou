@@ -24,7 +24,7 @@ public interface ProductItemRepository extends JpaRepository<ProductItem, Long>,
 
     List<ProductItem> findAllByProductIdAndStatus(Long id, Boolean status);
 
-    ProductItem findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleId(Long productId, Long colorId, Long insoleId, Long sizeId, Long soleId);
+    ProductItem findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleIdAndBrandId(Long productId, Long colorId, Long insoleId, Long sizeId, Long soleId, Long brandId);
 
     ProductItem findByProductId(Long id);
 }

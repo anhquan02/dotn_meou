@@ -2,6 +2,8 @@ package com.datn.meou.services;
 
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.ImageDTO;
+import com.datn.meou.util.DataUtil;
+import com.datn.meou.util.MapperUtil;
 import org.springframework.stereotype.Service;
 
 import com.datn.meou.entity.Image;
@@ -11,6 +13,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,14 +30,14 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public List<Image> saveListImage(List<ImageDTO> imageDTOList) {
+    public List<Image> saveListImage(List<ImageDTO> imageDTOList, Long productItemID) {
         if(imageDTOList != null){
             List<Image> imageList = new ArrayList<>();
             for (ImageDTO dto : imageDTOList){
                 Image image = Image
                         .builder()
                         .name(dto.getName())
-                        .productId(dto.getProductId())
+                        .productItemId(productItemID)
                         .build();
                 imageList.add(image);
             }
@@ -43,11 +46,37 @@ public class ImageService {
         throw new BadRequestException("Lưu ảnh thất bại");
     }
 
+    public List<Image> updateImage(List<ImageDTO> imageDTOList, Long productItemID) {
+            List<Image> imageList = new ArrayList<>();
+            for (ImageDTO dto : imageDTOList){
+                Optional<Image> image = imageRepository.findById(dto.getId());
+                //thêm ảnh
+                if(image == null || image.isEmpty()){
+                    Image imageSave = Image
+                            .builder()
+                            .name(dto.getName())
+                            .productItemId(productItemID)
+                            .build();
+                    imageList.add(imageRepository.save(imageSave));
+                }
+                //Xóa ảnh
+                if(image.isPresent() || dto.getName() == null){
+                    imageRepository.delete(image.get());
+                }
+
+            }
+            return imageList;
+    }
+
     public Image findByName(String name) {
         return imageRepository.findByName(name);
     }
 
     public Image findById(Long id) {
         return imageRepository.findById(id).orElse(null);
+    }
+
+    public List<ImageDTO> findAllByProductItemId(Long id){
+        return MapperUtil.mapList(imageRepository.findAllByProductItemId(id), ImageDTO.class);
     }
 }

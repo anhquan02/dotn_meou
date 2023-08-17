@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aspectj.bridge.Message;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -29,7 +32,8 @@ public class ProductItemDTO extends BaseModel {
     private String nameSole;
     private String nameColor;
     private String nameInsole;
-    private List<ImageDTO> imageList;
+    private List<ImageDTO> imageList = new ArrayList<>();
+
 
     private BigDecimal price;
 

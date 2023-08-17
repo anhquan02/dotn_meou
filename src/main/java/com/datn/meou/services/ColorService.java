@@ -47,7 +47,7 @@ public class ColorService {
             this.colorRepository.save(color);
             return color;
         }
-        throw new BadRequestException("Không có size này");
+        throw new BadRequestException("Không có màu sắc này");
     }
 
     public List<Color> findAllColorList() {
@@ -71,7 +71,7 @@ public class ColorService {
         if (color.isPresent()) {
             return color.get();
         }
-        throw new BadRequestException("Không tìm thấy color này");
+        throw new BadRequestException("Không tìm thấy màu sắc này");
     }
 
     public void deleteColor(List<Long> ids) {

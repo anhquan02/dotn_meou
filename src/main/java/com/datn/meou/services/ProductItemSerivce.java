@@ -109,8 +109,8 @@ public class ProductItemSerivce {
                             .brandId(item.getBrandId())
                             .quantity(item.getQuantity())
                             .price(item.getPrice())
+                            .status(item.getStatus())
                             .build();
-                    productItem.setStatus(true);
                     ProductItem productItem1 = productItemRepository.save(productItem);
                     imageService.saveListImage(item.getImageList(),productItem1.getId());
                     productItemList.add(productItem1);

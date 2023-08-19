@@ -25,7 +25,7 @@ public class ProductItemDTO extends BaseModel {
     private Long brandId;
     private Long sizeId;
     private Long imgId;
-    private Integer status;
+    private Boolean status;
     private Integer quantity;
     private String nameSize;
     private String nameImage;

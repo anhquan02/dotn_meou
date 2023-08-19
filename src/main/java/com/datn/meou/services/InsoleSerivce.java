@@ -49,7 +49,7 @@ public class InsoleSerivce {
             this.insoleRepository.save(insole);
             return insole;
         }
-        throw new BadRequestException("Không có insole này");
+        throw new BadRequestException("Không có lót giày này");
     }
 
     public List<Insole> findAllInsoleList() {
@@ -73,7 +73,7 @@ public class InsoleSerivce {
         if (insole.isPresent()) {
             return insole.get();
         }
-        throw new BadRequestException("Không tìm thấy insole này");
+        throw new BadRequestException("Không tìm thấy lót giày này");
     }
 
     public void deleteInsole(List<Long> ids) {

@@ -50,7 +50,7 @@ public class SoleService {
             this.soleRepository.save(sole);
             return sole;
         }
-        throw new BadRequestException("Không có size này");
+        throw new BadRequestException("Không có đế giày này");
     }
 
     public List<Sole> findAllSoleList() {
@@ -74,7 +74,7 @@ public class SoleService {
         if (sole.isPresent()) {
             return sole.get();
         }
-        throw new BadRequestException("Không tìm thấy size này");
+        throw new BadRequestException("Không tìm thấy đế giày này");
     }
 
     public void deleteSole(List<Long> ids) {

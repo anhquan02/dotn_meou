@@ -11,6 +11,4 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ImageDTO extends BaseModel {
     private String name;
-
-    private Long productId;
 }

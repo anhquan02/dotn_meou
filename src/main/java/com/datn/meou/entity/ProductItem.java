@@ -43,6 +43,7 @@ public class ProductItem extends BaseEntity {
     private Long colorId;
     private Long insoleId;
     private Long sizeId;
+    private Long brandId;
     private String image;
     private Boolean status;
     private Integer quantity;

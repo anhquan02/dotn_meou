@@ -17,5 +17,5 @@ import javax.persistence.Table;
 public class Image extends BaseEntity{
     private String name;
 
-    private Long productId;
+    private Long productItemId;
 }

@@ -30,14 +30,16 @@ public class ProductService {
 
     private final ProductItemRepository productItemRepository;
 
-    public Product saveProduct(ProductDTO dto) {
+    private final BrandService brandService;
 
+    public Product saveProduct(ProductDTO dto) {
+        if(DataUtil.isNullObject(dto.getName())){
+            throw new BadRequestException("Tên không được để trống");
+        }
         Product product = Product
                 .builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .brandId(dto.getBrandId())
-                .price(dto.getPrice())
                 .image(dto.getNameImage())
                 .build();
         product.setStatus(true);
@@ -47,12 +49,15 @@ public class ProductService {
     }
     public Product updateProduct(ProductDTO dto) {
         Optional<Product> productOptional = this.productRepository.findByIdAndStatus(dto.getId(), true);
+        if(!DataUtil.isNullObject(dto.getBrandId())){
+            if(brandService.findById(dto.getBrandId()) == null){
+                throw new BadRequestException("Không tìm thấy thương hiệu này");
+            }
+        }
         if (productOptional.isPresent()) {
             Product product = MapperUtil.map(dto, Product.class);
             product.setName(dto.getName());
             product.setStatus(dto.getStatus());
-            product.setBrandId(dto.getBrandId());
-            product.setPrice(dto.getPrice());
             this.productRepository.save(product);
 
             return product;

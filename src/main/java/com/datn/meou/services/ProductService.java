@@ -36,13 +36,19 @@ public class ProductService {
         if(DataUtil.isNullObject(dto.getName())){
             throw new BadRequestException("Tên không được để trống");
         }
+        if(DataUtil.isNullObject(dto.getImage())){
+            throw new BadRequestException("Ảnh không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getStatus())){
+            throw new BadRequestException("Chưa chọn trạng thái sản phẩm");
+        }
         Product product = Product
                 .builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
-                .image(dto.getNameImage())
+                .image(dto.getImage())
+                .status(dto.getStatus())
                 .build();
-        product.setStatus(true);
         this.productRepository.save(product);
 
         return product;

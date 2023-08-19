@@ -19,7 +19,10 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
     @Override
     public List<ProductDTO> advancedSearch(ProductDTO dto) {
-        StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, (SELECT SUM(dpi.quantity) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS quantity" +
+        StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, " +
+                " (SELECT MIN(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS minPrice," +
+                " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, "+
+                " (SELECT SUM(dpi.quantity) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS quantity" +
                 " FROM dotn_product p   " +
                 " JOIN dotn_product_item dpi ON p.id = dpi.product_id " +
                 " JOIN dotn_sole s ON s.id = dpi.sole_id  " +

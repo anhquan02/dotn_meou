@@ -108,7 +108,6 @@ public class ProductItemSerivce {
                             .insoleId(item.getInsoleId())
                             .brandId(item.getBrandId())
                             .quantity(item.getQuantity())
-                            .image(item.getNameImage())
                             .price(item.getPrice())
                             .build();
                     productItem.setStatus(true);
@@ -132,10 +131,40 @@ public class ProductItemSerivce {
         if(dtos.getDto() != null){
             List<ProductItem> productItemList = new ArrayList<>();
             for(ProductItemDTO item : dtos.getDto()){
-                if(item.getQuantity() != null){
-                    if(item.getQuantity() < 0){
-                        throw new BadRequestException("Số lượng không được nhỏ hơn 0");
-                    }
+                if(DataUtil.isNullObject(item.getProductId())) {
+                    throw new BadRequestException("id sản phẩm không được để trống");
+                }
+
+                if(DataUtil.isNullObject(item.getSizeId())) {
+                    throw new BadRequestException("Size không để trống");
+                }
+
+                if(DataUtil.isNullObject(item.getInsoleId())) {
+                    throw new BadRequestException("Lót giày không để trống");
+                }
+
+                if(DataUtil.isNullObject(item.getSoleId())) {
+                    throw new BadRequestException("Đế giày không để trống");
+                }
+
+                if(DataUtil.isNullObject(item.getColorId())) {
+                    throw new BadRequestException("Màu sắc không để trống");
+                }
+
+                if(DataUtil.isNullObject(item.getQuantity())) {
+                    throw new BadRequestException("Số lượng không để trống");
+                }
+                if(item.getQuantity() < 0){
+                    throw new BadRequestException("Số lượng không được nhỏ hơn 0");
+                }
+                if(DataUtil.isNullOrEmpty(item.getImageList())){
+                    throw new BadRequestException("Ảnh không được để trống");
+                }
+                if(DataUtil.isNullObject(item.getBrandId())){
+                    throw new BadRequestException("Thương hiệu không được để trống");
+                }
+                if(DataUtil.isNullObject(item.getPrice())){
+                    throw new BadRequestException("Giá không được để trống");
                 }
                 Optional<ProductItem> productItem = productItemRepository.findById(item.getId());
                 ProductItem productItem1 = productItem.get();
@@ -168,9 +197,8 @@ public class ProductItemSerivce {
                 productItem1.setInsoleId(item.getInsoleId());
                 productItem1.setSizeId(item.getSizeId());
                 productItem1.setSoleId(item.getSoleId());
-                productItem1.setImage(item.getNameImage());
                 productItem1.setPrice(item.getPrice());
-                ProductItem productItem2 = productItemRepository.save(productItem.get());
+                ProductItem productItem2 = productItemRepository.save(productItem1);
                 imageService.updateImage(item.getImageList(), productItem2.getId());
                 productItemList.add(productItem2);
             }

@@ -129,38 +129,38 @@ public class OrderSevice {
         for (ProductItemDTO dto : productItemDTOS) {
             Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatusGreaterThan(dto.getId(), 0);
             if (productItem.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của sản phẩm chi tiết này");
+                throw new BadRequestException("Cần thêm sản phẩm chi tiết này");
             }
             ProductItem item = productItem.get();
             Optional<Size> size = this.sizeRepository.findByIdAndStatus(item.getSizeId(), true);
             if (size.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của size sản phẩm này");
+                throw new BadRequestException("Cần thêm size sản phẩm này");
             }
 
             Optional<Color> color = this.colorRepository.findByIdAndStatus(item.getColorId(), true);
             if (color.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của màu sản phẩm này");
+                throw new BadRequestException("Cần thêm màu sản phẩm này");
             }
             Optional<Sole> sole = this.soleRepository.findByIdAndStatus(item.getSoleId(), true);
             if (sole.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của đế sản phẩm này");
+                throw new BadRequestException("Cần thêm đế sản phẩm này");
             }
             Optional<Insole> insole = this.insoleRepository.findByIdAndStatus(item.getInsoleId(), true);
             if (insole.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của dây giày sản phẩm này");
+                throw new BadRequestException("Cần thêm dây giày sản phẩm này");
             }
             Optional<Product> product = this.productRepository.findByIdAndStatusGreaterThan(item.getProductId(), 0);
             if (product.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của sản phẩm này");
+                throw new BadRequestException("Cần thêm sản phẩm này");
             }
             Optional<Brand> brand = this.brandRepository.findByIdAndStatus(item.getBrandId(), true);
             if (brand.isEmpty()) {
-                throw new BadRequestException("Không tìm thấy id của thương hiệu sản phẩm này");
+                throw new BadRequestException("Cần thêm thương hiệu sản phẩm này");
             }
 
             List<Image> images = this.imageRepository.findAllByProductItemId(productItem.get().getId());
-            if (DataUtil.isNullObject(images)) {
-                throw new BadRequestException("Không tìm thấy ảnh của sản phẩm này");
+            if (images.size() < 1) {
+                throw new BadRequestException("Cần thêm ảnh cho sản phẩm này");
             }
 
             if (DataUtil.isNullObject(dto.getQuantity())) {

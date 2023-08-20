@@ -9,6 +9,7 @@ import com.datn.meou.entity.*;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.*;
 import com.datn.meou.repository.ImageRepository;
+import com.datn.meou.repository.OrderItemRepository;
 import com.datn.meou.repository.ProductRepository;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
@@ -25,6 +26,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ProductItemSerivce {
     private final ProductItemRepository productItemRepository;
+    private final OrderItemRepository orderItemRepository;
     private final ProductService productService;
     private final SoleService soleService;
     private final BrandService brandService;
@@ -282,6 +284,13 @@ public class ProductItemSerivce {
         if (ids.size() > 0) {
             for (Long id : ids) {
                 Optional<ProductItem> productItem = productItemRepository.findById(id);
+                if(productItem.isEmpty()){
+                    throw new BadRequestException("Sản phẩm chi tiết này không tồn tại");
+                }
+                List<OrderItem> lstOrderItem = orderItemRepository.findAllByProductItemId(productItem.get().getId());
+                if(lstOrderItem.isEmpty()){
+                    throw new BadRequestException("không thể xóa sản phẩm này");
+                }
                 productItem.get().setStatus(0);
                 this.productItemRepository.save(productItem.get());
             }

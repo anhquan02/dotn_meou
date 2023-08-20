@@ -24,4 +24,5 @@ public class OrderItemDTO {
     private String sizeProduct;
     private String soleProduct;
     private String insoleProduct;
+    private String image;
 }

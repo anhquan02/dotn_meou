@@ -29,11 +29,9 @@ import java.util.Optional;
 public class ProductItemController {
     private final ProductItemSerivce productItemSerivce;
 
-    private final ProductItemRepository productItemRepository;
-
     @PostMapping("search-countersale")
     private ResponseEntity<?> searchProductForCounterSale(@RequestBody ProductItemDTO dto) {
-        return ResponseUtil.ok(this.productItemRepository.searchProductForCounterSale(dto));
+        return ResponseUtil.ok(this.productItemSerivce.searchProductForCounterSale(dto));
     }
 
     @PostMapping()
@@ -54,7 +52,7 @@ public class ProductItemController {
     }
 
     @GetMapping("product-id")
-    private ResponseEntity<?> findProductItemByProductId(@RequestParam Long productId){
+    private ResponseEntity<?> findProductItemByProductId(@RequestParam Long productId) {
         return ResponseUtil.ok(this.productItemSerivce.findProductItemByProjectId(productId));
     }
 

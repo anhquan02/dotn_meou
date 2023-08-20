@@ -54,7 +54,7 @@ public class ProductService {
         return product;
     }
     public Product updateProduct(ProductDTO dto) {
-        Optional<Product> productOptional = this.productRepository.findByIdAndStatus(dto.getId(), true);
+        Optional<Product> productOptional = this.productRepository.findByIdAndDeleted(dto.getId(), true);
         if(!DataUtil.isNullObject(dto.getBrandId())){
             if(brandService.findById(dto.getBrandId()) == null){
                 throw new BadRequestException("Không tìm thấy thương hiệu này");
@@ -71,22 +71,22 @@ public class ProductService {
         throw new BadRequestException("Không có sản phẩm này");
     }
     public List<Product> findAllProductList() {
-        return productRepository.findAllByStatus(true);
+        return productRepository.findAllByDeleted(true);
     }
 
     public Page<Product> findAllProductPage(Pageable pageable) {
-        return productRepository.findAllByStatus(true, pageable);
+        return productRepository.findAllByDeleted(true, pageable);
     }
 
     public Page<Product> findByNameContaining(String name, Pageable pageable) {
         if (!DataUtil.isNullObject(name)) {
-            return this.productRepository.findByStatusAndNameContaining(true, name, pageable);
+            return this.productRepository.findByDeletedAndNameContaining(true, name, pageable);
         }
-        return this.productRepository.findAllByStatus(true, pageable);
+        return this.productRepository.findAllByDeleted(true, pageable);
     }
 
     public Product findById(Long id) {
-        Optional<Product> product = this.productRepository.findByIdAndStatus(id, true);
+        Optional<Product> product = this.productRepository.findByIdAndDeleted(id, true);
         if (product.isPresent()) {
             return product.get();
         }
@@ -96,11 +96,11 @@ public class ProductService {
         if (ids.size() > 0) {
             for (Long id : ids) {
                 Product product = findById(id);
-                List<ProductItem> productItems = productItemRepository.findAllByProductIdAndStatus(id, true);
+                List<ProductItem> productItems = productItemRepository.findAllByProductIdAndDeleted(id, true);
                 if(!productItems.isEmpty()){
                     throw new BadRequestException("Không thể xóa sản phẩm");
                 }
-                product.setStatus(false);
+                product.setDeleted(false);
                 this.productRepository.save(product);
             }
         }

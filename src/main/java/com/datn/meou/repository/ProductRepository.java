@@ -13,13 +13,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
+    Optional<Product> findByIdAndDeleted(Long id, Boolean status);
     Optional<Product> findByIdAndStatus(Long id, Boolean status);
 
-    Page<Product> findAllByStatus(Boolean status, Pageable pageable);
+    Page<Product> findAllByDeleted(Boolean status, Pageable pageable);
 
-    List<Product> findAllByStatus(Boolean status);
+    List<Product> findAllByDeleted(Boolean status);
 
-    Page<Product> findByStatusAndNameContaining(Boolean status, String name, Pageable pageable);
+    Page<Product> findByDeletedAndNameContaining(Boolean status, String name, Pageable pageable);
 
     Product findProductByName(String name);
 }

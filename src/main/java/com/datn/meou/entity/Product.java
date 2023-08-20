@@ -41,6 +41,5 @@ public class Product extends BaseEntity {
     private String description;
     private Boolean status;
     private String image;
-//    private BigDecimal price;
-
+    private Boolean deleted;
 }

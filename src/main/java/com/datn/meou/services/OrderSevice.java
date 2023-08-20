@@ -47,6 +47,8 @@ public class OrderSevice {
 
     private final TransactionStatusRepository transactionStatusRepository;
 
+    private final ImageRepository imageRepository;
+
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
@@ -151,9 +153,14 @@ public class OrderSevice {
             if (product.isEmpty()) {
                 throw new BadRequestException("Không tìm thấy id của sản phẩm này");
             }
-            Optional<Brand> brand = this.brandRepository.findByIdAndStatus(product.get().getBrandId(), true);
+            Optional<Brand> brand = this.brandRepository.findByIdAndStatus(item.getBrandId(), true);
             if (brand.isEmpty()) {
                 throw new BadRequestException("Không tìm thấy id của thương hiệu sản phẩm này");
+            }
+
+            List<Image> images = this.imageRepository.findAllByProductItemId(productItem.get().getId());
+            if (DataUtil.isNullObject(images)) {
+                throw new BadRequestException("Không tìm thấy ảnh của sản phẩm này");
             }
 
             if (DataUtil.isNullObject(dto.getQuantity())) {
@@ -180,6 +187,7 @@ public class OrderSevice {
                     .colorProduct(color.get().getName())
                     .insoleProduct(insole.get().getName())
                     .soleProduct(sole.get().getName())
+                    .image(images.get(0).getName())
                     .build();
             orderItems.add(orderItem);
             item.setQuantity(item.getQuantity() - dto.getQuantity());

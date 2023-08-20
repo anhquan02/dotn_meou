@@ -30,7 +30,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 " JOIN dotn_size sz ON sz.id = dpi.size_id" +
                 " JOIN dotn_color c ON c.id = dpi.color_id" +
                 " JOIN dotn_brand b ON b.id = dpi.brand_id " +
-                " WHERE 1 = 1");
+                " WHERE p.deleted = true");
         Map<String, Object> params = new HashMap<>();
         if (!DataUtil.isNullObject(dto.getName())) {
             sql.append(" and lower(p.name) like :name ");

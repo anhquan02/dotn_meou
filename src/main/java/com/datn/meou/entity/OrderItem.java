@@ -30,5 +30,6 @@ public class OrderItem {
     private String sizeProduct;
     private String soleProduct;
     private String insoleProduct;
+    private String image;
 
 }

@@ -76,7 +76,9 @@ public class ProductItemSerivce {
                 if (DataUtil.isNullObject(item.getPrice())) {
                     throw new BadRequestException("Giá không được để trống");
                 }
-
+                if(DataUtil.isNullObject(item.getStatus())){
+                    throw new BadRequestException("Trạng thái không được để trống");
+                }
                 Product product = productService.findById(item.getProductId());
                 if (product == null) {
                     throw new BadRequestException("Sản phẩm không tồn tại");
@@ -165,6 +167,9 @@ public class ProductItemSerivce {
                 }
                 if(DataUtil.isNullObject(item.getPrice())){
                     throw new BadRequestException("Giá không được để trống");
+                }
+                if(DataUtil.isNullObject(item.getStatus())){
+                    throw new BadRequestException("Trạng thái không được để trống");
                 }
                 Optional<ProductItem> productItem = productItemRepository.findById(item.getId());
                 ProductItem productItem1 = productItem.get();

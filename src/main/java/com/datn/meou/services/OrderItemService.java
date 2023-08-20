@@ -48,7 +48,7 @@ public class OrderItemService {
             List<OrderItemDTO> orderItemDTOS = MapperUtil.mapList(orderItems, OrderItemDTO.class);
             if (!DataUtil.isNullObject(orderItemDTOS)) {
                 for (OrderItemDTO orderItemDTO : orderItemDTOS) {
-                    Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatus(orderItemDTO.getId(), true);
+                    Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatusGreaterThan(orderItemDTO.getId(), 0);
                     if (productItem.isPresent()) {
 
                     }

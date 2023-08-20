@@ -127,7 +127,7 @@ public class OrderSevice {
         BigDecimal totalPrice = new BigDecimal(0);
         List<OrderItem> orderItems = new ArrayList<>();
         for (ProductItemDTO dto : productItemDTOS) {
-            Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatus(dto.getId(), true);
+            Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatusGreaterThan(dto.getId(), 0);
             if (productItem.isEmpty()) {
                 throw new BadRequestException("Không tìm thấy id của sản phẩm chi tiết này");
             }
@@ -149,7 +149,7 @@ public class OrderSevice {
             if (insole.isEmpty()) {
                 throw new BadRequestException("Không tìm thấy id của dây giày sản phẩm này");
             }
-            Optional<Product> product = this.productRepository.findByIdAndStatus(item.getProductId(), true);
+            Optional<Product> product = this.productRepository.findByIdAndStatusGreaterThan(item.getProductId(), 0);
             if (product.isEmpty()) {
                 throw new BadRequestException("Không tìm thấy id của sản phẩm này");
             }

@@ -48,7 +48,6 @@ public class ProductService {
                 .description(dto.getDescription())
                 .image(dto.getImage())
                 .status(dto.getStatus())
-                .deleted(true)
                 .build();
         this.productRepository.save(product);
 
@@ -64,7 +63,7 @@ public class ProductService {
         if(DataUtil.isNullObject(dto.getStatus())){
             throw new BadRequestException("Chưa chọn trạng thái sản phẩm");
         }
-        Optional<Product> productOptional = this.productRepository.findByIdAndDeleted(dto.getId(), true);
+        Optional<Product> productOptional = this.productRepository.findByIdAndStatusGreaterThan(dto.getId(), 0);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
             product.setName(dto.getName());
@@ -77,22 +76,22 @@ public class ProductService {
         throw new BadRequestException("Không có sản phẩm này");
     }
     public List<Product> findAllProductList() {
-        return productRepository.findAllByDeleted(true);
+        return productRepository.findAllByStatusGreaterThan(0);
     }
 
     public Page<Product> findAllProductPage(Pageable pageable) {
-        return productRepository.findAllByDeleted(true, pageable);
+        return productRepository.findAllByStatusGreaterThan(0, pageable);
     }
 
     public Page<Product> findByNameContaining(String name, Pageable pageable) {
         if (!DataUtil.isNullObject(name)) {
-            return this.productRepository.findByDeletedAndNameContaining(true, name, pageable);
+            return this.productRepository.findByStatusGreaterThanAndNameContaining(0, name, pageable);
         }
-        return this.productRepository.findAllByDeleted(true, pageable);
+        return this.productRepository.findAllByStatusGreaterThan(0, pageable);
     }
 
     public Product findById(Long id) {
-        Optional<Product> product = this.productRepository.findByIdAndDeleted(id, true);
+        Optional<Product> product = this.productRepository.findByIdAndStatusGreaterThan(id, 0);
         if (product.isPresent()) {
             return product.get();
         }
@@ -102,11 +101,11 @@ public class ProductService {
         if (ids.size() > 0) {
             for (Long id : ids) {
                 Product product = findById(id);
-                List<ProductItem> productItems = productItemRepository.findAllByProductIdAndDeleted(id, true);
+                List<ProductItem> productItems = productItemRepository.findAllByProductIdAndStatusGreaterThan(id, 0);
                 if(!productItems.isEmpty()){
                     throw new BadRequestException("Không thể xóa sản phẩm");
                 }
-                product.setDeleted(false);
+                product.setStatus(0);
                 this.productRepository.save(product);
             }
         }

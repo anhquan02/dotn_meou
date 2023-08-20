@@ -116,7 +116,6 @@ public class ProductItemSerivce {
                             .price(item.getPrice())
                             .status(item.getStatus())
                             .build();
-                    productItem.setDeleted(true);
                     ProductItemDTO productItemDTO = MapperUtil.map(productItemRepository.save(productItem), ProductItemDTO.class);
                     productItemDTO.getImageList().addAll(MapperUtil.mapList(imageService.saveListImage(item.getImageList(), productItemDTO.getId()), ImageDTO.class));
                     productItemList.add(productItemDTO);
@@ -216,7 +215,7 @@ public class ProductItemSerivce {
     }
 
     public List<ProductItemDTO> findAllProductItemList() {
-        List<ProductItemDTO> lst = MapperUtil.mapList(productItemRepository.findAllByDeleted(true), ProductItemDTO.class);
+        List<ProductItemDTO> lst = MapperUtil.mapList(productItemRepository.findAllByStatusGreaterThan(0), ProductItemDTO.class);
         for (ProductItemDTO item : lst) {
             item.getImageList().addAll(imageService.findAllByProductItemId(item.getId()));
         }
@@ -224,7 +223,7 @@ public class ProductItemSerivce {
     }
 
     public Page<ProductItemDTO> findAllProductItemPage(Pageable pageable) {
-        Page<ProductItem> page = productItemRepository.findAllByDeleted(true, pageable);
+        Page<ProductItem> page = productItemRepository.findAllByStatusGreaterThan(0, pageable);
         Page<ProductItemDTO> productItemDTO1S = page.map(new Function<ProductItem, ProductItemDTO>() {
             @Override
             public ProductItemDTO apply(ProductItem productItem) {
@@ -242,7 +241,7 @@ public class ProductItemSerivce {
     public Page<ProductItemDTO> findByNameContaining(String name, Pageable pageable) {
 
         if (!DataUtil.isNullObject(name)) {
-            Page<ProductItem> productItems = this.productItemRepository.findByDeletedAndNameContaining(true, name, pageable);
+            Page<ProductItem> productItems = this.productItemRepository.findByStatusGreaterThanAndNameContaining(0, name, pageable);
             Page<ProductItemDTO> productItemDTOS = productItems.map(new Function<ProductItem, ProductItemDTO>() {
                 @Override
                 public ProductItemDTO apply(ProductItem productItem) {
@@ -255,7 +254,7 @@ public class ProductItemSerivce {
             }
             return productItemDTOS;
         }
-        Page<ProductItem> productItem1s = this.productItemRepository.findAllByDeleted(true, pageable);
+        Page<ProductItem> productItem1s = this.productItemRepository.findAllByStatusGreaterThan(0, pageable);
         Page<ProductItemDTO> productItemDTO1S = productItem1s.map(new Function<ProductItem, ProductItemDTO>() {
             @Override
             public ProductItemDTO apply(ProductItem productItem) {
@@ -270,7 +269,7 @@ public class ProductItemSerivce {
     }
 
     public ProductItemDTO findById(Long id) {
-        Optional<ProductItem> productItem = this.productItemRepository.findByIdAndDeleted(id, true);
+        Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatusGreaterThan(id, 0);
         if (productItem.isPresent()) {
             ProductItemDTO dto = MapperUtil.map(productItem.get(), ProductItemDTO.class);
             dto.setImageList(imageService.findAllByProductItemId(id));
@@ -283,14 +282,14 @@ public class ProductItemSerivce {
         if (ids.size() > 0) {
             for (Long id : ids) {
                 Optional<ProductItem> productItem = productItemRepository.findById(id);
-                productItem.get().setDeleted(false);
+                productItem.get().setStatus(0);
                 this.productItemRepository.save(productItem.get());
             }
         }
     }
 
     public List<ProductItemDTO> findProductItemByProjectId(Long projectId) {
-        List<ProductItemDTO> lst = MapperUtil.mapList(productItemRepository.findAllByProductIdAndDeleted(projectId, true), ProductItemDTO.class);
+        List<ProductItemDTO> lst = MapperUtil.mapList(productItemRepository.findAllByProductIdAndStatusGreaterThan(projectId, 0), ProductItemDTO.class);
         for (ProductItemDTO item : lst) {
             List<ImageDTO> imageDTOList = imageService.findAllByProductItemId(item.getId());
             item.getImageList().addAll(imageDTOList);

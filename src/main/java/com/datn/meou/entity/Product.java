@@ -39,7 +39,6 @@ public class Product extends BaseEntity {
 
     private String name;
     private String description;
-    private Boolean status;
+    private Integer status;
     private String image;
-    private Boolean deleted;
 }

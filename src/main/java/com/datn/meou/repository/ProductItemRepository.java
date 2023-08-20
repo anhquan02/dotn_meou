@@ -14,16 +14,15 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProductItemRepository extends JpaRepository<ProductItem, Long>, ProductItemRepositoryCustom {
-    Optional<ProductItem> findByIdAndDeleted(Long id, Boolean status);
 
-    Optional<ProductItem> findByIdAndStatus(Long id, Boolean status);
-    Page<ProductItem> findAllByDeleted(Boolean status, Pageable pageable);
+    Optional<ProductItem> findByIdAndStatusGreaterThan(Long id, Integer status);
+    Page<ProductItem> findAllByStatusGreaterThan(Integer status, Pageable pageable);
 
-    List<ProductItem> findAllByDeleted(Boolean status);
+    List<ProductItem> findAllByStatusGreaterThan(Integer status);
 
-    Page<ProductItem> findByDeletedAndNameContaining(Boolean status, String name, Pageable pageable);
+    Page<ProductItem> findByStatusGreaterThanAndNameContaining(Integer status, String name, Pageable pageable);
 
-    List<ProductItem> findAllByProductIdAndDeleted(Long id, Boolean status);
+    List<ProductItem> findAllByProductIdAndStatusGreaterThan(Long id, Integer status);
 
     ProductItem findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleIdAndBrandId(Long productId, Long colorId, Long insoleId, Long sizeId, Long soleId, Long brandId);
     ProductItem findByProductId(Long id);

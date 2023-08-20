@@ -44,8 +44,7 @@ public class ProductItem extends BaseEntity {
     private Long insoleId;
     private Long sizeId;
     private Long brandId;
-    private Boolean status;
+    private Integer status;
     private Integer quantity;
     private BigDecimal price;
-    private Boolean deleted;
 }

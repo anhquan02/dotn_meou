@@ -22,7 +22,7 @@ public class ProductDTO extends BaseModel {
     private String name;
 
     private String description;
-    private Boolean status;
+    private Integer status;
     private BigDecimal price;
     private BigDecimal minPrice;
     private BigDecimal maxPrice;

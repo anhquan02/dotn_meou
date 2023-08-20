@@ -91,11 +91,22 @@ public class ProductService {
     }
 
     public Product findById(Long id) {
-        Optional<Product> product = this.productRepository.findByIdAndStatusGreaterThan(id, 0);
+
+        Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
             return product.get();
         }
-        throw new BadRequestException("Không tìm thấy size này");
+        throw new BadRequestException("Không tìm thấy sản phẩm");
+    }
+
+    public ProductDTO findProductById(Long id) {
+        ProductDTO dto = new ProductDTO();
+        dto.setId(id);
+        List<ProductDTO> productDTOList = productRepository.advancedSearch(dto);
+        if (!productDTOList.isEmpty()) {
+            return productDTOList.get(0);
+        }
+        throw new BadRequestException("Không tìm thấy sản phẩm");
     }
     public void deleteProduct(List<Long> ids) {
         if (ids.size() > 0) {

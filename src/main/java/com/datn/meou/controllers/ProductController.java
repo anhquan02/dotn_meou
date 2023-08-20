@@ -70,7 +70,7 @@ public class ProductController {
 
     @GetMapping("id")
     private ResponseEntity<?> findById(@RequestParam Long id) {
-        return ResponseUtil.ok(this.productService.findById(id));
+        return ResponseUtil.ok(this.productService.findProductById(id));
     }
 
     @GetMapping("search-name")

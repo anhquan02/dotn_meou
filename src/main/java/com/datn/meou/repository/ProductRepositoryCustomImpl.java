@@ -58,8 +58,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             params.put("sole", dto.getSoleId());
         }
         if(!DataUtil.isNullObject(dto.getStatus())){
-            sql.append("and p.status =  :status");
+            sql.append(" and p.status =  :status");
             params.put("status", dto.getStatus());
+        }
+        if(!DataUtil.isNullObject(dto.getId())){
+            sql.append(" and p.id = :id");
+            params.put("id", dto.getId());
         }
 
         sql.append(" GROUP BY p.id");

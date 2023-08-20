@@ -75,19 +75,23 @@ public class ProductService {
         }
         throw new BadRequestException("Không có sản phẩm này");
     }
-    public List<Product> findAllProductList() {
-        return productRepository.findAllByStatusGreaterThan(0);
+    public List<ProductDTO> findAllProductList() {
+        ProductDTO dto = new ProductDTO();
+        return productRepository.advancedSearch(dto);
     }
 
-    public Page<Product> findAllProductPage(Pageable pageable) {
-        return productRepository.findAllByStatusGreaterThan(0, pageable);
+    public Page<ProductDTO> findAllProductPage(Pageable pageable) {
+        ProductDTO dto = new ProductDTO();
+        return this.productRepository.advancedSearchPage(dto, pageable);
     }
 
-    public Page<Product> findByNameContaining(String name, Pageable pageable) {
+    public Page<ProductDTO> findByNameContaining(String name, Pageable pageable) {
         if (!DataUtil.isNullObject(name)) {
-            return this.productRepository.findByStatusGreaterThanAndNameContaining(0, name, pageable);
+            ProductDTO dto = new ProductDTO();
+            dto.setName(name);
+            return this.productRepository.advancedSearchPage(dto, pageable);
         }
-        return this.productRepository.findAllByStatusGreaterThan(0, pageable);
+        return this.findAllProductPage(pageable);
     }
 
     public Product findById(Long id) {

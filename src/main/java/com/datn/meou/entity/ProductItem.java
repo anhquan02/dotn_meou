@@ -24,7 +24,14 @@ import javax.persistence.*;
                                 @ColumnResult(name = "nameSole", type = String.class),
                                 @ColumnResult(name = "nameInsole", type = String.class),
                                 @ColumnResult(name = "nameSize", type = String.class),
-                                @ColumnResult(name = "nameColor", type = String.class)
+                                @ColumnResult(name = "nameColor", type = String.class),
+                                @ColumnResult(name = "nameBrand", type = String.class),
+                                @ColumnResult(name = "soleId", type = Long.class),
+                                @ColumnResult(name = "insoleId", type = Long.class),
+                                @ColumnResult(name = "sizeId", type = Long.class),
+                                @ColumnResult(name = "colorId", type = Long.class),
+                                @ColumnResult(name = "brandId", type = Long.class),
+                                @ColumnResult(name = "status", type = Integer.class)
 
                         }
                 )

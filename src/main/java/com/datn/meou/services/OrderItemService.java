@@ -1,12 +1,10 @@
 package com.datn.meou.services;
 
-import com.datn.meou.entity.OrderItem;
-import com.datn.meou.entity.ProductItem;
-import com.datn.meou.entity.Transaction;
-import com.datn.meou.entity.TransactionStatus;
+import com.datn.meou.entity.*;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.OrderDTO;
 import com.datn.meou.model.OrderItemDTO;
+import com.datn.meou.model.TransactionStatusDTO;
 import com.datn.meou.repository.*;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
@@ -33,6 +31,8 @@ public class OrderItemService {
 
     private final ProductItemRepository productItemRepository;
 
+    private final AccountRepository accountRepository;
+
     public ResponseEntity<?> getByIdOrder(Long idOrder) {
         if (!DataUtil.isNullObject(idOrder)) {
             OrderDTO orderDTO = this.ordersRepository.findByOrderId(idOrder);
@@ -55,10 +55,17 @@ public class OrderItemService {
                 }
             }
             List<TransactionStatus> transactions = this.transactionStatusRepository.findByOrderId(idOrder);
+            List<TransactionStatusDTO> statusDTOS = MapperUtil.mapList(transactions, TransactionStatusDTO.class);
+            for (TransactionStatusDTO dto : statusDTOS) {
+                Optional<Account> account = this.accountRepository.findByIdAndStatus(dto.getAccountId(), true);
+                if (account.isPresent()) {
+                    dto.setUsername(account.get().getUsername());
+                }
+            }
             Map<String, Object> map = new HashMap<>();
             map.put("order", orderDTO);
             map.put("orders", orderItems);
-            map.put("transactions", transactions);
+            map.put("transactions", statusDTOS);
             return ResponseUtil.ok(map);
         }
         throw new BadRequestException("Không tìm thấy id của đơn hàng này");

@@ -204,7 +204,7 @@ public class OrderSevice {
                         .totalPrice(ordersNew.getTotalPrice())
                         .build());
         List<TransactionStatus> transactionStatuses = new ArrayList<>();
-        for (Long i = 1L; i < 5L; i++) {
+        for (Long i = 1L; i < 6L; i++) {
             TransactionStatus transactionStatus = TransactionStatus
                     .builder()
                     .accountId(account.getId())

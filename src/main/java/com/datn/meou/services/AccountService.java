@@ -9,6 +9,7 @@ import com.datn.meou.repository.AccountRepository;
 import com.datn.meou.repository.RoleRepository;
 import com.datn.meou.security.CustomUserDetails;
 import com.datn.meou.security.JwtTokenProvider;
+import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,5 +88,13 @@ public class AccountService implements UserDetailsService {
     public Account getCurrentUser() {
         CustomUserDetails customUserDetails = (CustomUserDetails) this.getInfoUser();
         return customUserDetails.getAccount();
+    }
+
+    public List<Account> getAllCustomer(String phone) {
+        if (DataUtil.isNullObject(phone)) {
+            return this.accountRepository.findByRoleIdAndStatus(3l, true);
+        }
+        List<Account> accounts = this.accountRepository.findByRoleIdAndStatusAndPhoneContaining(3l, true, phone);
+        return accounts;
     }
 }

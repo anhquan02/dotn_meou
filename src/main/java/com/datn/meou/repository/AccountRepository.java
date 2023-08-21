@@ -17,4 +17,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByIdAndStatus(Long id, Boolean status);
 
+    List<Account> findByRoleIdAndStatusAndPhoneContaining(Long roleId, Boolean status, String phone);
+
+    List<Account> findByRoleIdAndStatus(Long roleId, Boolean status);
+
 }

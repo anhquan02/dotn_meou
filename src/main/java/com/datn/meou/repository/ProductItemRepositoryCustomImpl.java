@@ -22,7 +22,8 @@ public class ProductItemRepositoryCustomImpl implements ProductItemRepositoryCus
     public List<ProductItemDTO> searchProductForCounterSale(ProductItemDTO dto) {
         StringBuilder sql = new StringBuilder(" SELECT pi.id as id,pi.quantity as quantity,pi.price as price," +
                 " pi.name as name, s.name as nameSole, ins.name as nameInsole," +
-                "sz.name as nameSize,c.name as nameColor" +
+                "sz.name as nameSize,c.name as nameColor,b.name as nameBrand,pi.sole_id as soleId," +
+                " pi.sole_id as soleId ,pi.insole_id as insoleId, pi.size_id as sizeId , pi.color_id as colorId, pi.brand_id as brandId ,pi.status as status " +
                 " FROM dotn_product_item pi   " +
                 " JOIN dotn_product p ON p.id = pi.product_id" +
                 " JOIN dotn_sole s ON s.id = pi.sole_id " +

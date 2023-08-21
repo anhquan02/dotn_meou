@@ -32,12 +32,16 @@ public class ProductItemDTO extends BaseModel {
     private String nameSole;
     private String nameColor;
     private String nameInsole;
+    private String nameBrand;
     private List<ImageDTO> imageList = new ArrayList<>();
 
 
     private BigDecimal price;
 
-    public ProductItemDTO(Long id, Integer quantity, BigDecimal price, String name, String nameSole, String nameInsole, String nameSize, String nameColor) {
+    public ProductItemDTO(Long id, Integer quantity, BigDecimal price,
+                          String name, String nameSole, String nameInsole,
+                          String nameSize, String nameColor, String nameBrand,
+                          Long soleId, Long insoleId, Long sizeId, Long colorId, Long brandId, Integer status) {
         this.id = id;
         this.quantity = quantity;
         this.price = price;
@@ -46,5 +50,13 @@ public class ProductItemDTO extends BaseModel {
         this.nameInsole = nameInsole;
         this.nameSize = nameSize;
         this.nameColor = nameColor;
+        this.nameBrand = nameBrand;
+        this.soleId = soleId;
+        this.insoleId = insoleId;
+        this.sizeId = sizeId;
+        this.colorId = colorId;
+        this.brandId = brandId;
+        this.status = status;
+
     }
 }

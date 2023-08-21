@@ -23,7 +23,8 @@ import java.util.Date;
                                 @ColumnResult(name = "image", type = String.class),
                                 @ColumnResult(name = "minPrice", type = BigDecimal.class),
                                 @ColumnResult(name = "maxPrice", type = BigDecimal.class),
-                                @ColumnResult(name = "quantity", type = BigDecimal.class)
+                                @ColumnResult(name = "quantity", type = BigDecimal.class),
+                                @ColumnResult(name = "status", type = Integer.class)
 
                         }
                 )

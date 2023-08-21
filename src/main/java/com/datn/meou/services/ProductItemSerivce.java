@@ -103,7 +103,9 @@ public class ProductItemSerivce {
                 if (sizeService.findById(item.getSizeId()) == null) {
                     throw new BadRequestException("Size không tồn tại");
                 }
-
+                if(item.getImageList().stream().count() > 6){
+                    throw new BadRequestException("Một sản phẩm chỉ được tối đa 6 ảnh");
+                }
                 if (productItemCheck == null) {
                     ProductItem productItem = ProductItem
                             .builder()
@@ -177,6 +179,18 @@ public class ProductItemSerivce {
                 if (productItem1 == null) {
                     throw new BadRequestException("sản phẩm không tồn tại");
                 }
+                List<Image> imageList = imageRepository.findAllByProductItemId(item.getId());
+                Long lengthImage = imageList.stream().count();
+                for (ImageDTO imageDTO : item.getImageList()){
+                    if(imageDTO.getName() == null){
+                        lengthImage--;
+                    }else{
+                        lengthImage++;
+                    }
+                }
+                if(lengthImage > 6){
+                    throw new BadRequestException("Một sản phẩm  chỉ được tối đa 6 ảnh");
+                }
                 if (!DataUtil.isNullObject(item.getBrandId())) {
                     if (brandService.findById(item.getBrandId()) == null) {
                         throw new BadRequestException("Thương hiệu không tồn tại");
@@ -206,8 +220,8 @@ public class ProductItemSerivce {
                 productItem1.setPrice(item.getPrice());
                 productItem1.setBrandId(item.getBrandId());
                 productItem1.setStatus(item.getStatus());
-                ProductItemDTO productItemDTO = MapperUtil.map(productItemRepository.save(productItem1), ProductItemDTO.class);
-                productItemDTO.getImageList().addAll(MapperUtil.mapList(imageService.updateImage(item.getImageList(), productItemDTO.getId()), ImageDTO.class));
+                ProductItemDTO productItemDTO = MapperUtil.map(productItemRepository.save(productItem1), ProductItemDTO.class);;
+                productItemDTO.getImageList().addAll(MapperUtil.mapList(imageService.updateImage(item.getImageList(), item.getId()), ImageDTO.class));
                 productItemList.add(productItemDTO);
             }
             return productItemList;

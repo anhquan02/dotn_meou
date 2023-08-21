@@ -4,6 +4,7 @@ import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.ImageDTO;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
+import org.hibernate.mapping.Index;
 import org.springframework.stereotype.Service;
 
 import com.datn.meou.entity.Image;
@@ -47,9 +48,15 @@ public class ImageService {
     }
 
     public List<Image> updateImage(List<ImageDTO> imageDTOList, Long productItemID) {
-            List<Image> imageList = new ArrayList<>();
             for (ImageDTO dto : imageDTOList){
                 Optional<Image> image = imageRepository.findById(dto.getId());
+                if((image == null || image.isEmpty()) && dto.getName() == null ){
+                    throw new BadRequestException("Ảnh không tồn tại để xóa");
+                }
+                //Xóa ảnh
+                if(image.isPresent() || dto.getName() == null || !image.isEmpty()){
+                    imageRepository.delete(image.get());
+                }
                 //thêm ảnh
                 if(image == null || image.isEmpty()){
                     Image imageSave = Image
@@ -57,15 +64,12 @@ public class ImageService {
                             .name(dto.getName())
                             .productItemId(productItemID)
                             .build();
-                    imageList.add(imageRepository.save(imageSave));
-                }
-                //Xóa ảnh
-                if(image.isPresent() || dto.getName() == null){
-                    imageRepository.delete(image.get());
+                    imageRepository.save(imageSave);
                 }
 
+
             }
-            return imageList;
+            return imageRepository.findAllByProductItemId(productItemID);
     }
 
     public Image findByName(String name) {

@@ -9,8 +9,10 @@ import com.datn.meou.services.OrderSevice;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,9 +36,26 @@ public class OrderController {
     }
 
     @PostMapping("create-order")
-    private ResponseEntity<?> createOrderByCounterSale(@RequestBody CounterSaleDTO dto) {
+    private ResponseEntity<?> createOrderByCounterSale( @Valid @RequestBody CounterSaleDTO dto) {
         return this.orderSevice.createOrderByCounterSale(dto.getOrderDTO(), dto.getProductItemDTOS());
     }
 
+    @PostMapping("create-order-online")
+    private ResponseEntity<?> createOrderOnline( @Valid @RequestBody CounterSaleDTO dto) {
+        return this.orderSevice.createOrderOnline(dto.getOrderDTO(), dto.getProductItemDTOS());
+    }
+
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errors.append(error.getDefaultMessage()).append(",");
+        });
+        return ResponseUtil.badRequest(errors.toString());
+    }
 
 }

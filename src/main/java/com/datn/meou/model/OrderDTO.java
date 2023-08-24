@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -24,11 +25,15 @@ public class OrderDTO extends BaseModel {
     private Integer typeOrder;
     private String note;
     private Long statusId;
+    @NotEmpty(message = "Tên khách hàng không được rỗng")
     private String nameCustomer;
     @CheckPhone(message = "Số điện thoại không hợp lệ")
+    @NotEmpty(message = "Số điện thoại không được rỗng")
     private String phoneCustomer;
+    @NotEmpty(message = "Địa chỉ không được rỗng")
     private String addressCustomer;
     @CheckEmail(message = "Email không hợp lệ")
+    @NotEmpty(message = "Email không được rỗng")
     private String emailCustomer;
     private Double voucher;
     private String status;

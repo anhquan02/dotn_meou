@@ -83,4 +83,8 @@ public class ColorService {
             }
         }
     }
+
+    public List<Color> getAllColorByProductId(Long productId) {
+        return this.colorRepository.getAllColorByProductId(productId);
+    }
 }

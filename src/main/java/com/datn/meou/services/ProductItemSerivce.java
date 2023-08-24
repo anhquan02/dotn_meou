@@ -1,5 +1,6 @@
 package com.datn.meou.services;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,8 @@ public class ProductItemSerivce {
     private final SizeService sizeService;
 
     private final ImageRepository imageRepository;
+
+    private final ProductRepository productRepository;
 
     public List<ProductItemDTO> saveProductItem(ProductItemDTOS dtos) {
         if (dtos.getDto() != null) {
@@ -78,7 +81,7 @@ public class ProductItemSerivce {
                 if (DataUtil.isNullObject(item.getPrice())) {
                     throw new BadRequestException("Giá không được để trống");
                 }
-                if(DataUtil.isNullObject(item.getStatus())){
+                if (DataUtil.isNullObject(item.getStatus())) {
                     throw new BadRequestException("Trạng thái không được để trống");
                 }
                 Product product = productService.findById(item.getProductId());
@@ -103,7 +106,7 @@ public class ProductItemSerivce {
                 if (sizeService.findById(item.getSizeId()) == null) {
                     throw new BadRequestException("Size không tồn tại");
                 }
-                if(item.getImageList().stream().count() > 6){
+                if (item.getImageList().stream().count() > 6) {
                     throw new BadRequestException("Một sản phẩm chỉ được tối đa 6 ảnh");
                 }
                 if (productItemCheck == null) {
@@ -139,39 +142,39 @@ public class ProductItemSerivce {
     public List<ProductItemDTO> updateProductItem(ProductItemDTOS dtos) {
         if (dtos.getDto() != null) {
             List<ProductItemDTO> productItemList = new ArrayList<>();
-            for(ProductItemDTO item : dtos.getDto()){
-                if(DataUtil.isNullObject(item.getSizeId())) {
+            for (ProductItemDTO item : dtos.getDto()) {
+                if (DataUtil.isNullObject(item.getSizeId())) {
                     throw new BadRequestException("Size không để trống");
                 }
 
-                if(DataUtil.isNullObject(item.getInsoleId())) {
+                if (DataUtil.isNullObject(item.getInsoleId())) {
                     throw new BadRequestException("Lót giày không để trống");
                 }
 
-                if(DataUtil.isNullObject(item.getSoleId())) {
+                if (DataUtil.isNullObject(item.getSoleId())) {
                     throw new BadRequestException("Đế giày không để trống");
                 }
 
-                if(DataUtil.isNullObject(item.getColorId())) {
+                if (DataUtil.isNullObject(item.getColorId())) {
                     throw new BadRequestException("Màu sắc không để trống");
                 }
 
-                if(DataUtil.isNullObject(item.getQuantity())) {
+                if (DataUtil.isNullObject(item.getQuantity())) {
                     throw new BadRequestException("Số lượng không để trống");
                 }
-                if(item.getQuantity() < 0){
+                if (item.getQuantity() < 0) {
                     throw new BadRequestException("Số lượng không được nhỏ hơn 0");
                 }
-                if(DataUtil.isNullOrEmpty(item.getImageList())){
+                if (DataUtil.isNullOrEmpty(item.getImageList())) {
                     throw new BadRequestException("Ảnh không được để trống");
                 }
-                if(DataUtil.isNullObject(item.getBrandId())){
+                if (DataUtil.isNullObject(item.getBrandId())) {
                     throw new BadRequestException("Thương hiệu không được để trống");
                 }
-                if(DataUtil.isNullObject(item.getPrice())){
+                if (DataUtil.isNullObject(item.getPrice())) {
                     throw new BadRequestException("Giá không được để trống");
                 }
-                if(DataUtil.isNullObject(item.getStatus())){
+                if (DataUtil.isNullObject(item.getStatus())) {
                     throw new BadRequestException("Trạng thái không được để trống");
                 }
                 Optional<ProductItem> productItem = productItemRepository.findById(item.getId());
@@ -181,14 +184,14 @@ public class ProductItemSerivce {
                 }
                 List<Image> imageList = imageRepository.findAllByProductItemId(item.getId());
                 Long lengthImage = imageList.stream().count();
-                for (ImageDTO imageDTO : item.getImageList()){
-                    if(imageDTO.getName() == null){
+                for (ImageDTO imageDTO : item.getImageList()) {
+                    if (imageDTO.getName() == null) {
                         lengthImage--;
-                    }else{
+                    } else {
                         lengthImage++;
                     }
                 }
-                if(lengthImage > 6){
+                if (lengthImage > 6) {
                     throw new BadRequestException("Một sản phẩm  chỉ được tối đa 6 ảnh");
                 }
                 if (!DataUtil.isNullObject(item.getBrandId())) {
@@ -220,7 +223,8 @@ public class ProductItemSerivce {
                 productItem1.setPrice(item.getPrice());
                 productItem1.setBrandId(item.getBrandId());
                 productItem1.setStatus(item.getStatus());
-                ProductItemDTO productItemDTO = MapperUtil.map(productItemRepository.save(productItem1), ProductItemDTO.class);;
+                ProductItemDTO productItemDTO = MapperUtil.map(productItemRepository.save(productItem1), ProductItemDTO.class);
+                ;
                 productItemDTO.getImageList().addAll(MapperUtil.mapList(imageService.updateImage(item.getImageList(), item.getId()), ImageDTO.class));
                 productItemList.add(productItemDTO);
             }
@@ -298,11 +302,11 @@ public class ProductItemSerivce {
         if (ids.size() > 0) {
             for (Long id : ids) {
                 Optional<ProductItem> productItem = productItemRepository.findById(id);
-                if(productItem.isEmpty()){
+                if (productItem.isEmpty()) {
                     throw new BadRequestException("Sản phẩm chi tiết này không tồn tại");
                 }
                 List<OrderItem> lstOrderItem = orderItemRepository.findAllByProductItemId(productItem.get().getId());
-                if(lstOrderItem.isEmpty()){
+                if (lstOrderItem.isEmpty()) {
                     throw new BadRequestException("không thể xóa sản phẩm này");
                 }
                 productItem.get().setStatus(0);
@@ -331,5 +335,38 @@ public class ProductItemSerivce {
 
     }
 
+    public Object chooseForOnline(Long soleId, Long brandId, Long
+            sizeId, Long productId, Long insoleId, Long colorId) {
+        if (DataUtil.isNullObject(sizeId)) {
+            throw new BadRequestException("Phải chọn size của sản phẩm");
+        }
+        if (DataUtil.isNullObject(brandId)) {
+            throw new BadRequestException("Phải chọn thương hiệu của sản phẩm");
+        }
+        if (DataUtil.isNullObject(productId)) {
+            throw new BadRequestException("Chưa có sản phẩm");
+        }
+        if (DataUtil.isNullObject(insoleId)) {
+            throw new BadRequestException("Phải chọn dây giày của sản phẩm");
+        }
+        if (DataUtil.isNullObject(colorId)) {
+            throw new BadRequestException("Phải chọn màu của sản phẩm");
+        }
+        if (DataUtil.isNullObject(soleId)) {
+            throw new BadRequestException("Phải chọn đế giày của sản phẩm");
+        }
+        Optional<ProductItem> item = this.productItemRepository.chooseForOnline(soleId, brandId, sizeId, productId, insoleId, colorId);
+        if (item.isPresent()) {
+            ProductItemDTO productItemDTO = MapperUtil.map(item.get(), ProductItemDTO.class);
+            List<Image> images = this.imageRepository.findAllByProductItemId(productItemDTO.getId());
+            productItemDTO.setImages(images);
+            return productItemDTO;
+        } else {
+            ProductDTO dto = this.productRepository.getByIdForOnline(productId);
+            dto.setQuantity(BigDecimal.valueOf(0));
+            return dto;
+        }
+
+    }
 
 }

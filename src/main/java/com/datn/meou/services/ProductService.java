@@ -1,6 +1,8 @@
 package com.datn.meou.services;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.datn.meou.entity.Insole;
@@ -12,10 +14,12 @@ import com.datn.meou.model.SoleDTO;
 import com.datn.meou.repository.ProductItemRepository;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
+import com.datn.meou.util.ResponseUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.datn.meou.entity.Product;
@@ -32,14 +36,22 @@ public class ProductService {
 
     private final BrandService brandService;
 
+    private final ColorService colorService;
+
+    private final SoleService soleService;
+
+    private final InsoleSerivce insoleSerivce;
+
+    private final SizeService sizeService;
+
     public Product saveProduct(ProductDTO dto) {
-        if(DataUtil.isNullObject(dto.getName())){
+        if (DataUtil.isNullObject(dto.getName())) {
             throw new BadRequestException("Tên không được để trống");
         }
-        if(DataUtil.isNullObject(dto.getImage())){
+        if (DataUtil.isNullObject(dto.getImage())) {
             throw new BadRequestException("Ảnh không được để trống");
         }
-        if(DataUtil.isNullObject(dto.getStatus())){
+        if (DataUtil.isNullObject(dto.getStatus())) {
             throw new BadRequestException("Chưa chọn trạng thái sản phẩm");
         }
         Product product = Product
@@ -53,14 +65,15 @@ public class ProductService {
 
         return product;
     }
+
     public Product updateProduct(ProductDTO dto) {
-        if(DataUtil.isNullObject(dto.getName())){
+        if (DataUtil.isNullObject(dto.getName())) {
             throw new BadRequestException("Tên không được để trống");
         }
-        if(DataUtil.isNullObject(dto.getImage())){
+        if (DataUtil.isNullObject(dto.getImage())) {
             throw new BadRequestException("Ảnh không được để trống");
         }
-        if(DataUtil.isNullObject(dto.getStatus())){
+        if (DataUtil.isNullObject(dto.getStatus())) {
             throw new BadRequestException("Chưa chọn trạng thái sản phẩm");
         }
         Optional<Product> productOptional = this.productRepository.findByIdAndStatusGreaterThan(dto.getId(), 0);
@@ -75,6 +88,7 @@ public class ProductService {
         }
         throw new BadRequestException("Không có sản phẩm này");
     }
+
     public List<ProductDTO> findAllProductList() {
         ProductDTO dto = new ProductDTO();
         return productRepository.advancedSearch(dto);
@@ -112,18 +126,38 @@ public class ProductService {
         }
         throw new BadRequestException("Không tìm thấy sản phẩm");
     }
+
     public void deleteProduct(List<Long> ids) {
         if (ids.size() > 0) {
             for (Long id : ids) {
                 Product product = findById(id);
                 List<ProductItem> productItems = productItemRepository.findAllByProductIdAndStatusGreaterThan(id, 0);
-                if(!productItems.isEmpty()){
+                if (!productItems.isEmpty()) {
                     throw new BadRequestException("Không thể xóa sản phẩm");
                 }
                 product.setStatus(0);
                 this.productRepository.save(product);
             }
         }
+    }
+
+    public ResponseEntity<?> findByIdForOnline(Long id) {
+        Map<String, Object> map = new HashMap<>();
+        if (DataUtil.isNullObject(id)) {
+            throw new BadRequestException("Phải truyền id của sản phẩm");
+        }
+        ProductDTO dto = this.productRepository.getByIdForOnline(id);
+        if (dto != null) {
+            map.put("product", dto);
+        } else {
+            throw new BadRequestException("Không tìm thấy sản phẩm này");
+        }
+        map.put("size", this.sizeService.getAllSizeByProductId(id));
+        map.put("sole", this.soleService.getAllSoleByProductId(id));
+        map.put("insole", this.insoleSerivce.getAllInsoleByProductId(id));
+        map.put("brand", this.brandService.getAllBrandByProductId(id));
+        map.put("color", this.colorService.getAllColorByProductId(id));
+        return ResponseUtil.ok(map);
     }
 
 }

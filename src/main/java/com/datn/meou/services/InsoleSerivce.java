@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.datn.meou.entity.Brand;
 import com.datn.meou.entity.Size;
 import com.datn.meou.entity.Sole;
 import com.datn.meou.exception.BadRequestException;
@@ -84,5 +85,9 @@ public class InsoleSerivce {
                 this.insoleRepository.save(insole);
             }
         }
+    }
+
+    public List<Insole> getAllInsoleByProductId(Long productId) {
+        return this.insoleRepository.getAllInsoleByProductId(productId);
     }
 }

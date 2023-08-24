@@ -86,4 +86,8 @@ public class SoleService {
             }
         }
     }
+
+    public List<Sole> getAllSoleByProductId(Long productId) {
+        return this.soleRepository.getAllSoleByProductId(productId);
+    }
 }

@@ -15,8 +15,7 @@ import org.springframework.stereotype.Repository;
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
 
     Optional<Product> findByIdAndStatusGreaterThan(Long id, Integer status);
-    Page<Product> findAllByStatusGreaterThan(Integer status, Pageable pageable);
-    List<Product> findAllByStatusGreaterThan(Integer status);
-    Page<Product> findByStatusGreaterThanAndNameContaining(Integer status, String name, Pageable pageable);
-    Product findProductByName(String name);
+
+    Optional<Product> findByIdAndStatus(Long id, Integer status);
+
 }

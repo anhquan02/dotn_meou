@@ -71,6 +71,7 @@ public class InsoleController {
         return ResponseUtil.ok(this.insoleSerivce.findByNameContaining(name, pageable));
     }
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(

@@ -35,6 +35,7 @@ public class ProductItemDTO extends BaseModel {
     private String nameBrand;
     private List<ImageDTO> imageList = new ArrayList<>();
 
+    private List<Image> images = new ArrayList<>();
 
     private BigDecimal price;
 

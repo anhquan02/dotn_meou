@@ -30,6 +30,11 @@ public class AcccountController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PostMapping("/register")
+    private ResponseEntity<?> register(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.register(dto));
+    }
+
 }
 
 

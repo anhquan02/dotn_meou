@@ -22,5 +22,6 @@ public class Account extends BaseEntity {
     private String address;
     private Long roleId;
     private Boolean status;
+    private String phone;
 
 }

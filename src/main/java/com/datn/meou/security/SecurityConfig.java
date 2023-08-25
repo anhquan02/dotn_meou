@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/account","/api/v1/account/login").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
+                .antMatchers("/api/v1/account","/api/v1/account/login","/api/v1/account/register").permitAll() // Cho phép tất cả mọi người truy cập vào địa chỉ này
                 .anyRequest().authenticated();// Tất cả các request khác đều cần phải xác thực mới được truy cập
 
         // Thêm một lớp Filter kiểm tra jwt

@@ -34,6 +34,10 @@ public class AcccountController {
         return ResponseUtil.ok(this.accountService.getAllCustomer(phone));
     }
 
+    @PostMapping("/register")
+    private ResponseEntity<?> register(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.register(dto));
+    }
 
 
 }

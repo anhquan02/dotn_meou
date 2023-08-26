@@ -20,4 +20,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     List<Account> findByRoleIdAndStatus(Long roleId, Boolean status);
 
+    Optional<Account> findByUsername(String username);
+
 }

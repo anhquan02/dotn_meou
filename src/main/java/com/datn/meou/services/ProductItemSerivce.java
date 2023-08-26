@@ -45,7 +45,7 @@ public class ProductItemSerivce {
             List<ProductItemDTO> productItemList = new ArrayList<>();
             for (ProductItemDTO item : dtos.getDto()) {
                 ProductItem productItemCheck =
-                        productItemRepository.findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleIdAndBrandId(item.getProductId(), item.getColorId(), item.getInsoleId(), item.getSizeId(), item.getSoleId(), item.getBrandId());
+                        productItemRepository.findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleId(item.getProductId(), item.getColorId(), item.getInsoleId(), item.getSizeId(), item.getSoleId());
                 if (DataUtil.isNullObject(item.getProductId())) {
                     throw new BadRequestException("id sản phẩm không được để trống");
                 }
@@ -75,9 +75,6 @@ public class ProductItemSerivce {
                 if (DataUtil.isNullOrEmpty(item.getImageList())) {
                     throw new BadRequestException("Ảnh không được để trống");
                 }
-                if (DataUtil.isNullObject(item.getBrandId())) {
-                    throw new BadRequestException("Thương hiệu không được để trống");
-                }
                 if (DataUtil.isNullObject(item.getPrice())) {
                     throw new BadRequestException("Giá không được để trống");
                 }
@@ -87,9 +84,6 @@ public class ProductItemSerivce {
                 Product product = productService.findById(item.getProductId());
                 if (product == null) {
                     throw new BadRequestException("Sản phẩm không tồn tại");
-                }
-                if (brandService.findById(item.getBrandId()) == null) {
-                    throw new BadRequestException("Thương hiệu không tồn tại");
                 }
                 if (colorService.findById(item.getColorId()) == null) {
                     throw new BadRequestException("Màu sắc không tồn tại");
@@ -118,7 +112,6 @@ public class ProductItemSerivce {
                             .sizeId(item.getSizeId())
                             .soleId(item.getSoleId())
                             .insoleId(item.getInsoleId())
-                            .brandId(item.getBrandId())
                             .quantity(item.getQuantity())
                             .price(item.getPrice())
                             .status(item.getStatus())
@@ -165,12 +158,6 @@ public class ProductItemSerivce {
                 if (item.getQuantity() < 0) {
                     throw new BadRequestException("Số lượng không được nhỏ hơn 0");
                 }
-                if (DataUtil.isNullOrEmpty(item.getImageList())) {
-                    throw new BadRequestException("Ảnh không được để trống");
-                }
-                if (DataUtil.isNullObject(item.getBrandId())) {
-                    throw new BadRequestException("Thương hiệu không được để trống");
-                }
                 if (DataUtil.isNullObject(item.getPrice())) {
                     throw new BadRequestException("Giá không được để trống");
                 }
@@ -182,23 +169,7 @@ public class ProductItemSerivce {
                 if (productItem1 == null) {
                     throw new BadRequestException("sản phẩm không tồn tại");
                 }
-                List<Image> imageList = imageRepository.findAllByProductItemId(item.getId());
-                Long lengthImage = imageList.stream().count();
-                for (ImageDTO imageDTO : item.getImageList()) {
-                    if (imageDTO.getName() == null) {
-                        lengthImage--;
-                    } else {
-                        lengthImage++;
-                    }
-                }
-                if (lengthImage > 6) {
-                    throw new BadRequestException("Một sản phẩm  chỉ được tối đa 6 ảnh");
-                }
-                if (!DataUtil.isNullObject(item.getBrandId())) {
-                    if (brandService.findById(item.getBrandId()) == null) {
-                        throw new BadRequestException("Thương hiệu không tồn tại");
-                    }
-                }
+
                 if (!DataUtil.isNullObject(item.getSoleId())) {
                     if (soleService.findById(item.getSoleId()) == null) {
                         throw new BadRequestException("Đế giày không tồn tại");
@@ -221,11 +192,8 @@ public class ProductItemSerivce {
                 productItem1.setSizeId(item.getSizeId());
                 productItem1.setSoleId(item.getSoleId());
                 productItem1.setPrice(item.getPrice());
-                productItem1.setBrandId(item.getBrandId());
                 productItem1.setStatus(item.getStatus());
                 ProductItemDTO productItemDTO = MapperUtil.map(productItemRepository.save(productItem1), ProductItemDTO.class);
-                ;
-                productItemDTO.getImageList().addAll(MapperUtil.mapList(imageService.updateImage(item.getImageList(), item.getId()), ImageDTO.class));
                 productItemList.add(productItemDTO);
             }
             return productItemList;
@@ -233,6 +201,25 @@ public class ProductItemSerivce {
 
         throw new BadRequestException("Cập nhật sản phẩm thất bại");
     }
+
+    public List<Image> updateImage(ImageDTOS imageDTOList){
+        Long lengthImage = imageService.findAllByProductItemId(imageDTOList.getProductItemID()).stream().count();
+        for (ImageDTO imageDTO : imageDTOList.getImageDTOList()) {
+            if(imageService.findById(imageDTO.getId()) == null && imageDTO.getId() > 0){
+                throw new BadRequestException("Ảnh không tồn tại để xóa");
+            }
+            if (DataUtil.isNullObject(imageDTO.getName()) && imageDTO.getId() > 0) {
+                lengthImage--;
+            }
+            if(!DataUtil.isNullObject(imageDTO.getName()) && imageDTO.getId() == 0){
+                lengthImage++;
+            }
+        }
+        if (lengthImage > 6) {
+            throw new BadRequestException("Một sản phẩm  chỉ được tối đa 6 ảnh");
+        }
+        return imageService.updateImage(imageDTOList.getImageDTOList(), imageDTOList.getProductItemID());
+    };
 
     public List<ProductItemDTO> findAllProductItemList() {
         List<ProductItemDTO> lst = MapperUtil.mapList(productItemRepository.findAllByStatusGreaterThan(0), ProductItemDTO.class);
@@ -335,38 +322,38 @@ public class ProductItemSerivce {
 
     }
 
-    public Object chooseForOnline(Long soleId, Long brandId, Long
-            sizeId, Long productId, Long insoleId, Long colorId) {
-        if (DataUtil.isNullObject(sizeId)) {
-            throw new BadRequestException("Phải chọn size của sản phẩm");
-        }
-        if (DataUtil.isNullObject(brandId)) {
-            throw new BadRequestException("Phải chọn thương hiệu của sản phẩm");
-        }
-        if (DataUtil.isNullObject(productId)) {
-            throw new BadRequestException("Chưa có sản phẩm");
-        }
-        if (DataUtil.isNullObject(insoleId)) {
-            throw new BadRequestException("Phải chọn dây giày của sản phẩm");
-        }
-        if (DataUtil.isNullObject(colorId)) {
-            throw new BadRequestException("Phải chọn màu của sản phẩm");
-        }
-        if (DataUtil.isNullObject(soleId)) {
-            throw new BadRequestException("Phải chọn đế giày của sản phẩm");
-        }
-        Optional<ProductItem> item = this.productItemRepository.chooseForOnline(soleId, brandId, sizeId, productId, insoleId, colorId);
-        if (item.isPresent()) {
-            ProductItemDTO productItemDTO = MapperUtil.map(item.get(), ProductItemDTO.class);
-            List<Image> images = this.imageRepository.findAllByProductItemId(productItemDTO.getId());
-            productItemDTO.setImages(images);
-            return productItemDTO;
-        } else {
-            ProductDTO dto = this.productRepository.getByIdForOnline(productId);
-            dto.setQuantity(BigDecimal.valueOf(0));
-            return dto;
-        }
-
-    }
+//    public Object chooseForOnline(Long soleId, Long brandId, Long
+//            sizeId, Long productId, Long insoleId, Long colorId) {
+//        if (DataUtil.isNullObject(sizeId)) {
+//            throw new BadRequestException("Phải chọn size của sản phẩm");
+//        }
+//        if (DataUtil.isNullObject(brandId)) {
+//            throw new BadRequestException("Phải chọn thương hiệu của sản phẩm");
+//        }
+//        if (DataUtil.isNullObject(productId)) {
+//            throw new BadRequestException("Chưa có sản phẩm");
+//        }
+//        if (DataUtil.isNullObject(insoleId)) {
+//            throw new BadRequestException("Phải chọn dây giày của sản phẩm");
+//        }
+//        if (DataUtil.isNullObject(colorId)) {
+//            throw new BadRequestException("Phải chọn màu của sản phẩm");
+//        }
+//        if (DataUtil.isNullObject(soleId)) {
+//            throw new BadRequestException("Phải chọn đế giày của sản phẩm");
+//        }
+//        Optional<ProductItem> item = this.productItemRepository.chooseForOnline(soleId, brandId, sizeId, productId, insoleId, colorId);
+//        if (item.isPresent()) {
+//            ProductItemDTO productItemDTO = MapperUtil.map(item.get(), ProductItemDTO.class);
+//            List<Image> images = this.imageRepository.findAllByProductItemId(productItemDTO.getId());
+//            productItemDTO.setImages(images);
+//            return productItemDTO;
+//        } else {
+//            ProductDTO dto = this.productRepository.getByIdForOnline(productId);
+//            dto.setQuantity(BigDecimal.valueOf(0));
+//            return dto;
+//        }
+//
+//    }
 
 }

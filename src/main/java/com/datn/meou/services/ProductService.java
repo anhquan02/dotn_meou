@@ -54,12 +54,19 @@ public class ProductService {
         if (DataUtil.isNullObject(dto.getStatus())) {
             throw new BadRequestException("Chưa chọn trạng thái sản phẩm");
         }
+        if(DataUtil.isNullObject(dto.getBrandId())){
+            throw new BadRequestException("Thương hiệu không được để trống");
+        }
+        if(brandService.findById(dto.getBrandId()) == null){
+            throw new BadRequestException("Thương hiệu không tồn tại");
+        }
         Product product = Product
                 .builder()
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .image(dto.getImage())
                 .status(dto.getStatus())
+                .brandId(dto.getBrandId())
                 .build();
         this.productRepository.save(product);
 
@@ -76,12 +83,19 @@ public class ProductService {
         if (DataUtil.isNullObject(dto.getStatus())) {
             throw new BadRequestException("Chưa chọn trạng thái sản phẩm");
         }
+        if(DataUtil.isNullObject(dto.getBrandId())){
+            throw new BadRequestException("Thương hiệu không được để trống");
+        }
+        if(brandService.findById(dto.getBrandId()) == null){
+            throw new BadRequestException("Thương hiệu không tồn tại");
+        }
         Optional<Product> productOptional = this.productRepository.findByIdAndStatusGreaterThan(dto.getId(), 0);
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
             product.setName(dto.getName());
             product.setStatus(dto.getStatus());
             product.setImage(dto.getImage());
+            product.setBrandId(dto.getBrandId());
             this.productRepository.save(product);
 
             return product;

@@ -4,6 +4,7 @@ import com.datn.meou.entity.*;
 import com.datn.meou.model.AccountDTO;
 import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.model.ProductItemDTOS;
+import com.datn.meou.model.ImageDTOS;
 import com.datn.meou.repository.ProductItemRepository;
 import com.datn.meou.services.ProductItemSerivce;
 import com.datn.meou.util.ResponseUtil;
@@ -37,6 +38,11 @@ public class ProductItemController {
     @PostMapping()
     private ResponseEntity<?> save(@Valid @RequestBody ProductItemDTOS dtos) {
         return ResponseUtil.ok(this.productItemSerivce.saveProductItem(dtos));
+    }
+
+    @PostMapping("/update-image")
+    private ResponseEntity<?> updateImage(@Valid @RequestBody ImageDTOS dtos) {
+        return ResponseUtil.ok(this.productItemSerivce.updateImage(dtos));
     }
 
 
@@ -88,10 +94,10 @@ public class ProductItemController {
         return ResponseUtil.badRequest(errors.toString());
     }
 
-    @GetMapping("choose-types")
-    private ResponseEntity<?> chooseForOnline(@RequestParam Long soleId, @RequestParam Long brandId, @RequestParam Long
-            sizeId, @RequestParam Long productId, @RequestParam Long insoleId, @RequestParam Long colorId) {
-        return ResponseUtil.ok(this.productItemSerivce.chooseForOnline(soleId, brandId, sizeId, productId, insoleId, colorId));
-    }
+//    @GetMapping("choose-types")
+//    private ResponseEntity<?> chooseForOnline(@RequestParam Long soleId, @RequestParam Long brandId, @RequestParam Long
+//            sizeId, @RequestParam Long productId, @RequestParam Long insoleId, @RequestParam Long colorId) {
+//        return ResponseUtil.ok(this.productItemSerivce.chooseForOnline(soleId, brandId, sizeId, productId, insoleId, colorId));
+//    }
 
 }

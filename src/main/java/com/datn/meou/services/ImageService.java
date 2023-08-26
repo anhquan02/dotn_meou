@@ -50,11 +50,8 @@ public class ImageService {
     public List<Image> updateImage(List<ImageDTO> imageDTOList, Long productItemID) {
             for (ImageDTO dto : imageDTOList){
                 Optional<Image> image = imageRepository.findById(dto.getId());
-                if((image == null || image.isEmpty()) && dto.getName() == null ){
-                    throw new BadRequestException("Ảnh không tồn tại để xóa");
-                }
                 //Xóa ảnh
-                if(image.isPresent() || dto.getName() == null || !image.isEmpty()){
+                if(image.isPresent() && dto.getName() == null){
                     imageRepository.delete(image.get());
                 }
                 //thêm ảnh

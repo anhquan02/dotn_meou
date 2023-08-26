@@ -63,4 +63,5 @@ public class Product extends BaseEntity {
     private String description;
     private Integer status;
     private String image;
+    private Long brandId;
 }

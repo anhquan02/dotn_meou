@@ -29,7 +29,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
                 " JOIN dotn_insole ins ON ins.id = dpi.insole_id" +
                 " JOIN dotn_size sz ON sz.id = dpi.size_id" +
                 " JOIN dotn_color c ON c.id = dpi.color_id" +
-                " JOIN dotn_brand b ON b.id = dpi.brand_id " +
+                " JOIN dotn_brand b ON b.id = p.brand_id " +
                 " WHERE p.status != 0");
         Map<String, Object> params = new HashMap<>();
         if (!DataUtil.isNullObject(dto.getName())) {
@@ -38,7 +38,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         }
 
         if (!DataUtil.isNullObject(dto.getBrandId())) {
-            sql.append(" and dpi.brand_id = :brand");
+            sql.append(" and p.brand_id = :brand");
             params.put("brand", dto.getBrandId());
         }
         if (!DataUtil.isNullObject(dto.getColorId())) {

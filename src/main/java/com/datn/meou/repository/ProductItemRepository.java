@@ -26,16 +26,16 @@ public interface ProductItemRepository extends JpaRepository<ProductItem, Long>,
 
     List<ProductItem> findAllByProductIdAndStatusGreaterThan(Long id, Integer status);
 
-    ProductItem findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleIdAndBrandId(Long productId, Long colorId, Long insoleId, Long sizeId, Long soleId, Long brandId);
+    ProductItem findByProductIdAndColorIdAndInsoleIdAndSizeIdAndSoleId(Long productId, Long colorId, Long insoleId, Long sizeId, Long soleId);
 
 
-    @Query("SELECT pi FROM ProductItem pi WHERE pi.soleId = :soleId AND pi.brandId = :brandId " +
-            "AND pi.sizeId = :sizeId AND pi.productId = :productId AND pi.insoleId = :insoleId " +
-            "AND pi.colorId = :colorId AND pi.status = 1")
-    Optional<ProductItem> chooseForOnline(@Param("soleId") Long soleId,
-                                          @Param("brandId") Long brandId,
-                                          @Param("sizeId") Long sizeId,
-                                          @Param("productId") Long productId,
-                                          @Param("insoleId") Long insoleId,
-                                          @Param("colorId") Long colorId);
+//    @Query("SELECT pi FROM ProductItem pi WHERE pi.soleId = :soleId AND pi.brandId = :brandId " +
+//            "AND pi.sizeId = :sizeId AND pi.productId = :productId AND pi.insoleId = :insoleId " +
+//            "AND pi.colorId = :colorId AND pi.status = 1")
+//    Optional<ProductItem> chooseForOnline(@Param("soleId") Long soleId,
+//                                          @Param("brandId") Long brandId,
+//                                          @Param("sizeId") Long sizeId,
+//                                          @Param("productId") Long productId,
+//                                          @Param("insoleId") Long insoleId,
+//                                          @Param("colorId") Long colorId);
 }

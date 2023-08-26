@@ -93,5 +93,4 @@ public class AccountService implements UserDetailsService {
         CustomUserDetails customUserDetails = (CustomUserDetails) this.getInfoUser();
         return customUserDetails.getAccount();
     }
-
 }

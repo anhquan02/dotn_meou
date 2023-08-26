@@ -10,9 +10,5 @@ public interface ProductItemRepositoryCustom {
 
     List<ProductItemDTO> searchProductForCounterSale(ProductItemDTO dto);
 
-//    Page<ProductItemDTO> getAllProductItemByPage(Pageable pageable);
-//
-//    Page<ProductItemDTO> getAllProductItemByNameContaining(String name, Pageable pageable);
-//
 
 }

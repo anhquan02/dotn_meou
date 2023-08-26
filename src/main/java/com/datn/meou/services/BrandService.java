@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.datn.meou.entity.Color;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.BrandDTO;
 import com.datn.meou.util.DataUtil;
@@ -76,5 +77,9 @@ public class BrandService {
                 this.brandRepository.save(brand);
             }
         }
+    }
+
+    public List<Brand> getAllBrandByProductId(Long productId) {
+        return this.brandRepository.getAllBrandByProductId(productId);
     }
 }

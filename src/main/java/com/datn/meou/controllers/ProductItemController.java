@@ -88,4 +88,10 @@ public class ProductItemController {
         return ResponseUtil.badRequest(errors.toString());
     }
 
+    @GetMapping("choose-types")
+    private ResponseEntity<?> chooseForOnline(@RequestParam Long soleId, @RequestParam Long brandId, @RequestParam Long
+            sizeId, @RequestParam Long productId, @RequestParam Long insoleId, @RequestParam Long colorId) {
+        return ResponseUtil.ok(this.productItemSerivce.chooseForOnline(soleId, brandId, sizeId, productId, insoleId, colorId));
+    }
+
 }

@@ -19,4 +19,6 @@ public class AccountDTO extends BaseModel {
     private String email;
     private String address;
     private Integer roleId;
+    private String phone;
+    private String nameRole;
 }

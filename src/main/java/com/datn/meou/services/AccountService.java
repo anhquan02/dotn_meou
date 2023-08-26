@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -92,5 +93,13 @@ public class AccountService implements UserDetailsService {
     public Account getCurrentUser() {
         CustomUserDetails customUserDetails = (CustomUserDetails) this.getInfoUser();
         return customUserDetails.getAccount();
+    }
+
+    public List<Account> getAllCustomer(String phone) {
+        if (DataUtil.isNullObject(phone)) {
+            return this.accountRepository.findByRoleIdAndStatus(3l, true);
+        }
+        List<Account> accounts = this.accountRepository.findByRoleIdAndStatusAndPhoneContaining(3l, true, phone);
+        return accounts;
     }
 }

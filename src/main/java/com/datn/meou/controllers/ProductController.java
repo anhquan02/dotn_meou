@@ -89,4 +89,9 @@ public class ProductController {
         return ResponseUtil.badRequest(errors.toString());
     }
 
+    @GetMapping("all-item")
+    private ResponseEntity<?> findByIdForOnline(@RequestParam Long idProduct) {
+        return this.productService.findByIdForOnline(idProduct);
+    }
+
 }

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class OrderSevice {
 
@@ -72,13 +71,7 @@ public class OrderSevice {
             Orders orders1 = orders.get();
             orders1.setStatusId(changeStatus.getIdStatus());
             this.ordersRepository.save(orders1);
-            TransactionStatus transactionStatus = TransactionStatus
-                    .builder()
-                    .orderId(changeStatus.getIdOrder())
-                    .accountId(account.getId())
-                    .note(changeStatus.getNote())
-                    .statusId(changeStatus.getIdStatus())
-                    .build();
+            TransactionStatus transactionStatus = TransactionStatus.builder().orderId(changeStatus.getIdOrder()).accountId(account.getId()).note(changeStatus.getNote()).statusId(changeStatus.getIdStatus()).build();
             this.transactionStatusRepository.save(transactionStatus);
             return transactionStatus;
         }
@@ -89,28 +82,7 @@ public class OrderSevice {
     public ResponseEntity<?> createOrderByCounterSale(OrderDTO orderDTO, List<ProductItemDTO> productItemDTOS) {
         Account account = this.accountService.getCurrentUser();
         String codeOrder = getCodeForOrder("MEOU1_");
-
-        if (DataUtil.isNullObject(orderDTO.getPaymentMethod())) {
-            throw new BadRequestException("Phải nhập phương thức thanh toán");
-        }
-
-        if (DataUtil.isNullObject(orderDTO.getPhoneCustomer())) {
-            throw new BadRequestException("Phải nhập số điện thoại khách hàng");
-        }
-        if (DataUtil.isNullObject(orderDTO.getNameCustomer())) {
-            throw new BadRequestException("Phải nhập tên khách hàng");
-        }
-
-        if (DataUtil.isNullObject(orderDTO.getAddressCustomer())) {
-            throw new BadRequestException("Phải nhập địa chỉ khách hàng");
-        }
-
-        if (DataUtil.isNullObject(orderDTO.getEmailCustomer())) {
-            throw new BadRequestException("Phải nhập email khách hàng");
-        }
-
-        Orders orders = Orders
-                .builder()
+        Orders orders = Orders.builder()
                 .accountId(account.getId())
                 .note(orderDTO.getNote())
                 .paymentMethod(orderDTO.getPaymentMethod())
@@ -124,6 +96,86 @@ public class OrderSevice {
                 .phoneCustomer(orderDTO.getPhoneCustomer())
                 .build();
         Orders ordersNew = this.ordersRepository.save(orders);
+        handleOrderItemForPurchase(productItemDTOS, ordersNew);
+        this.ordersRepository.save(ordersNew);
+        this.transactionRepository.save(Transaction
+                .builder()
+                .orderId(ordersNew.getId())
+                .accountId(account.getId())
+                .totalPrice(ordersNew.getTotalPrice())
+                .build());
+        List<TransactionStatus> transactionStatuses = new ArrayList<>();
+        for (Long i = 1L; i < 6L; i++) {
+            TransactionStatus transactionStatus = TransactionStatus.builder()
+                    .accountId(account.getId())
+                    .orderId(ordersNew.getId())
+                    .statusId(i)
+                    .build();
+            transactionStatuses.add(transactionStatus);
+        }
+        this.transactionStatusRepository.saveAll(transactionStatuses);
+
+        return ResponseUtil.ok("Thêm mới thành công");
+    }
+
+
+    public ResponseEntity<?> createOrderOnline(OrderDTO orderDTO, List<ProductItemDTO> productItemDTOS) {
+        Account account = null;
+        String codeOrder = getCodeForOrder("MEOU2_");
+        Transaction transaction = Transaction
+                .builder()
+                .build();
+        TransactionStatus transactionStatus = TransactionStatus.builder().build();
+        Orders orders = Orders
+                .builder()
+                .note(orderDTO.getNote())
+                .paymentMethod(orderDTO.getPaymentMethod())
+                .typeOrder(2)
+                .code(codeOrder)
+                .statusId(1L)
+                .voucherId(orderDTO.getVoucherId())
+                .addressCustomer(orderDTO.getAddressCustomer())
+                .emailCustomer(orderDTO.getEmailCustomer())
+                .nameCustomer(orderDTO.getNameCustomer())
+                .phoneCustomer(orderDTO.getPhoneCustomer())
+                .build();
+        try {
+            account = this.accountService.getCurrentUser();
+            if (account != null) {
+                orders.setAccountId(account.getId());
+                transaction.setAccountId(account.getId());
+                transactionStatus.setAccountId(account.getId());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Orders ordersNew = this.ordersRepository.save(orders);
+        handleOrderItemForPurchase(productItemDTOS, ordersNew);
+        this.ordersRepository.save(ordersNew);
+        transaction.setOrderId(ordersNew.getId());
+        transaction.setTotalPrice(ordersNew.getTotalPrice());
+        this.transactionRepository.save(transaction);
+
+        transactionStatus.setStatusId(1L);
+        transactionStatus.setOrderId(ordersNew.getId());
+        this.transactionStatusRepository.save(transactionStatus);
+
+        return ResponseUtil.ok("Thêm mới thành công");
+    }
+
+    private String getCodeForOrder(String code) {
+        List<Orders> ordersCheck = this.ordersRepository.findByCodeContainingOrderByIdDesc(code);
+        String codeOld = ordersCheck.get(0).getCode();
+        String code1 = codeOld.substring(0, 6);
+        String code2 = codeOld.substring(6);
+        Integer numberUp = Integer.parseInt(code2);
+        numberUp = numberUp + 1;
+        String numberNew = numberUp.toString();
+        return code1 + numberNew;
+
+    }
+
+    private void handleOrderItemForPurchase(List<ProductItemDTO> productItemDTOS, Orders ordersNew) {
         BigDecimal totalPrice = new BigDecimal(0);
         List<OrderItem> orderItems = new ArrayList<>();
         for (ProductItemDTO dto : productItemDTOS) {
@@ -195,40 +247,6 @@ public class OrderSevice {
         }
         this.orderItemRepository.saveAll(orderItems);
         ordersNew.setTotalPrice(totalPrice);
-        this.ordersRepository.save(ordersNew);
-        this.transactionRepository
-                .save(Transaction
-                        .builder()
-                        .orderId(ordersNew.getId())
-                        .accountId(account.getId())
-                        .totalPrice(ordersNew.getTotalPrice())
-                        .build());
-        List<TransactionStatus> transactionStatuses = new ArrayList<>();
-        for (Long i = 1L; i < 6L; i++) {
-            TransactionStatus transactionStatus = TransactionStatus
-                    .builder()
-                    .accountId(account.getId())
-                    .orderId(ordersNew.getId())
-                    .statusId(i)
-                    .build();
-            transactionStatuses.add(transactionStatus);
-        }
-        this.transactionStatusRepository.saveAll(transactionStatuses);
-
-        return ResponseUtil.ok("Thêm mới thành công");
-    }
-
-    private String getCodeForOrder(String code) {
-        List<Orders> ordersCheck = this.ordersRepository.findByCodeContainingOrderByIdDesc(code);
-        String codeOld = ordersCheck.get(0).getCode();
-        String code1 = codeOld.substring(0, 6);
-        String code2 = codeOld.substring(6);
-        Integer numberUp = Integer.parseInt(code2);
-        numberUp = numberUp + 1;
-        String numberNew = numberUp.toString();
-        return code1 + numberNew;
-
-
     }
 
 

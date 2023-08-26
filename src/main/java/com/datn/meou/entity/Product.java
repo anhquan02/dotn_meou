@@ -30,6 +30,27 @@ import java.util.Date;
                 )
         }
 )
+
+@SqlResultSetMapping(
+        name = "payOnline",
+        classes = {
+                @ConstructorResult(
+                        targetClass = ProductDTO.class,
+                        columns = {
+                                @ColumnResult(name = "id", type = Long.class),
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "image", type = String.class),
+                                @ColumnResult(name = "minPrice", type = BigDecimal.class),
+                                @ColumnResult(name = "maxPrice", type = BigDecimal.class),
+                                @ColumnResult(name = "status", type = Integer.class),
+                                @ColumnResult(name = "description", type = String.class)
+
+                        }
+                )
+        }
+)
+
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

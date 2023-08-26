@@ -85,4 +85,8 @@ public class SizeService {
         }
     }
 
+    public List<Size> getAllSizeByProductId(Long productId) {
+        return this.sizeRepository.getAllSizeByProductId(productId);
+    }
+
 }

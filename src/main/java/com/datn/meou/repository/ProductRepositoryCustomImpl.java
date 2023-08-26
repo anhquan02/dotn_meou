@@ -1,9 +1,6 @@
 package com.datn.meou.repository;
 
-import com.datn.meou.entity.Product;
-import com.datn.meou.entity.ProductItem;
 import com.datn.meou.model.ProductDTO;
-import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.util.CommonUtil;
 import com.datn.meou.util.DataUtil;
 import org.springframework.data.domain.Page;
@@ -23,7 +20,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     public List<ProductDTO> advancedSearch(ProductDTO dto) {
         StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, " +
                 " (SELECT MIN(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS minPrice," +
-                " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, "+
+                " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, " +
                 " (SELECT SUM(dpi.quantity) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS quantity, " +
                 " p.status" +
                 " FROM dotn_product p   " +
@@ -60,11 +57,11 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             sql.append(" and dpi.sole_id = :sole");
             params.put("sole", dto.getSoleId());
         }
-        if(!DataUtil.isNullObject(dto.getStatus())){
+        if (!DataUtil.isNullObject(dto.getStatus())) {
             sql.append(" and p.status =  :status");
             params.put("status", dto.getStatus());
         }
-        if(!DataUtil.isNullObject(dto.getId())){
+        if (!DataUtil.isNullObject(dto.getId())) {
             sql.append(" and p.id = :id");
             params.put("id", dto.getId());
         }
@@ -77,7 +74,7 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     public Page<ProductDTO> advancedSearchPage(ProductDTO dto, Pageable pageable) {
         StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, " +
                 " (SELECT MIN(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS minPrice," +
-                " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, "+
+                " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, " +
                 " (SELECT SUM(dpi.quantity) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS quantity, " +
                 " p.status" +
                 " FROM dotn_product p   " +
@@ -114,16 +111,30 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
             sql.append(" and dpi.sole_id = :sole");
             params.put("sole", dto.getSoleId());
         }
-        if(!DataUtil.isNullObject(dto.getStatus())){
+        if (!DataUtil.isNullObject(dto.getStatus())) {
             sql.append(" and p.status =  :status");
             params.put("status", dto.getStatus());
         }
-        if(!DataUtil.isNullObject(dto.getId())){
+        if (!DataUtil.isNullObject(dto.getId())) {
             sql.append(" and p.id = :id");
             params.put("id", dto.getId());
         }
 
         sql.append(" GROUP BY p.id");
         return CommonUtil.getPageImpl(em, sql.toString(), params, pageable, "advancedSearchProduct");
+    }
+
+    @Override
+    public ProductDTO getByIdForOnline(Long id) {
+        StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, " +
+                " (SELECT MIN(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS minPrice," +
+                " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, " +
+                " p.status,p.description " +
+                " FROM dotn_product p   " +
+                " WHERE p.status = 1");
+        Map<String, Object> params = new HashMap<>();
+        sql.append(" and p.id = :id");
+        params.put("id", id);
+        return CommonUtil.getObject(em, sql.toString(), params, "payOnline");
     }
 }

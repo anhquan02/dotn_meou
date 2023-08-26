@@ -51,4 +51,14 @@ public class ProductDTO extends BaseModel {
         this.maxPrice = maxPrice;
         this.status = status;
     }
+
+    public ProductDTO(Long id, String name, String image, BigDecimal minPrice, BigDecimal maxPrice, Integer status, String description) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.status = status;
+        this.description = description;
+    }
 }

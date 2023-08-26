@@ -69,6 +69,7 @@ public class SoleController {
         return ResponseUtil.ok(this.soleService.findByNameContaining(name, pageable));
     }
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(

@@ -29,6 +29,13 @@ public class AcccountController {
             return new ResponseEntity<>(result, HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    @GetMapping("search-customer")
+    private ResponseEntity<?> getAllCustomer(@RequestParam String phone) {
+        return ResponseUtil.ok(this.accountService.getAllCustomer(phone));
+    }
+
+
+
 }
 
 

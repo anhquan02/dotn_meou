@@ -24,8 +24,5 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
 
     Page<Brand> findByStatusAndNameContaining(Boolean status, String name, Pageable pageable);
 
-    @Query("SELECT s FROM Brand s,ProductItem pi " +
-            "WHERE s.id = pi.soleId AND s.status = true AND pi.status = 1 AND pi.productId = :productId " +
-            "GROUP BY s.id ORDER BY s.name")
-    List<Brand> getAllBrandByProductId(@Param("productId") Long productId);
+
 }

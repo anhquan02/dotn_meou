@@ -129,11 +129,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
         StringBuilder sql = new StringBuilder(" SELECT p.id, p.name, p.image, " +
                 " (SELECT MIN(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS minPrice," +
                 " (SELECT MAX(dpi.price) FROM dotn_product_item dpi WHERE dpi.product_id = p.id) AS maxPrice, " +
-                " p.status,p.description " +
-                " FROM dotn_product p   " +
-                " WHERE p.status = 1");
+                " p.status,p.description ,p.brand_id as brandId ,b.name as nameBrand " +
+                " FROM dotn_product p ,dotn_brand b  " +
+                " WHERE p.status = 1 " +
+                " AND p.brand_id = b.id ");
         Map<String, Object> params = new HashMap<>();
-        sql.append(" and p.id = :id");
+        sql.append(" AND p.id = :id");
         params.put("id", id);
         return CommonUtil.getObject(em, sql.toString(), params, "payOnline");
     }

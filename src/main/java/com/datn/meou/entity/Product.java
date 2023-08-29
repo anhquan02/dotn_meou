@@ -43,7 +43,9 @@ import java.util.Date;
                                 @ColumnResult(name = "minPrice", type = BigDecimal.class),
                                 @ColumnResult(name = "maxPrice", type = BigDecimal.class),
                                 @ColumnResult(name = "status", type = Integer.class),
-                                @ColumnResult(name = "description", type = String.class)
+                                @ColumnResult(name = "description", type = String.class),
+                                @ColumnResult(name = "brandId", type = Long.class),
+                                @ColumnResult(name = "nameBrand", type = String.class)
 
                         }
                 )

@@ -23,14 +23,14 @@ public class ProductItemRepositoryCustomImpl implements ProductItemRepositoryCus
         StringBuilder sql = new StringBuilder(" SELECT pi.id as id,pi.quantity as quantity,pi.price as price," +
                 " pi.name as name, s.name as nameSole, ins.name as nameInsole," +
                 "sz.name as nameSize,c.name as nameColor,b.name as nameBrand,pi.sole_id as soleId," +
-                " pi.sole_id as soleId ,pi.insole_id as insoleId, pi.size_id as sizeId , pi.color_id as colorId, pi.brand_id as brandId ,pi.status as status " +
+                " pi.sole_id as soleId ,pi.insole_id as insoleId, pi.size_id as sizeId , pi.color_id as colorId, p.brand_id as brandId ,pi.status as status " +
                 " FROM dotn_product_item pi   " +
                 " JOIN dotn_product p ON p.id = pi.product_id" +
                 " JOIN dotn_sole s ON s.id = pi.sole_id " +
                 " JOIN dotn_insole ins ON ins.id = pi.insole_id" +
                 " JOIN dotn_size sz ON sz.id = pi.size_id" +
                 " JOIN dotn_color c ON c.id = pi.color_id" +
-                " JOIN dotn_brand b ON b.id = pi.brand_id" +
+                " JOIN dotn_brand b ON b.id = p.brand_id" +
                 " WHERE pi.status = 1 and pi.quantity >0   ");
         Map<String, Object> params = new HashMap<>();
         if (!DataUtil.isNullObject(dto.getName())) {
@@ -39,7 +39,7 @@ public class ProductItemRepositoryCustomImpl implements ProductItemRepositoryCus
         }
 
         if (!DataUtil.isNullObject(dto.getBrandId())) {
-            sql.append(" and pi.brand_id = :brand");
+            sql.append(" and p.brand_id = :brand");
             params.put("brand", dto.getBrandId());
         }
         if (!DataUtil.isNullObject(dto.getColorId())) {

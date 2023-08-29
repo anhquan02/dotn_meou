@@ -26,7 +26,6 @@ public class OrderItem {
     private Integer quantityOrder;
     private BigDecimal priceSell;
     private String colorProduct;
-    private String brandProduct;
     private String sizeProduct;
     private String soleProduct;
     private String insoleProduct;

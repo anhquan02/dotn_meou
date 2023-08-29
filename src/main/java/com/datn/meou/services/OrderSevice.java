@@ -205,10 +205,6 @@ public class OrderSevice {
             if (product.isEmpty()) {
                 throw new BadRequestException("Cần thêm sản phẩm này");
             }
-            Optional<Brand> brand = this.brandRepository.findByIdAndStatus(item.getBrandId(), true);
-            if (brand.isEmpty()) {
-                throw new BadRequestException("Cần thêm thương hiệu sản phẩm này");
-            }
 
             List<Image> images = this.imageRepository.findAllByProductItemId(productItem.get().getId());
             if (images.size() < 1) {
@@ -235,7 +231,6 @@ public class OrderSevice {
                     .priceSell(item.getPrice())
                     .nameProduct(item.getName())
                     .sizeProduct(size.get().getName())
-                    .brandProduct(brand.get().getName())
                     .colorProduct(color.get().getName())
                     .insoleProduct(insole.get().getName())
                     .soleProduct(sole.get().getName())

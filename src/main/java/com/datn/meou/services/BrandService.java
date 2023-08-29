@@ -79,7 +79,4 @@ public class BrandService {
         }
     }
 
-    public List<Brand> getAllBrandByProductId(Long productId) {
-        return this.brandRepository.getAllBrandByProductId(productId);
-    }
 }

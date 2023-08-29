@@ -41,6 +41,7 @@ public class ProductDTO extends BaseModel {
     private String nameSole;
     private String nameColor;
     private String nameInsole;
+    private String nameBrand;
 
     public ProductDTO(Long id, String name, String image, BigDecimal minPrice, BigDecimal maxPrice, BigDecimal quantity, Integer status) {
         this.id = id;
@@ -52,7 +53,9 @@ public class ProductDTO extends BaseModel {
         this.status = status;
     }
 
-    public ProductDTO(Long id, String name, String image, BigDecimal minPrice, BigDecimal maxPrice, Integer status, String description) {
+    public ProductDTO(Long id, String name, String image, BigDecimal minPrice,
+                      BigDecimal maxPrice, Integer status, String description,
+                      Long brandId, String nameBrand) {
         this.id = id;
         this.name = name;
         this.image = image;
@@ -60,5 +63,7 @@ public class ProductDTO extends BaseModel {
         this.maxPrice = maxPrice;
         this.status = status;
         this.description = description;
+        this.brandId = brandId;
+        this.nameBrand = nameBrand;
     }
 }

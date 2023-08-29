@@ -169,7 +169,6 @@ public class ProductService {
         map.put("size", this.sizeService.getAllSizeByProductId(id));
         map.put("sole", this.soleService.getAllSoleByProductId(id));
         map.put("insole", this.insoleSerivce.getAllInsoleByProductId(id));
-        map.put("brand", this.brandService.getAllBrandByProductId(id));
         map.put("color", this.colorService.getAllColorByProductId(id));
         return ResponseUtil.ok(map);
     }

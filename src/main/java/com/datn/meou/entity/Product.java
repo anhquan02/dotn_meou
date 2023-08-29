@@ -2,6 +2,7 @@ package com.datn.meou.entity;
 
 
 import com.datn.meou.model.ProductDTO;
+import com.datn.meou.model.StatisticalDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,7 +52,32 @@ import java.util.Date;
                 )
         }
 )
+@SqlResultSetMapping(
+        name = "statisticalMonthly",
+        classes = {
+                @ConstructorResult(
+                        targetClass = StatisticalDTO.class,
+                        columns = {
+                                @ColumnResult(name = "monthQuantity", type = Integer.class),
+                                @ColumnResult(name = "monthPrice", type = Double.class),
+                                @ColumnResult(name = "quantityOrder", type = BigDecimal.class),
+                        }
+                )
+        }
+)
 
+@SqlResultSetMapping(
+        name = "statisticalToday",
+        classes = {
+                @ConstructorResult(
+                        targetClass = StatisticalDTO.class,
+                        columns = {
+                                @ColumnResult(name = "todayQuantity", type = Integer.class),
+                                @ColumnResult(name = "todayPrice", type = Double.class),
+                        }
+                )
+        }
+)
 
 @Entity
 @AllArgsConstructor

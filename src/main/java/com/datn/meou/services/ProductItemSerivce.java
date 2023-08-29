@@ -293,7 +293,7 @@ public class ProductItemSerivce {
                     throw new BadRequestException("Sản phẩm chi tiết này không tồn tại");
                 }
                 List<OrderItem> lstOrderItem = orderItemRepository.findAllByProductItemId(productItem.get().getId());
-                if (lstOrderItem.isEmpty()) {
+                if (!lstOrderItem.isEmpty() || lstOrderItem != null) {
                     throw new BadRequestException("không thể xóa sản phẩm này");
                 }
                 productItem.get().setStatus(0);

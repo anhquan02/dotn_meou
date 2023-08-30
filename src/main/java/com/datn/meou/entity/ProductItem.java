@@ -2,12 +2,15 @@ package com.datn.meou.entity;
 
 import com.datn.meou.model.ProductDTO;
 import com.datn.meou.model.ProductItemDTO;
+import com.datn.meou.model.StatisticalDTO;
+import com.datn.meou.model.StatisticalDTOS;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -33,6 +36,34 @@ import javax.persistence.*;
                                 @ColumnResult(name = "brandId", type = Long.class),
                                 @ColumnResult(name = "status", type = Integer.class)
 
+                        }
+                )
+        }
+)
+
+@SqlResultSetMapping(
+        name = "topSales",
+        classes = {
+                @ConstructorResult(
+                        targetClass = StatisticalDTOS.class,
+                        columns = {
+                                @ColumnResult(name = "name", type = String.class),
+                                @ColumnResult(name = "priceProductItem", type = BigDecimal.class),
+                                @ColumnResult(name = "totalQuantity", type = BigDecimal.class),
+                        }
+                )
+        }
+)
+
+@SqlResultSetMapping(
+        name = "getStatisticalByDate",
+        classes = {
+                @ConstructorResult(
+                        targetClass = StatisticalDTOS.class,
+                        columns = {
+                                @ColumnResult(name = "saleDate", type = Date.class),
+                                @ColumnResult(name = "todayQuantity", type = BigDecimal.class),
+                                @ColumnResult(name = "totalPrice", type = BigDecimal.class),
                         }
                 )
         }

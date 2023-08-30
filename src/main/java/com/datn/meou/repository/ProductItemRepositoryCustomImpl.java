@@ -1,7 +1,10 @@
 package com.datn.meou.repository;
 
+import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.ProductDTO;
 import com.datn.meou.model.ProductItemDTO;
+import com.datn.meou.model.StatisticalDTO;
+import com.datn.meou.model.StatisticalDTOS;
 import com.datn.meou.util.CommonUtil;
 import com.datn.meou.util.DataUtil;
 import org.springframework.data.domain.Page;
@@ -9,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,5 +64,44 @@ public class ProductItemRepositoryCustomImpl implements ProductItemRepositoryCus
         }
 
         return CommonUtil.getList(em, sql.toString(), params, "getProductByName");
+    }
+
+    @Override
+    public List<StatisticalDTOS> topSales() {
+        StringBuilder sql = new StringBuilder("SELECT b.name AS name, b.price AS priceProductItem, SUM(a.quantity_order) AS totalQuantity FROM dotn_order_item a\n" +
+                "INNER JOIN dotn_product_item b ON a.product_item_id = b.id\n" +
+                "WHERE a.product_item_id  \n" +
+                "IN (SELECT doi.product_item_id FROM dotn_order_item doi \n" +
+                "JOIN dotn_order do ON doi.order_id = do.id\n" +
+                "WHERE MONTH(do.updated_date) = MONTH(CURDATE()) AND do.status_id = 5\n" +
+                "GROUP BY doi.product_item_id)\n" +
+                "GROUP BY a.product_item_id, b.name, b.price, a.quantity_order\n" +
+                " ORDER BY totalQuantity DESC" +
+                " LIMIT 5");
+        Map<String, Object> params = new HashMap<>();
+        return CommonUtil.getList(em, sql.toString(), params, "topSales");
+    }
+
+    @Override
+    public List<StatisticalDTOS> getStatisticalByDate(Date fromDate, Date toDate) {
+        StringBuilder sql = new StringBuilder("SELECT date(do.updated_date) AS saleDate, SUM(doi.quantity_order) AS todayQuantity, SUM(doi.price_sell) AS totalPrice " +
+                "FROM dotn_order_item doi\n" +
+                "JOIN dotn_order do ON doi.order_id = do.id\n" +
+                "WHERE do.status_id = 5 ");
+        Map<String, Object> params = new HashMap<>();
+        if(!DataUtil.isNullObject(fromDate) && !DataUtil.isNullObject(toDate)){
+            if(toDate.before(fromDate)){
+                throw new BadRequestException("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
+            }
+            sql.append(" AND date(do.updated_date) BETWEEN :fromDate ");
+            params.put("fromDate", fromDate);
+            sql.append(" AND :toDate");
+            params.put("toDate", toDate);
+
+            sql.append(" GROUP BY saleDate ORDER BY saleDate");
+        }else{
+            sql.append(" AND MONTH(do.updated_date) = MONTH(CURDATE()) GROUP BY saleDate  ORDER BY saleDate LIMIT 30");
+        }
+        return CommonUtil.getList(em, sql.toString(), params, "getStatisticalByDate");
     }
 }

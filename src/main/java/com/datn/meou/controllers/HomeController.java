@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/v1/home")
+@RequestMapping("/api/v1/customer")
 @RequiredArgsConstructor
 public class HomeController {
 
     private final ProductRepository productRepository;
 
-    @PostMapping()
+    @PostMapping("/home")
     private ResponseEntity<?> home(@RequestBody ProductDTO dto, Pageable pageable) {
         return ResponseUtil.ok(this.productRepository.advancedSearchPage(dto, pageable));
     }

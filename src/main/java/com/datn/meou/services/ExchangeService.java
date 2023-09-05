@@ -1,20 +1,12 @@
 package com.datn.meou.services;
 
 import com.datn.meou.entity.Exchange;
-import com.datn.meou.entity.ExchangeItem;
-import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.ExchangeDTO;
-import com.datn.meou.model.ExchangeItemDTO;
 import com.datn.meou.repository.ExchangeItemRepository;
 import com.datn.meou.repository.ExchangeRepository;
 import com.datn.meou.util.MapperUtil;
 import lombok.AllArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.expression.Dates;
-
-import java.util.Date;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor

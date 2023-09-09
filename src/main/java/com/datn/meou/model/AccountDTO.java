@@ -21,4 +21,6 @@ public class AccountDTO extends BaseModel {
     private Integer roleId;
     private String phone;
     private String nameRole;
+    private String resetPassword;
+    private String resetPassword2;
 }

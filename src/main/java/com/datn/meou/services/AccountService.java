@@ -110,6 +110,9 @@ public class AccountService implements UserDetailsService {
         if(DataUtil.isNullObject(dto.getPassword())){
             throw new BadRequestException("password không được để trống");
         }
+        if(dto.getPassword().length() < 6){
+            throw new BadRequestException("password tối thiểu 6 ký tự");
+        }
         if(DataUtil.isNullObject(dto.getEmail())){
             throw new BadRequestException("email không được để trống");
         }
@@ -141,6 +144,35 @@ public class AccountService implements UserDetailsService {
         }
         throw new BadRequestException("Thêm mới tài khoản thất bại");
     }
+
+    public Account changePassward(AccountDTO dto){
+
+        if(DataUtil.isNullObject(dto.getUsername())){
+            throw new BadRequestException("username không được trống");
+        }
+        if(DataUtil.isNullObject(dto.getPassword())){
+            throw  new BadRequestException("password không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getResetPassword())){
+            throw  new BadRequestException("password mới không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getResetPassword2())){
+            throw  new BadRequestException("nhập lại password không được để trống");
+        }
+        Optional<Account> account = accountRepository.findByUsername(dto.getUsername());
+        if(account.isEmpty()){
+            throw new BadRequestException("Tài khoản không tồn tại");
+        }
+        if(!account.get().getPassword().equals(dto.getPassword().trim())){
+            throw new BadRequestException("sai mật khẩu");
+        }
+        if(!dto.getResetPassword().trim().equals(dto.getResetPassword2().trim())){
+            throw new BadRequestException("nhập lại mật khẩu không trùng với mật khẩu mới");
+        }
+        account.get().setPassword(dto.getPassword());
+        return accountRepository.save(account.get());
+    }
+
     public static boolean isEmail(String s) {
         Boolean x = EMAIL.matcher(s).matches();
         return x;

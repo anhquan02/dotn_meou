@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -16,10 +17,10 @@ import java.util.Date;
 @Data
 @Builder
 @Table(name = "dotn_voucher")
-public class Voucher extends BaseEntity{
+public class Voucher extends BaseEntity {
     private String name;
-    private LocalDate dayStart;
-    private LocalDate dayEnd;;
-    private Integer quantity;
-    private Double value;
+    private LocalDateTime dayStart;
+    private LocalDateTime dayEnd;
+    private BigDecimal value;
+    private Boolean status;
 }

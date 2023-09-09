@@ -1,75 +1,67 @@
 package com.datn.meou.controllers;
 
-import com.datn.meou.entity.Voucher;
+import com.datn.meou.model.VoucherDTO;
 import com.datn.meou.services.VoucherService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import com.datn.meou.util.ResponseUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-@Controller
+
+import javax.validation.Valid;
+import java.util.List;
+
+@RestController
+@CrossOrigin
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/voucher")
 public class VoucherController {
     private final VoucherService voucherService;
 
-    public VoucherController(VoucherService voucherService) {
-        this.voucherService = voucherService;
-    }
-    @GetMapping("/vouchers")
-    public String getAllVouchers(@RequestParam(defaultValue = "0") int page, Model model) {
-        PageRequest pageable = PageRequest.of(page, 2);
-        Page<Voucher> voucherPage = voucherService.getAllVouchers(pageable);
-
-        model.addAttribute("vouchers", voucherPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", voucherPage.getTotalPages());
-
-        return "voucher/voucher-list";
-    }
-    @GetMapping("/vouchers/{id}")
-    public String getVoucherById(@PathVariable("id") Long id, Model model) {
-        Voucher voucher = voucherService.getVoucherById(id);
-        model.addAttribute("voucher", voucher);
-        return "voucher/voucher-details";
-    }
-    @GetMapping("/vouchers/new")
-    public String showVoucherForm(Model model) {
-        Voucher voucher = new Voucher();
-        model.addAttribute("voucher", voucher);
-        return "voucher/voucher-form";
-    }
-    @PostMapping("/vouchers")
-    public String saveVoucher(@ModelAttribute("voucher") Voucher voucher) {
-        voucherService.saveVoucher(voucher);
-        return "redirect:/vouchers/search?name=&page=0";
+    @PostMapping()
+    private ResponseEntity<?> save(@Valid @RequestBody VoucherDTO dto) {
+        return ResponseUtil.ok(this.voucherService.save(dto));
     }
 
-    @GetMapping("/vouchers/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Voucher voucher = voucherService.getVoucherById(id);
-        model.addAttribute("voucher", voucher);
-        return "voucher/voucher-form";
+    @PutMapping()
+    private ResponseEntity<?> update(@Valid @RequestBody VoucherDTO dto) {
+        return ResponseUtil.ok(this.voucherService.update(dto));
     }
-    @PostMapping("/vouchers/update/{id}")
-    public String updateVoucher(@PathVariable("id") Long id, @ModelAttribute("voucher") Voucher voucher) {
-        voucherService.updateVoucher(voucher);
-        return "redirect:/vouchers/search?name=&page=0";
-    }
-    @GetMapping("/vouchers/{id}/delete")
-    public String deleteVoucher(@PathVariable Long id) {
-        voucherService.deleteVoucher(id);
-        return "redirect:/vouchers/search?name=&page=0";
-    }
-    @GetMapping("/vouchers/search")
-    public String searchVouchers(@RequestParam("name") String name,
-                                 @RequestParam(defaultValue = "0") int page,
-                                 Model model) {
-        PageRequest pageable = PageRequest.of(page, 2);
-        Page<Voucher> voucherPage = voucherService.searchVouchersByName(name, pageable);
 
-        model.addAttribute("vouchers", voucherPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", voucherPage.getTotalPages());
+    @GetMapping("all-list")
+    private ResponseEntity<?> findAllList(@RequestParam(required = false) String nameVoucher) {
 
-        return "voucher/voucher-list";
+        return ResponseUtil.ok(this.voucherService.getAlls(nameVoucher));
     }
+
+    @GetMapping("all-page")
+    private ResponseEntity<?> findAllPage(Pageable pageable, @RequestParam(required = false) String nameVoucher) {
+        return ResponseUtil.ok(this.voucherService.getAllPage(pageable, nameVoucher));
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        StringBuilder errors = new StringBuilder();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            errors.append(error.getDefaultMessage()).append(",");
+        });
+        return ResponseUtil.badRequest(errors.toString());
+    }
+
+    @DeleteMapping()
+    private ResponseEntity<?> delete(@RequestParam List<Long> ids) {
+        this.voucherService.deleteVoucher(ids);
+        return ResponseUtil.ok("Xóa thành công");
+    }
+
+    @GetMapping("id")
+    private ResponseEntity<?> findById(@RequestParam Long id) {
+        return ResponseUtil.ok(this.voucherService.getById(id));
+    }
+
+
 }

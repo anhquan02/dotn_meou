@@ -54,6 +54,8 @@ public class OrderSevice {
 
     private final EmailService emailService;
 
+    private final VoucherRepository voucherRepository;
+
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
@@ -88,6 +90,12 @@ public class OrderSevice {
     public ResponseEntity<?> createOrderByCounterSale(OrderDTO orderDTO, List<ProductItemDTO> productItemDTOS) {
         Account account = this.accountService.getCurrentUser();
         String codeOrder = getCodeForOrder("MEOU1_");
+        if (!DataUtil.isNullObject(orderDTO.getVoucherId())) {
+            Optional<Voucher> voucher = this.voucherRepository.findByIdAndStatus(orderDTO.getVoucherId(), true);
+            if (voucher.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy voucher này");
+            }
+        }
         Orders orders = Orders.builder()
                 .accountId(account.getId())
                 .note(orderDTO.getNote())
@@ -252,6 +260,10 @@ public class OrderSevice {
             this.productItemRepository.save(item);
         }
         this.orderItemRepository.saveAll(orderItems);
+        if (!DataUtil.isNullObject(ordersNew.getVoucherId())) {
+            Voucher voucher = this.voucherRepository.findById(ordersNew.getVoucherId()).get();
+            totalPrice = totalPrice.subtract(voucher.getValue());
+        }
         ordersNew.setTotalPrice(totalPrice);
     }
 

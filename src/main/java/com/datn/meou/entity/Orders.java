@@ -30,7 +30,6 @@ import java.util.Date;
                                 @ColumnResult(name = "phoneCustomer", type = String.class),
                                 @ColumnResult(name = "paymentMethod", type = String.class),
                                 @ColumnResult(name = "valueStatus", type = String.class),
-                                @ColumnResult(name = "username", type = String.class),
                                 @ColumnResult(name = "statusId", type = Long.class)
                         }
                 )

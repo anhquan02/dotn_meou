@@ -56,9 +56,15 @@ public class OrderSevice {
 
     private final VoucherRepository voucherRepository;
 
+    private final AccountRepository accountRepository;
+
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
+            if (!DataUtil.isNullObject(orderDTO.getAccountId())) {
+                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getId(), true).get();
+                orderDTO.setUsername(account.getUsername());
+            }
             BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
             orderDTO.setTotalPrice(a1);
             if (!DataUtil.isNullObject(orderDTO.getTypeOrder())) {
@@ -239,6 +245,7 @@ public class OrderSevice {
             if (dto.getQuantity() > productItem.get().getQuantity()) {
                 throw new BadRequestException("Vượt số lượng trong kho");
             }
+
 
             BigDecimal sumProductItem = item.getPrice().multiply(BigDecimal.valueOf(dto.getQuantity()));
             totalPrice = totalPrice.add(sumProductItem);

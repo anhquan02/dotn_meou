@@ -8,6 +8,7 @@ import com.datn.meou.model.OrderDTO;
 import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.repository.*;
 import com.datn.meou.util.DataUtil;
+import com.datn.meou.util.DateUtil;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.text.ParseException;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +51,8 @@ public class OrderSevice {
     private final TransactionStatusRepository transactionStatusRepository;
 
     private final ImageRepository imageRepository;
+
+    private final EmailService emailService;
 
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
@@ -120,7 +126,7 @@ public class OrderSevice {
 
 
     public ResponseEntity<?> createOrderOnline(OrderDTO orderDTO, List<ProductItemDTO> productItemDTOS) {
-        Account account = null;
+        Account account;
         String codeOrder = getCodeForOrder("MEOU2_");
         Transaction transaction = Transaction
                 .builder()
@@ -160,6 +166,11 @@ public class OrderSevice {
         transactionStatus.setOrderId(ordersNew.getId());
         this.transactionStatusRepository.save(transactionStatus);
 
+        String sub = "Thông báo đơn hàng " + ordersNew.getCode();
+        String text1 = generateReportMessage(ordersNew, productItemDTOS);
+        if (!DataUtil.isNullObject(orderDTO.getEmailCustomer())) {
+            this.emailService.sendEmail(orderDTO.getEmailCustomer(), sub, text1);
+        }
         return ResponseUtil.ok("Thêm mới thành công");
     }
 
@@ -242,6 +253,95 @@ public class OrderSevice {
         }
         this.orderItemRepository.saveAll(orderItems);
         ordersNew.setTotalPrice(totalPrice);
+    }
+
+    private StringBuilder generateCommonHtmlHead() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder
+                .append("<body>")
+                .append("<div style=\"max-width: 500px;\">")
+                .append("  <h2 style=\"text-align: center;\">Thông tin đơn hàng</h2>")
+                .append(" <div style=\"display: flex; max-width: 500px;\">")
+                .append("   <div style=\"width: 50%;\">");
+    }
+
+    public String generateReportMessage(Orders billSave, List<ProductItemDTO> productBills) {
+        StringBuilder text = generateCommonHtmlHead();
+        String creatDate = billSave.getCreatedDate().toString();
+        String dateMain;
+        try {
+            Date date = DateUtil.inputFormat.parse(creatDate);
+            dateMain = DateUtil.sdtf.format(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Số đơn hàng:" + billSave.getCode() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Ngày:" + dateMain + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Tên khách hàng:" + billSave.getNameCustomer() + "</b>")
+                .append(" </div>");
+
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Số điện thoại:" + billSave.getPhoneCustomer() + "</b>")
+                .append(" </div>");
+        if (billSave.getEmailCustomer() != null) {
+            text.append(" <div style=\"margin-top: 5px;\">")
+                    .append("   <b style=\"margin-right: 10px;\">Email:" + billSave.getEmailCustomer() + "</b>")
+                    .append(" </div>");
+        }
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Địa chỉ:" + billSave.getAddressCustomer() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Hình thức thanh toán:" + billSave.getPaymentMethod() + "</b>")
+                .append(" </div>");
+
+
+        if (billSave.getNote() != null) {
+            text.append(" <div style=\"margin-top: 5px;\">")
+                    .append("   <b style=\"margin-right: 10px;\">Lời nhắn(nếu có):" + billSave.getNote() + "</b>")
+                    .append(" </div>");
+        }
+        text.append("</div>");
+        text.append("<div style=\"width: 50%;\">")
+                .append("    <table style=\"background-color: gray; margin-left: auto;\">")
+                .append("   <tr>\n" +
+                        "                        <th style=\"background-color: white;\">Tên sản phẩm</th>\n" +
+                        "                        <th style=\"background-color: white;\">Số lượng</th>\n" +
+                        "                        <th style=\"background-color: white;\">Thành tiền</th>\n" +
+                        "                    </tr>");
+        for (ProductItemDTO mark : productBills) {
+            Optional<ProductItem> productItem = this.productItemRepository.findByIdAndStatusGreaterThan(mark.getId(), 0);
+            if (productItem.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy sản phẩm này");
+            } else {
+                text.append("<tr>")
+                        .append("<td>").append(productItem.get().getName()).append("</td>")
+                        .append("<td>").append(mark.getQuantity()).append("</td>")
+                        .append("<td>").append((productItem.get().getPrice().multiply(BigDecimal.valueOf(mark.getQuantity())))).append("</td>")
+                        .append("</tr>");
+            }
+        }
+
+        text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Tổng cộng: " + billSave.getTotalPrice() + "</div>");
+//        BigDecimal pricePay = billSave.getTotalPrice();
+//        String formattedNumber = String.format("%.1f", pricePay);
+//        text.append("    <div style=\"text-align: end; margin-top: 5px;\"> Thanh toán: " + formattedNumber + "</div>");
+        text.append("  </table>");
+        text.append(" </div>");
+        text.append(" </div>");
+        text.append(" </div>");
+        text.append("</body>");
+
+        return text.toString();
     }
 
 

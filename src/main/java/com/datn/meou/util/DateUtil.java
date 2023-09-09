@@ -14,6 +14,8 @@ public class DateUtil {
     public static SimpleDateFormat sdtf = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
     public static SimpleDateFormat dateUpFile = new SimpleDateFormat("ddMMyyyyhhmmss");
 
+    public static SimpleDateFormat inputFormat = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
+
     public static Date today() {
         return new Date();
     }

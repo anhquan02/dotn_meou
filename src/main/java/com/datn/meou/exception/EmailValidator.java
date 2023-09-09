@@ -9,7 +9,10 @@ public class EmailValidator implements ConstraintValidator<CheckEmail, String> {
         if (email == null) {
             return true;
         }
-        if (email.matches("\\w+@\\w+[.]\\w+([.]\\w+)?")) {
+//        if (email.matches("\\w+@\\w+[.]\\w+([.]\\w+)?")) {
+//            return true;
+//        }
+        if (email.matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) {
             return true;
         }
         return false;

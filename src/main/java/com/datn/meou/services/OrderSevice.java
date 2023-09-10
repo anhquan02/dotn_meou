@@ -54,9 +54,17 @@ public class OrderSevice {
 
     private final EmailService emailService;
 
+    private final VoucherRepository voucherRepository;
+
+    private final AccountRepository accountRepository;
+
     public Page<OrderDTO> findAll(OrderDTO dto, Pageable pageable) {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
+            if (!DataUtil.isNullObject(orderDTO.getAccountId())) {
+                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getId(), true).get();
+                orderDTO.setUsername(account.getUsername());
+            }
             BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
             orderDTO.setTotalPrice(a1);
             if (!DataUtil.isNullObject(orderDTO.getTypeOrder())) {
@@ -88,6 +96,12 @@ public class OrderSevice {
     public ResponseEntity<?> createOrderByCounterSale(OrderDTO orderDTO, List<ProductItemDTO> productItemDTOS) {
         Account account = this.accountService.getCurrentUser();
         String codeOrder = getCodeForOrder("MEOU1_");
+        if (!DataUtil.isNullObject(orderDTO.getVoucherId())) {
+            Optional<Voucher> voucher = this.voucherRepository.findByIdAndStatus(orderDTO.getVoucherId(), true);
+            if (voucher.isEmpty()) {
+                throw new BadRequestException("Không tìm thấy voucher này");
+            }
+        }
         Orders orders = Orders.builder()
                 .accountId(account.getId())
                 .note(orderDTO.getNote())
@@ -232,6 +246,7 @@ public class OrderSevice {
                 throw new BadRequestException("Vượt số lượng trong kho");
             }
 
+
             BigDecimal sumProductItem = item.getPrice().multiply(BigDecimal.valueOf(dto.getQuantity()));
             totalPrice = totalPrice.add(sumProductItem);
             OrderItem orderItem = OrderItem
@@ -252,6 +267,10 @@ public class OrderSevice {
             this.productItemRepository.save(item);
         }
         this.orderItemRepository.saveAll(orderItems);
+        if (!DataUtil.isNullObject(ordersNew.getVoucherId())) {
+            Voucher voucher = this.voucherRepository.findById(ordersNew.getVoucherId()).get();
+            totalPrice = totalPrice.subtract(voucher.getValue());
+        }
         ordersNew.setTotalPrice(totalPrice);
     }
 

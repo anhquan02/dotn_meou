@@ -23,9 +23,9 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
         sql.append("SELECT o.id AS id , o.code AS code ,o.created_date AS createdDate,o.address_customer AS addressCustomer, ")
                 .append("o.email_customer AS emailCustomer, o.name_customer AS nameCustomer, o.note as note , ")
                 .append(" o.total_price AS totalPrice ,o.type_order AS typeOrder,o.phone_customer AS phoneCustomer , ")
-                .append(" o.payment_method AS paymentMethod ,os.value_status AS valueStatus,a.username AS username,o.status_id AS statusId ")
-                .append(" FROM dotn_order o, dotn_order_status os ,dotn_account a ")
-                .append(" WHERE o.status_id = os.id AND a.id = o.account_id ")
+                .append(" o.payment_method AS paymentMethod ,os.value_status AS valueStatus,o.status_id AS statusId ")
+                .append(" FROM dotn_order o, dotn_order_status os  ")
+                .append(" WHERE o.status_id = os.id  ")
                 .append(" AND os.status = true ");
         Map<String, Object> params = new HashMap<>();
         if (!DataUtil.isNullObject(dto.getCode())) {

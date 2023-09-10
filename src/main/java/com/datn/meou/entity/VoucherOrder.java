@@ -13,9 +13,10 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @Data
 @Builder
-@Table(name = "dotn_cart_item")
-public class CartItem extends BaseEntity {
-    private Long productDetailId;
-    private Long quantity;
-    private Long cartId;
+@Table(name = "dotn_voucher_order")
+
+public class VoucherOrder extends BaseEntity {
+    private Integer voucherId;
+    private Integer orderId;
+    private Double value;
 }

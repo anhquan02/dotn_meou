@@ -39,22 +39,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth)
-            throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(accountService) // Cung cáp userservice cho spring security
                 .passwordEncoder(passwordEncoder); // cung cấp password encoder
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .cors() // Ngăn chặn request từ một domain khác
-                .and().csrf().disable()
-                .exceptionHandling()
+        http.cors() // Ngăn chặn request từ một domain khác
                 .and()
-                .authorizeRequests()
+                .csrf()
+                .disable().exceptionHandling()
+                .and().authorizeRequests()
                 .antMatchers("/api/v1/account", "/api/v1/account/login").permitAll()
-                .antMatchers("/api/v1/product/all-item","/api/v1/product-item/choose-types","/api/v1/order/create-order-online","/api/v1/account/register", "/api/v1/customer/home").permitAll()// Cho phép tất cả mọi người truy cập vào địa chỉ này
+                .antMatchers("/api/v1/product/all-item", "/api/v1/product-item/choose-types",
+                        "/api/v1/order/create-order-online", "/api/v1/account/register",
+                        "/api/v1/customer/home", "/api/v1/voucher/client").permitAll()// Cho phép tất cả mọi người truy cập vào địa chỉ này
                 .anyRequest().authenticated();// Tất cả các request khác đều cần phải xác thực mới được truy cập
 
         // Thêm một lớp Filter kiểm tra jwt

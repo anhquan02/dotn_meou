@@ -36,6 +36,12 @@ public class VoucherController {
         return ResponseUtil.ok(this.voucherService.getAlls(nameVoucher));
     }
 
+    @GetMapping("client")
+    private ResponseEntity<?> findAllClient(@RequestParam(required = false) String nameVoucher) {
+
+        return ResponseUtil.ok(this.voucherService.getAlls(nameVoucher));
+    }
+
     @GetMapping("all-page")
     private ResponseEntity<?> findAllPage(Pageable pageable, @RequestParam(required = false) String nameVoucher) {
         return ResponseUtil.ok(this.voucherService.getAllPage(pageable, nameVoucher));
@@ -43,8 +49,7 @@ public class VoucherController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
         StringBuilder errors = new StringBuilder();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             errors.append(error.getDefaultMessage()).append(",");

@@ -146,9 +146,9 @@ public class AccountService implements UserDetailsService {
     }
 
     public Account changePassward(AccountDTO dto){
-
-        if(DataUtil.isNullObject(dto.getUsername())){
-            throw new BadRequestException("username không được trống");
+        Account account = this.getCurrentUser();
+        if(account == null){
+            throw new BadRequestException("bạn chưa đăng nhập");
         }
         if(DataUtil.isNullObject(dto.getPassword())){
             throw  new BadRequestException("password không được để trống");
@@ -159,18 +159,15 @@ public class AccountService implements UserDetailsService {
         if(DataUtil.isNullObject(dto.getResetPassword2())){
             throw  new BadRequestException("nhập lại password không được để trống");
         }
-        Optional<Account> account = accountRepository.findByUsername(dto.getUsername());
-        if(account.isEmpty()){
-            throw new BadRequestException("Tài khoản không tồn tại");
-        }
-        if(!account.get().getPassword().equals(dto.getPassword().trim())){
+        boolean checkPassword = passwordEncoder.matches(dto.getPassword(), account.getPassword());
+        if(!checkPassword){
             throw new BadRequestException("sai mật khẩu");
         }
         if(!dto.getResetPassword().trim().equals(dto.getResetPassword2().trim())){
             throw new BadRequestException("nhập lại mật khẩu không trùng với mật khẩu mới");
         }
-        account.get().setPassword(dto.getPassword());
-        return accountRepository.save(account.get());
+        account.setPassword(passwordEncoder.encode(dto.getResetPassword()));
+        return accountRepository.save(account);
     }
 
     public static boolean isEmail(String s) {

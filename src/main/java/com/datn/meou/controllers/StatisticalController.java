@@ -4,6 +4,7 @@ import com.datn.meou.model.ProductDTO;
 import com.datn.meou.model.StatisticalDTOS;
 import com.datn.meou.repository.ProductItemRepository;
 import com.datn.meou.repository.ProductRepository;
+import com.datn.meou.services.StatisticalService;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,9 @@ public class StatisticalController {
     private final ProductRepository productRepository;
 
     private  final ProductItemRepository productItemRepository;
+
+    private final StatisticalService statisticalService;
+
     @PostMapping("statistical-monthly")
     private ResponseEntity<?> getStatisticalMonthly() {
         return ResponseUtil.ok(this.productRepository.getForMonthly());
@@ -33,7 +37,7 @@ public class StatisticalController {
 
     @PostMapping("top-month-sales")
     private ResponseEntity<?> getTopMonthSale() {
-        return ResponseUtil.ok(this.productItemRepository.topSales());
+        return ResponseUtil.ok(this.statisticalService.topSales());
     }
 
     @PostMapping("statistical-by-date")

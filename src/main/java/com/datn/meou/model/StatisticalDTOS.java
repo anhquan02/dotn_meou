@@ -13,6 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class StatisticalDTOS {
+    private Long productItemId;
     private String name;
     private BigDecimal priceProductItem;
     private BigDecimal totalQuantity;
@@ -21,8 +22,10 @@ public class StatisticalDTOS {
     private BigDecimal todayQuantity;
     private String fromDate;
     private String toDate;
+    private String image;
 
-    public StatisticalDTOS(String name, BigDecimal priceProductItem, BigDecimal totalQuantity) {
+    public StatisticalDTOS(Long productItemId,String name, BigDecimal priceProductItem, BigDecimal totalQuantity) {
+        this.productItemId = productItemId;
         this.name = name;
         this.priceProductItem = priceProductItem;
         this.totalQuantity = totalQuantity;

@@ -47,6 +47,7 @@ import javax.persistence.*;
                 @ConstructorResult(
                         targetClass = StatisticalDTOS.class,
                         columns = {
+                                @ColumnResult(name = "productItemId", type = Long.class),
                                 @ColumnResult(name = "name", type = String.class),
                                 @ColumnResult(name = "priceProductItem", type = BigDecimal.class),
                                 @ColumnResult(name = "totalQuantity", type = BigDecimal.class),

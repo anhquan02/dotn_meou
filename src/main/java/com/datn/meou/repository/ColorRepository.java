@@ -23,8 +23,8 @@ public interface ColorRepository extends JpaRepository<Color, Long> {
 
     Page<Color> findByStatusAndNameContaining(Boolean status, String name, Pageable pageable);
 
-    @Query("SELECT s FROM Color s,ProductItem pi " +
-            "WHERE s.id = pi.soleId AND s.status = true AND pi.status = 1 AND pi.productId = :productId " +
-            "GROUP BY s.id ORDER BY s.name")
+    @Query("SELECT c FROM Color c,ProductItem pi " +
+            "WHERE c.id = pi.colorId AND c.status = true AND pi.status = 1 AND pi.productId = :productId " +
+            "GROUP BY c.id ORDER BY c.name")
     List<Color> getAllColorByProductId(@Param("productId") Long productId);
 }

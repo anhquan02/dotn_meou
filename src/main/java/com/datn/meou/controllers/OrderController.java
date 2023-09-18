@@ -1,7 +1,6 @@
 package com.datn.meou.controllers;
 
 
-import com.datn.meou.model.BrandDTO;
 import com.datn.meou.model.ChangeStatus;
 import com.datn.meou.model.CounterSaleDTO;
 import com.datn.meou.model.OrderDTO;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 

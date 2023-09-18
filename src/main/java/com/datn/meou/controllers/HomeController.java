@@ -22,7 +22,7 @@ public class HomeController {
 
     @PostMapping("/home")
     private ResponseEntity<?> home(@RequestBody ProductDTO dto, Pageable pageable) {
-        return ResponseUtil.ok(this.productRepository.advancedSearchPage(dto, pageable));
+        return ResponseUtil.ok(this.productRepository.advancedSearchHomePage(dto, pageable));
     }
 
     @PostMapping("/change-password")

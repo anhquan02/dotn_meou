@@ -31,7 +31,7 @@ public class StatisticalDTOS {
         this.totalQuantity = totalQuantity;
     }
 
-    public StatisticalDTOS(Date saleDate, BigDecimal totalPrice, BigDecimal todayQuantity) {
+    public StatisticalDTOS(Date saleDate, BigDecimal todayQuantity, BigDecimal totalPrice) {
         this.saleDate = saleDate;
         this.totalPrice = totalPrice;
         this.todayQuantity = todayQuantity;

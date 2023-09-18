@@ -1,15 +1,18 @@
 package com.datn.meou.services;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.datn.meou.entity.Insole;
 import com.datn.meou.entity.ProductItem;
 import com.datn.meou.entity.Sole;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.ProductDTO;
+import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.model.SoleDTO;
 import com.datn.meou.repository.ProductItemRepository;
 import com.datn.meou.util.DataUtil;
@@ -117,7 +120,8 @@ public class ProductService {
         if (!DataUtil.isNullObject(name)) {
             ProductDTO dto = new ProductDTO();
             dto.setName(name);
-            return this.productRepository.advancedSearchPage(dto, pageable);
+            Page<ProductDTO> pageItem = this.productRepository.advancedSearchPage(dto, pageable);
+            return pageItem;
         }
         return this.findAllProductPage(pageable);
     }
@@ -137,8 +141,16 @@ public class ProductService {
         List<ProductDTO> productDTOList = productRepository.advancedSearch(dto);
         if (!productDTOList.isEmpty()) {
             return productDTOList.get(0);
+        }else{
+            Product product =this.findById(id);
+            if(product != null){
+                ProductDTO dtoReturn = MapperUtil.map(product, ProductDTO.class);
+                dtoReturn.setMinPrice(new BigDecimal(0));
+                dtoReturn.setMaxPrice(new BigDecimal(0));
+                return dtoReturn;
+            }
+            throw new BadRequestException("Không tìm thấy sản phẩm");
         }
-        throw new BadRequestException("Không tìm thấy sản phẩm");
     }
 
     public void deleteProduct(List<Long> ids) {

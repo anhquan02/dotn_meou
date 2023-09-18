@@ -68,14 +68,14 @@ public class ProductItemRepositoryCustomImpl implements ProductItemRepositoryCus
 
     @Override
     public List<StatisticalDTOS> topSales() {
-        StringBuilder sql = new StringBuilder("SELECT b.name AS name, b.price AS priceProductItem, SUM(a.quantity_order) AS totalQuantity FROM dotn_order_item a\n" +
+        StringBuilder sql = new StringBuilder("SELECT a.product_item_id AS productItemId,b.name AS name, b.price AS priceProductItem, SUM(a.quantity_order) AS totalQuantity FROM dotn_order_item a\n" +
                 "INNER JOIN dotn_product_item b ON a.product_item_id = b.id\n" +
                 "WHERE a.product_item_id  \n" +
                 "IN (SELECT doi.product_item_id FROM dotn_order_item doi \n" +
                 "JOIN dotn_order do ON doi.order_id = do.id\n" +
                 "WHERE MONTH(do.updated_date) = MONTH(CURDATE()) AND do.status_id = 5\n" +
                 "GROUP BY doi.product_item_id)\n" +
-                "GROUP BY a.product_item_id, b.name, b.price, a.quantity_order\n" +
+                "GROUP BY a.product_item_id, b.name, b.price\n" +
                 " ORDER BY totalQuantity DESC" +
                 " LIMIT 5");
         Map<String, Object> params = new HashMap<>();

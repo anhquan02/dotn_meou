@@ -17,6 +17,8 @@ import org.springframework.stereotype.Repository;
 public interface SizeRepository extends JpaRepository<Size, Long> {
     Optional<Size> findByIdAndStatus(Long id, Boolean status);
 
+    List<Size> findAllByName(String name);
+
     Page<Size> findAllByStatus(Boolean status, Pageable pageable);
 
     List<Size> findAllByStatus(Boolean status);

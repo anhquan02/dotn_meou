@@ -32,6 +32,10 @@ public class SizeService {
     MapperUtil mapperUtil;
 
     public Size saveSize(SizeDTO dto) {
+        List<Size> checkSize = sizeRepository.findAllByName(dto.getName());
+        if(!checkSize.isEmpty()){
+            throw new BadRequestException("Size này đã tồn tại");
+        }
         Size size = Size
                 .builder()
                 .name(dto.getName())

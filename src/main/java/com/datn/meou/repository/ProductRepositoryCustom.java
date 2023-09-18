@@ -13,6 +13,8 @@ import java.util.List;
 public interface ProductRepositoryCustom {
     List<ProductDTO> advancedSearch(ProductDTO dto);
 
+    Page<ProductDTO> advancedSearchHomePage(ProductDTO dto, Pageable pageable);
+
     Page<ProductDTO> advancedSearchPage(ProductDTO dto, Pageable pageable);
 
     ProductDTO getByIdForOnline(Long id);

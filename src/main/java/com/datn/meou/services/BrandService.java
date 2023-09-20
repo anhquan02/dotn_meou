@@ -1,24 +1,18 @@
 package com.datn.meou.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.datn.meou.entity.Color;
+import com.datn.meou.entity.Brand;
 import com.datn.meou.exception.BadRequestException;
 import com.datn.meou.model.BrandDTO;
+import com.datn.meou.repository.BrandRepository;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.MapperUtil;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.datn.meou.entity.Brand;
-import com.datn.meou.repository.BrandRepository;
-
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -42,7 +36,7 @@ public class BrandService {
             this.brandRepository.save(brand);
             return brand;
         }
-        throw new BadRequestException("Không có thương hiệu này");
+        throw new BadRequestException("Không có thương hiệu này !");
     }
 
     public List<Brand> findAllBrandList() {

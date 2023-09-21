@@ -74,6 +74,10 @@ public class AccountService implements UserDetailsService {
                     .token(token)
                     .roleId(accountMain.getRoleId())
                     .nameRole(role.get().getName())
+                    .fullname(accountMain.getFullname())
+                    .phone(accountMain.getPhone())
+                    .address(accountMain.getAddress())
+                    .email(accountMain.getEmail())
                     .build();
         }
         throw new BadRequestException("Không tìm thấy account");

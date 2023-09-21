@@ -68,7 +68,7 @@ public class OrderSevice {
 //                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getCustomerId(), true).get();
 //                orderDTO.setUsername(account.getUsername());
 //            }
-            if (DataUtil.isNullObject(orderDTO.getTotalPrice())) {
+            if (!DataUtil.isNullObject(orderDTO.getTotalPrice())) {
                 BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
                 orderDTO.setTotalPrice(a1);
             }
@@ -446,7 +446,7 @@ public class OrderSevice {
 //                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getCustomerId(), true).get();
 //                orderDTO.setUsername(account.getUsername());
 //            }
-                if (DataUtil.isNullObject(orderDTO.getTotalPrice())) {
+                if (!DataUtil.isNullObject(orderDTO.getTotalPrice())) {
                     BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
                     orderDTO.setTotalPrice(a1);
                 }

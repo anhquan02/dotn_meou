@@ -29,4 +29,12 @@ public class HomeController {
     private ResponseEntity<?> changePassword(@RequestBody AccountDTO dto) {
         return ResponseUtil.ok(this.accountService.changePassward(dto));
     }
+    @PostMapping("/customer-information")
+    private ResponseEntity<?> getCustomerInformation() {
+        return ResponseUtil.ok(this.accountService.getInfomationAccount());
+    }
+    @PostMapping("/update-customer")
+    private ResponseEntity<?> updateCustomert(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.updateAccount(dto));
+    }
 }

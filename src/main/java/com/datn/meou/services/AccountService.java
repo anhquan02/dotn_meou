@@ -170,6 +170,55 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(account);
     }
 
+    public Account getInfomationAccount(){
+        Account account = this.getCurrentUser();
+        if(account == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        return account;
+    }
+
+    public List<Account> getInfomationAccounts(){
+        Account account = this.getCurrentUser();
+        if(account.getRoleId() == 2){
+            List<Account> lstAccounts = accountRepository.findByRoleIdAndStatus(2,)
+        }
+        if(account == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        return account;
+    }
+
+    public Account updateAccount(AccountDTO dto){
+        Account account = this.getCurrentUser();
+        if(account == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        if(DataUtil.isNullObject(dto.getFullname())){
+            throw new BadRequestException("Tên không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getAddress())){
+            throw new BadRequestException("địa chỉ không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getPhone())) {
+            throw new BadRequestException("Số điện thoại không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getEmail())){
+            throw new BadRequestException("email không được để trống");
+        }
+        if(isEmail(dto.getEmail()) == false){
+            throw new BadRequestException("email không đúng định dạng");
+        }
+        if(isPhone(dto.getPhone()) == false){
+            throw new BadRequestException("Số điện thoại không đúng định dạng");
+        }
+        account.setFullname(dto.getFullname());
+        account.setEmail(dto.getEmail());
+        account.setPhone(dto.getPhone());
+        account.setAddress(dto.getAddress());
+        return accountRepository.save(account);
+    }
+
     public static boolean isEmail(String s) {
         Boolean x = EMAIL.matcher(s).matches();
         return x;

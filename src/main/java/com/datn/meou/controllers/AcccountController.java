@@ -39,6 +39,12 @@ public class AcccountController {
         return ResponseUtil.ok(this.accountService.register(dto));
     }
 
+    @PostMapping("/update-staff")
+    private ResponseEntity<?> changePassword(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.updateAccount(dto));
+    }
+
+
 
 }
 

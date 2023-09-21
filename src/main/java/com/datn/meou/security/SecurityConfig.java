@@ -55,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/product/all-item", "/api/v1/product-item/choose-types",
                         "/api/v1/order/create-order-online", "/api/v1/account/register",
                         "/api/v1/customer/home", "/api/v1/voucher/client").permitAll()// Cho phép tất cả mọi người truy cập vào địa chỉ này
-                .antMatchers("/api/v1/brand/all-page").hasAnyAuthority("Admin")
+                .antMatchers("/api/v1/brand/all-page").hasAnyAuthority("1")
                 .anyRequest().authenticated();// Tất cả các request khác đều cần phải xác thực mới được truy cập
 
         // Thêm một lớp Filter kiểm tra jwt

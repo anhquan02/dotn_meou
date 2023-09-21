@@ -28,6 +28,11 @@ public class OrderController {
         return ResponseUtil.ok(this.orderSevice.findAll(dto, pageable));
     }
 
+    @PostMapping("page-client")
+    private ResponseEntity<?> getOrdersForCustomer(@RequestBody OrderDTO dto, Pageable pageable) {
+        return ResponseUtil.ok(this.orderSevice.getOrdersForCustomer(dto, pageable));
+    }
+
     @PutMapping("change-status")
     private ResponseEntity<?> changeStatusByOrder(@RequestBody ChangeStatus dto) {
         return ResponseUtil.ok(this.orderSevice.changeStatusByOrder(dto));

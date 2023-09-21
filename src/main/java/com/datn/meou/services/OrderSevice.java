@@ -9,21 +9,20 @@ import com.datn.meou.model.ProductItemDTO;
 import com.datn.meou.repository.*;
 import com.datn.meou.util.DataUtil;
 import com.datn.meou.util.DateUtil;
+import com.datn.meou.util.MapperUtil;
 import com.datn.meou.util.ResponseUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.text.ParseException;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,6 @@ public class OrderSevice {
     private final SoleRepository soleRepository;
     private final InsoleRepository insoleRepository;
     private final ColorRepository colorRepository;
-    private final BrandRepository brandRepository;
     private final ProductRepository productRepository;
 
     private final TransactionStatusRepository transactionStatusRepository;
@@ -62,11 +60,18 @@ public class OrderSevice {
         Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable);
         for (OrderDTO orderDTO : pages) {
             if (!DataUtil.isNullObject(orderDTO.getAccountId())) {
-                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getId(), true).get();
+                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getAccountId(), true).get();
                 orderDTO.setUsername(account.getUsername());
             }
-            BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
-            orderDTO.setTotalPrice(a1);
+
+//            if (!DataUtil.isNullObject(orderDTO.getCustomerId())) {
+//                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getCustomerId(), true).get();
+//                orderDTO.setUsername(account.getUsername());
+//            }
+            if (DataUtil.isNullObject(orderDTO.getTotalPrice())) {
+                BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
+                orderDTO.setTotalPrice(a1);
+            }
             if (!DataUtil.isNullObject(orderDTO.getTypeOrder())) {
                 if (orderDTO.getTypeOrder() == 1) {
                     orderDTO.setTypeOrders("Đặt tại Quầy");
@@ -84,9 +89,24 @@ public class OrderSevice {
         if (orders.isPresent()) {
             Orders orders1 = orders.get();
             orders1.setStatusId(changeStatus.getIdStatus());
-            this.ordersRepository.save(orders1);
+            Orders ordersNew = this.ordersRepository.save(orders1);
+            OrderDTO orderDTO = MapperUtil.map(ordersNew, OrderDTO.class);
+            Optional<OrderStatus> orderStatus = this.orderStatusRepository
+                    .findByIdAndStatus(changeStatus.getIdStatus(), true);
+            if (orderStatus.isPresent()) {
+                orderDTO.setNameStatus(orderStatus.get().getValueStatus());
+            }
+
             TransactionStatus transactionStatus = TransactionStatus.builder().orderId(changeStatus.getIdOrder()).accountId(account.getId()).note(changeStatus.getNote()).statusId(changeStatus.getIdStatus()).build();
             this.transactionStatusRepository.save(transactionStatus);
+
+            String sub = "Thông báo đơn hàng " + ordersNew.getCode();
+            String text1 = changeStatusForGmail(orderDTO);
+            if (!DataUtil.isNullObject(ordersNew.getEmailCustomer())) {
+                this.emailService.sendEmail(ordersNew.getEmailCustomer(), sub, text1);
+            }
+
+
             return transactionStatus;
         }
         throw new BadRequestException("Không tìm thấy id của đơn hàng này");
@@ -114,6 +134,7 @@ public class OrderSevice {
                 .emailCustomer(orderDTO.getEmailCustomer())
                 .nameCustomer(orderDTO.getNameCustomer())
                 .phoneCustomer(orderDTO.getPhoneCustomer())
+                .customerId(orderDTO.getCustomerId())
                 .build();
         Orders ordersNew = this.ordersRepository.save(orders);
         handleOrderItemForPurchase(productItemDTOS, ordersNew);
@@ -162,7 +183,7 @@ public class OrderSevice {
         try {
             account = this.accountService.getCurrentUser();
             if (account != null) {
-                orders.setAccountId(account.getId());
+                orders.setCustomerId(account.getId());
                 transaction.setAccountId(account.getId());
                 transactionStatus.setAccountId(account.getId());
             }
@@ -274,15 +295,17 @@ public class OrderSevice {
         ordersNew.setTotalPrice(totalPrice);
     }
 
+
     private StringBuilder generateCommonHtmlHead() {
         StringBuilder stringBuilder = new StringBuilder();
         return stringBuilder
                 .append("<body>")
-                .append("<div style=\"max-width: 500px;\">")
+                .append("<div style=\"max-width: 1000px;\">")
                 .append("  <h2 style=\"text-align: center;\">Thông tin đơn hàng</h2>")
                 .append(" <div style=\"display: flex; max-width: 500px;\">")
                 .append("   <div style=\"width: 50%;\">");
     }
+
 
     public String generateReportMessage(Orders billSave, List<ProductItemDTO> productBills) {
         StringBuilder text = generateCommonHtmlHead();
@@ -363,5 +386,80 @@ public class OrderSevice {
         return text.toString();
     }
 
+    private StringBuilder titleForChangeStatus() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder
+                .append("<body>")
+                .append("<div style=\"max-width: 1000px;\">")
+                .append("  <h2 style=\"text-align: center;\">Thông tin đơn hàng</h2>");
 
+
+    }
+
+    public String changeStatusForGmail(OrderDTO billSave) {
+        StringBuilder text = titleForChangeStatus();
+        String creatDate = billSave.getUpdatedDate().toString();
+        String dateMain;
+        try {
+            Date date = DateUtil.inputFormat.parse(creatDate);
+            dateMain = DateUtil.sdtf.format(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Số đơn hàng:" + billSave.getCode() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Ngày:" + dateMain + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b>Đơn hàng của khách hàng " + billSave.getNameCustomer() + " đã được thay đổi sang trạng thái :" + billSave.getNameStatus() + "</b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b>Qúy khách có thắc mắc xin vui lòng liên hệ lại với cửa hàng với số điện thoại : 0396129997 </b>")
+                .append(" </div>");
+
+        text.append(" <div style=\"margin-top: 5px;\">")
+                .append("   <b style=\"margin-right: 10px;\">Cửa hàng giày thể thao Sneaker Mèo Ú trân thành cảm ơn ! </b>")
+                .append(" </div>");
+
+        text.append(" </div>");
+        text.append("</body>");
+
+        return text.toString();
+    }
+
+    public Page<OrderDTO> getOrdersForCustomer(OrderDTO dto, Pageable pageable) {
+        Account account = this.accountService.getCurrentUser();
+        Page<OrderDTO> pages = this.ordersRepository.findAll(dto, pageable, account.getId());
+        if (!DataUtil.isNullObject(pages)) {
+            for (OrderDTO orderDTO : pages) {
+                if (!DataUtil.isNullObject(orderDTO.getAccountId())) {
+                    Account accountStaff = this.accountRepository.findByIdAndStatus(orderDTO.getAccountId(), true).get();
+                    orderDTO.setUsername(accountStaff.getUsername());
+                }
+
+//            if (!DataUtil.isNullObject(orderDTO.getCustomerId())) {
+//                Account account = this.accountRepository.findByIdAndStatus(orderDTO.getCustomerId(), true).get();
+//                orderDTO.setUsername(account.getUsername());
+//            }
+                if (DataUtil.isNullObject(orderDTO.getTotalPrice())) {
+                    BigDecimal a1 = orderDTO.getTotalPrice().setScale(1, BigDecimal.ROUND_HALF_UP);
+                    orderDTO.setTotalPrice(a1);
+                }
+                if (!DataUtil.isNullObject(orderDTO.getTypeOrder())) {
+                    if (orderDTO.getTypeOrder() == 1) {
+                        orderDTO.setTypeOrders("Đặt tại Quầy");
+                    } else {
+                        orderDTO.setTypeOrders("Đặt Online");
+                    }
+                }
+            }
+        }
+        return pages;
+
+    }
 }

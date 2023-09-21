@@ -1,7 +1,7 @@
 spring:
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://54.151.183.59:3306/meou
+    url: jdbc:mysql://18.142.245.35:3306/meou
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: meou@12345

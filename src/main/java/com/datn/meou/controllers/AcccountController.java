@@ -58,6 +58,11 @@ public class AcccountController {
     private ResponseEntity<?> updateStaffByAdmin(@RequestBody AccountDTO dto) {
         return ResponseUtil.ok(this.accountService.updateAccountByAdmin(dto));
     }
+
+    @PostMapping("/delete-staff-by-admin")
+    private ResponseEntity<?> deleteStaffByAdmin(@RequestParam Long id) {
+        return ResponseUtil.ok(this.accountService.deleteAccountByAdmin(id));
+    }
 }
 
 

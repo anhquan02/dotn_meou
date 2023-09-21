@@ -272,6 +272,15 @@ public class AccountService implements UserDetailsService {
         return accountRepository.save(account.get());
     }
 
+    public Account deleteAccountByAdmin(Long id){
+        Optional<Account> account = accountRepository.findByIdAndStatus(id, true);
+        if(account.get() == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        account.get().setStatus(false);
+        return accountRepository.save(account.get());
+    }
+
     public static boolean isEmail(String s) {
         Boolean x = EMAIL.matcher(s).matches();
         return x;

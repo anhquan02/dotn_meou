@@ -18,6 +18,11 @@ public class LoginDTO {
     private String username;
     private String nameRole;
     private Long roleId;
+    private String phone;
+    private String email;
+    private String address;
+
+
 
 }
 

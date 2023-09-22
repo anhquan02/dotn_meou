@@ -60,7 +60,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .append(" AND os.status = true ");
         Map<String, Object> params = new HashMap<>();
 
-        sql.append(" and o.customer.id = :idCustomer");
+        sql.append(" and o.customer_id = :idCustomer");
         params.put("idCustomer", idCustomer);
 
         if (!DataUtil.isNullObject(dto.getCode())) {

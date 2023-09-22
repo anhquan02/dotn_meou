@@ -39,7 +39,30 @@ public class AcccountController {
         return ResponseUtil.ok(this.accountService.register(dto));
     }
 
+    @PostMapping("/update-staff")
+    private ResponseEntity<?> updateStaff(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.updateAccount(dto));
+    }
 
+    @GetMapping("/get-staff-information")
+    private ResponseEntity<?> getStaffInformation() {
+        return ResponseUtil.ok(this.accountService.getInfomationAccounts());
+    }
+
+    @GetMapping("/get-staff-by-name")
+    private ResponseEntity<?> getStaffByName(@RequestParam String name) {
+        return ResponseUtil.ok(this.accountService.getInfomationAccountsByName(name));
+    }
+
+    @PostMapping("/update-staff-by-admin")
+    private ResponseEntity<?> updateStaffByAdmin(@RequestBody AccountDTO dto) {
+        return ResponseUtil.ok(this.accountService.updateAccountByAdmin(dto));
+    }
+
+    @PostMapping("/delete-staff-by-admin")
+    private ResponseEntity<?> deleteStaffByAdmin(@RequestParam Long id) {
+        return ResponseUtil.ok(this.accountService.deleteAccountByAdmin(id));
+    }
 }
 
 

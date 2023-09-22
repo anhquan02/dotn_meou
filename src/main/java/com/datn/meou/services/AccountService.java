@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -172,6 +173,112 @@ public class AccountService implements UserDetailsService {
         }
         account.setPassword(passwordEncoder.encode(dto.getResetPassword()));
         return accountRepository.save(account);
+    }
+
+    public Account getInfomationAccount(){
+        Account account = this.getCurrentUser();
+        if(account == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        return account;
+    }
+
+    public List<Account> getInfomationAccounts(){
+        Account account = this.getCurrentUser();
+        if(account == null) {
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        if(account.getRoleId() == 1){
+            List<Account> lstAccounts = accountRepository.findByRoleIdAndStatus(2L, true);
+            return lstAccounts;
+        }
+        if(account.getRoleId() == 2){
+            List<Account> accounts = new ArrayList<>();
+            accounts.add(account);
+            return accounts;
+        }
+        throw new BadRequestException("Bạn không có quyền truy cập trạng này");
+    }
+
+    public List<Account> getInfomationAccountsByName(String name){
+        Account account = this.getCurrentUser();
+        if(account == null) {
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        List<Account> accounts = accountRepository.findByRoleIdAndStatusAndFullnameContaining(2L, true, name);
+        return accounts;
+    }
+
+    public Account updateAccount(AccountDTO dto){
+        Account account = this.getCurrentUser();
+        if(account == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        if(DataUtil.isNullObject(dto.getFullname())){
+            throw new BadRequestException("Tên không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getAddress())){
+            throw new BadRequestException("địa chỉ không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getPhone())) {
+            throw new BadRequestException("Số điện thoại không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getEmail())){
+            throw new BadRequestException("email không được để trống");
+        }
+        if(isEmail(dto.getEmail()) == false){
+            throw new BadRequestException("email không đúng định dạng");
+        }
+        if(isPhone(dto.getPhone()) == false){
+            throw new BadRequestException("Số điện thoại không đúng định dạng");
+        }
+        account.setFullname(dto.getFullname());
+        account.setEmail(dto.getEmail());
+        account.setPhone(dto.getPhone());
+        account.setAddress(dto.getAddress());
+        return accountRepository.save(account);
+    }
+
+    public Account updateAccountByAdmin(AccountDTO dto){
+        if(dto.getId() == null){
+            throw new BadRequestException("Id không được để trống");
+        }
+        Optional<Account> account = accountRepository.findByIdAndStatus(dto.getId(), true);
+        if(account.get() == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        if(DataUtil.isNullObject(dto.getFullname())){
+            throw new BadRequestException("Tên không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getAddress())){
+            throw new BadRequestException("địa chỉ không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getPhone())) {
+            throw new BadRequestException("Số điện thoại không được để trống");
+        }
+        if(DataUtil.isNullObject(dto.getEmail())){
+            throw new BadRequestException("email không được để trống");
+        }
+        if(isEmail(dto.getEmail()) == false){
+            throw new BadRequestException("email không đúng định dạng");
+        }
+        if(isPhone(dto.getPhone()) == false){
+            throw new BadRequestException("Số điện thoại không đúng định dạng");
+        }
+        account.get().setFullname(dto.getFullname());
+        account.get().setEmail(dto.getEmail());
+        account.get().setPhone(dto.getPhone());
+        account.get().setAddress(dto.getAddress());
+        return accountRepository.save(account.get());
+    }
+
+    public Account deleteAccountByAdmin(Long id){
+        Optional<Account> account = accountRepository.findByIdAndStatus(id, true);
+        if(account.get() == null){
+            throw new BadRequestException("Bạn chưa đăng nhập");
+        }
+        account.get().setStatus(false);
+        return accountRepository.save(account.get());
     }
 
     public static boolean isEmail(String s) {

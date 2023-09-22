@@ -43,10 +43,11 @@ public class ProductDTO extends BaseModel {
     private String nameInsole;
     private String nameBrand;
 
-    public ProductDTO(Long id, String name, String image, BigDecimal minPrice, BigDecimal maxPrice, BigDecimal quantity, Integer status) {
+    public ProductDTO(Long id, String name, String image,Long brandId, BigDecimal minPrice, BigDecimal maxPrice, BigDecimal quantity, Integer status) {
         this.id = id;
         this.name = name;
         this.image = image;
+        this.brandId = brandId;
         this.quantity = quantity;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;

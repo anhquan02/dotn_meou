@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/customer/home", "/api/v1/voucher/client").permitAll()// Cho phép tất cả mọi người truy cập vào địa chỉ này
                 .antMatchers("/api/v1/brand/**","/api/v1/color/**",
                         "/api/v1/size/**","/api/v1/sole/**","/api/v1/insole/**",
+                        "/api/v1/product","/api/v1/product-item",
                         "/api/v1/statistical").hasAnyAuthority("1","2")
                 .anyRequest().authenticated();// Tất cả các request khác đều cần phải xác thực mới được truy cập
 
